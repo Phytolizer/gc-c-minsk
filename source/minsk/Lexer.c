@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <gc.h>
+#include "IncludeMe.h"
 
 #include "SyntaxToken.h"
 
@@ -26,10 +26,16 @@ static void next(struct Lexer* lexer)
 
 struct Lexer* lexer_new(sds text)
 {
-  struct Lexer* lexer = GC_MALLOC(sizeof(struct Lexer));
+  struct Lexer* lexer = mc_malloc(sizeof(struct Lexer));
   lexer->text = text;
   lexer->position = 0;
   return lexer;
+}
+
+void lexer_free(struct Lexer* lexer)
+{
+  sdsfree(lexer->text);
+  mc_free(lexer);
 }
 
 struct SyntaxToken* lexer_next_token(struct Lexer* lexer)

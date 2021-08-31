@@ -13,4 +13,5 @@ struct Lexer
 };
 
 struct Lexer* lexer_new(sds text);
+void lexer_free(struct Lexer* lexer);
 struct SyntaxToken* lexer_next_token(struct Lexer* lexer);

@@ -1,6 +1,6 @@
 #include "SyntaxToken.h"
 
-#include <gc.h>
+#include "IncludeMe.h"
 
 struct SyntaxToken* syntax_token_new(
     enum SyntaxKind kind,
@@ -8,7 +8,8 @@ struct SyntaxToken* syntax_token_new(
     char* text,
     struct Object* value)
 {
-  struct SyntaxToken* token = GC_MALLOC(sizeof(struct SyntaxToken));
+  struct SyntaxToken* token = mc_malloc(sizeof(struct SyntaxToken));
+  token->base.kind = SYNTAX_NODE_KIND_TOKEN;
   token->kind = kind;
   token->position = position;
   token->text = text;
@@ -16,7 +17,21 @@ struct SyntaxToken* syntax_token_new(
   return token;
 }
 
+void syntax_token_free(struct SyntaxToken* token)
+{
+  sdsfree(token->text);
+  object_free(token->value);
+  mc_free(token);
+}
+
 enum SyntaxKind syntax_token_get_kind(struct SyntaxToken* token)
 {
   return token->kind;
+}
+
+struct SyntaxNodeList* syntax_token_get_children(struct SyntaxToken* token)
+{
+  struct SyntaxNodeList* empty = mc_malloc(sizeof(struct SyntaxNodeList));
+  LIST_INIT(empty);
+  return empty;
 }

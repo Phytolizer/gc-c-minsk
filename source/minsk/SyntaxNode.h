@@ -1,5 +1,6 @@
 #pragma once
 
+#include "List.h"
 #include "SyntaxKind.h"
 
 #define SYNTAX_NODE_KINDS_ \
@@ -13,9 +14,15 @@ enum SyntaxNodeKind
 #undef X
 };
 
+extern const char* const SYNTAX_NODE_KINDS[];
+
 struct SyntaxNode
 {
   enum SyntaxNodeKind kind;
 };
 
+DECLARE_NAMED_LIST(SyntaxNodeList, struct SyntaxNode*);
+
 enum SyntaxKind syntax_node_get_kind(struct SyntaxNode* node);
+struct SyntaxNodeList* syntax_node_get_children(struct SyntaxNode* node);
+void syntax_node_free(struct SyntaxNode* node);

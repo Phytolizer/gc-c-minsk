@@ -24,6 +24,8 @@ struct ObjectInteger
 
 struct Object* object_new_null(void);
 struct ObjectInteger* object_new_integer(int value);
+void object_free(struct Object* obj);
+void object_integer_free(struct ObjectInteger* obj);
 
 char* object_to_string(const struct Object* obj);
 

@@ -2,6 +2,9 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdlib.h>
+
+#include "IncludeMe.h"
 
 struct UnpackedList
 {
@@ -44,6 +47,16 @@ struct UnpackedList
   } \
   while (false)
 
+#define LIST_DEINIT(L) \
+  do \
+  { \
+    if ((L)->data) \
+    { \
+      mc_free((L)->data); \
+    } \
+  } \
+  while (false)
+
 #define LIST_INITIAL_CAPACITY 8
 
 #define LIST_RESERVE(L, Capacity) \
@@ -56,7 +69,7 @@ struct UnpackedList
         (L)->capacity = ((L)->capacity == 0) ? LIST_INITIAL_CAPACITY \
                                              : (L)->capacity * 2; \
       } \
-      (L)->data = GC_REALLOC((L)->data, (L)->capacity); \
+      (L)->data = mc_realloc((L)->data, (L)->capacity * sizeof(*(L)->data)); \
     } \
   } \
   while (false)

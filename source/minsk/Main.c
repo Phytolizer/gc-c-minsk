@@ -2,10 +2,14 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <gc.h>
+#include "IncludeMe.h"
 
-#include "Lexer.h"
+#include "Parser.h"
+#include "SyntaxNode.h"
+#include "SyntaxToken.h"
 #include "sds.h"
+
+static void pretty_print(struct SyntaxNode* node, sds indent);
 
 sds input_line(const char* prompt)
 {
@@ -38,22 +42,29 @@ int main(void)
       break;
     }
 
-    struct Lexer* lexer = lexer_new(line);
-
-    while (true)
-    {
-      struct SyntaxToken* token = lexer_next_token(lexer);
-      if (token->kind == SYNTAX_KIND_END_OF_FILE_TOKEN)
-      {
-        break;
-      }
-      printf("%s: '%s'", SYNTAX_KINDS[token->kind], token->text);
-      if (!OBJECT_IS_NULL(token->value))
-      {
-        printf(" %s", object_to_string(token->value));
-      }
-      printf("\n");
-    }
+    struct Parser* parser = parser_new(line);
+    struct ExpressionSyntax* root = parser_parse(parser);
+    pretty_print((struct SyntaxNode*)root, sdsempty());
   }
   return 0;
+}
+
+static void pretty_print(struct SyntaxNode* node, sds indent)
+{
+  printf("%s%s", indent, SYNTAX_KINDS[syntax_node_get_kind(node)]);
+
+  if (node->kind == SYNTAX_NODE_KIND_TOKEN
+      && ((struct SyntaxToken*)node)->value->kind != OBJECT_KIND_NULL)
+  {
+    printf(" %s", object_to_string(((struct SyntaxToken*)node)->value));
+  }
+  printf("\n");
+  indent = sdsdup(indent);
+  indent = sdscat(indent, "    ");
+  struct SyntaxNodeList* children = syntax_node_get_children(node);
+  for (long i = 0; i < children->length; i++)
+  {
+    pretty_print(children->data[i], indent);
+  }
+  sdsfree(indent);
 }

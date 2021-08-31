@@ -15,5 +15,8 @@ struct BinaryExpressionSyntax* binary_expression_syntax_new(
     struct ExpressionSyntax* left,
     struct SyntaxToken* operator_token,
     struct ExpressionSyntax* right);
+void binary_expression_syntax_free(struct BinaryExpressionSyntax* syntax);
 enum SyntaxKind binary_expression_syntax_get_kind(
+    struct BinaryExpressionSyntax* syntax);
+struct SyntaxNodeList* binary_expression_syntax_get_children(
     struct BinaryExpressionSyntax* syntax);

@@ -11,6 +11,18 @@ void expression_syntax_init(
   syntax->kind = kind;
 }
 
+void expression_syntax_free(struct ExpressionSyntax* syntax)
+{
+  switch (syntax->kind) {
+    case EXPRESSION_SYNTAX_KIND_NUMBER_EXPRESSION_SYNTAX:
+      number_expression_syntax_free((struct NumberExpressionSyntax*)syntax);
+      break;
+    case EXPRESSION_SYNTAX_KIND_BINARY_EXPRESSION_SYNTAX:
+      binary_expression_syntax_free((struct BinaryExpressionSyntax*)syntax);
+      break;
+  }
+}
+
 enum SyntaxKind expression_syntax_get_kind(struct ExpressionSyntax* syntax)
 {
   switch (syntax->kind)
@@ -21,5 +33,19 @@ enum SyntaxKind expression_syntax_get_kind(struct ExpressionSyntax* syntax)
     case EXPRESSION_SYNTAX_KIND_NUMBER_EXPRESSION_SYNTAX:
       return number_expression_syntax_get_kind(
           (struct NumberExpressionSyntax*)syntax);
+  }
+}
+
+struct SyntaxNodeList* expression_syntax_get_children(
+    struct ExpressionSyntax* syntax)
+{
+  switch (syntax->kind)
+  {
+    case EXPRESSION_SYNTAX_KIND_NUMBER_EXPRESSION_SYNTAX:
+      return number_expression_syntax_get_children(
+          (struct NumberExpressionSyntax*)syntax);
+    case EXPRESSION_SYNTAX_KIND_BINARY_EXPRESSION_SYNTAX:
+      return binary_expression_syntax_get_children(
+          (struct BinaryExpressionSyntax*)syntax);
   }
 }

@@ -2,7 +2,7 @@
 
 #include <stdbool.h>
 
-#include <gc.h>
+#include "IncludeMe.h"
 
 #include "BinaryExpressionSyntax.h"
 #include "Lexer.h"
@@ -20,8 +20,8 @@ static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser);
 
 struct Parser* parser_new(sds text)
 {
-  struct Parser* parser = GC_MALLOC(sizeof(struct Parser));
-  parser->tokens = GC_MALLOC(sizeof(struct SyntaxTokenList));
+  struct Parser* parser = mc_malloc(sizeof(struct Parser));
+  parser->tokens = mc_malloc(sizeof(struct SyntaxTokenList));
   LIST_INIT(parser->tokens);
   parser->position = 0;
   struct Lexer* lexer = lexer_new(text);
@@ -38,7 +38,15 @@ struct Parser* parser_new(sds text)
       break;
     }
   }
+  lexer_free(lexer);
   return parser;
+}
+
+void parser_free(struct Parser* parser)
+{
+  LIST_DEINIT(parser->tokens);
+  mc_free(parser->tokens);
+  mc_free(parser);
 }
 
 struct ExpressionSyntax* parser_parse(struct Parser* parser)
@@ -87,7 +95,7 @@ static struct SyntaxToken* match_token(
     return next_token(parser);
   }
 
-  return syntax_token_new(kind, current(parser)->position, NULL, NULL);
+  return syntax_token_new(kind, current(parser)->position, sdsempty(), NULL);
 }
 
 static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser)
