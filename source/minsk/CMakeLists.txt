@@ -1,16 +1,15 @@
 add_executable(
   mc
-  BinaryExpressionSyntax.c
-  Evaluator.c
-  ExpressionSyntax.c
-  Lexer.c
-  Main.c
-  NumberExpressionSyntax.c
-  Object.c
-  ParenthesizedExpressionSyntax.c
-  Parser.c
-  SyntaxKind.c
-  SyntaxNode.c
-  SyntaxToken.c
-  SyntaxTree.c)
-target_link_libraries(mc PRIVATE ${BDWGC} sds)
+  CodeAnalysis/BinaryExpressionSyntax.c
+  CodeAnalysis/Evaluator.c
+  CodeAnalysis/ExpressionSyntax.c
+  CodeAnalysis/Lexer.c
+  CodeAnalysis/NumberExpressionSyntax.c
+  CodeAnalysis/ParenthesizedExpressionSyntax.c
+  CodeAnalysis/Parser.c
+  CodeAnalysis/SyntaxKind.c
+  CodeAnalysis/SyntaxNode.c
+  CodeAnalysis/SyntaxToken.c
+  CodeAnalysis/SyntaxTree.c
+  Main.c)
+target_link_libraries(mc PRIVATE ${BDWGC} sds common)

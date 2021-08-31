@@ -7,5 +7,5 @@ project(
   DESCRIPTION "Simple Dynamic Strings"
   HOMEPAGE_URL "https://github.com/Phytolizer/sds")
 
-add_library(sds sds.c)
+add_library(sds SHARED sds.c)
 target_include_directories(sds PUBLIC "${PROJECT_SOURCE_DIR}")
