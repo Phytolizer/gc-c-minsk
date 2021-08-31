@@ -4,11 +4,19 @@
 
 #include <gc.h>
 
+#include "BinaryExpressionSyntax.h"
 #include "Lexer.h"
 #include "List.h"
+#include "NumberExpressionSyntax.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset);
 static struct SyntaxToken* current(struct Parser* parser);
+static struct SyntaxToken* next_token(struct Parser* parser);
+static struct SyntaxToken* match_token(
+    struct Parser* parser,
+    enum SyntaxKind kind);
+
+static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser);
 
 struct Parser* parser_new(sds text)
 {
@@ -33,6 +41,21 @@ struct Parser* parser_new(sds text)
   return parser;
 }
 
+struct ExpressionSyntax* parser_parse(struct Parser* parser)
+{
+  struct ExpressionSyntax* left = parse_primary_expression(parser);
+  while (current(parser)->kind == SYNTAX_KIND_PLUS_TOKEN
+         || current(parser)->kind == SYNTAX_KIND_MINUS_TOKEN)
+  {
+    struct SyntaxToken* operator_token = next_token(parser);
+    struct ExpressionSyntax* right = parse_primary_expression(parser);
+    left = (struct ExpressionSyntax*)
+        binary_expression_syntax_new(left, operator_token, right);
+  }
+
+  return left;
+}
+
 static struct SyntaxToken* peek(struct Parser* parser, int offset)
 {
   int index = parser->position + offset;
@@ -46,4 +69,30 @@ static struct SyntaxToken* peek(struct Parser* parser, int offset)
 static struct SyntaxToken* current(struct Parser* parser)
 {
   return peek(parser, 0);
+}
+
+static struct SyntaxToken* next_token(struct Parser* parser)
+{
+  struct SyntaxToken* curr = current(parser);
+  ++parser->position;
+  return curr;
+}
+
+static struct SyntaxToken* match_token(
+    struct Parser* parser,
+    enum SyntaxKind kind)
+{
+  if (current(parser)->kind == kind)
+  {
+    return next_token(parser);
+  }
+
+  return syntax_token_new(kind, current(parser)->position, NULL, NULL);
+}
+
+static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser)
+{
+  struct SyntaxToken* number_token
+      = match_token(parser, SYNTAX_KIND_NUMBER_TOKEN);
+  return (struct ExpressionSyntax*)number_expression_syntax_new(number_token);
 }
