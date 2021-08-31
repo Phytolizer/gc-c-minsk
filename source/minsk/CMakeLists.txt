@@ -9,5 +9,6 @@ add_executable(
   Parser.c
   SyntaxKind.c
   SyntaxNode.c
-  SyntaxToken.c)
+  SyntaxToken.c
+  SyntaxTree.c)
 target_link_libraries(mc PRIVATE ${BDWGC} sds)

@@ -7,6 +7,7 @@
 #include "Lexer.h"
 #include "List.h"
 #include "NumberExpressionSyntax.h"
+#include "SyntaxTree.h"
 #include "sds.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset);
@@ -16,6 +17,7 @@ static struct SyntaxToken* match_token(
     struct Parser* parser,
     enum SyntaxKind kind);
 
+static struct ExpressionSyntax* parse_expression(struct Parser* parser);
 static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser);
 
 struct Parser* parser_new(sds text)
@@ -54,19 +56,12 @@ void parser_free(struct Parser* parser)
   mc_free(parser);
 }
 
-struct ExpressionSyntax* parser_parse(struct Parser* parser)
+struct SyntaxTree* parser_parse(struct Parser* parser)
 {
-  struct ExpressionSyntax* left = parse_primary_expression(parser);
-  while (current(parser)->kind == SYNTAX_KIND_PLUS_TOKEN
-         || current(parser)->kind == SYNTAX_KIND_MINUS_TOKEN)
-  {
-    struct SyntaxToken* operator_token = next_token(parser);
-    struct ExpressionSyntax* right = parse_primary_expression(parser);
-    left = (struct ExpressionSyntax*)
-        binary_expression_syntax_new(left, operator_token, right);
-  }
-
-  return left;
+  struct ExpressionSyntax* expression = parse_expression(parser);
+  struct SyntaxToken* end_of_file_token
+      = match_token(parser, SYNTAX_KIND_END_OF_FILE_TOKEN);
+  return syntax_tree_new(parser->diagnostics, expression, end_of_file_token);
 }
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset)
@@ -112,6 +107,21 @@ static struct SyntaxToken* match_token(
       current(parser)->position,
       sdsempty(),
       OBJECT_NULL());
+}
+
+static struct ExpressionSyntax* parse_expression(struct Parser* parser)
+{
+  struct ExpressionSyntax* left = parse_primary_expression(parser);
+  while (current(parser)->kind == SYNTAX_KIND_PLUS_TOKEN
+         || current(parser)->kind == SYNTAX_KIND_MINUS_TOKEN)
+  {
+    struct SyntaxToken* operator_token = next_token(parser);
+    struct ExpressionSyntax* right = parse_primary_expression(parser);
+    left = (struct ExpressionSyntax*)
+        binary_expression_syntax_new(left, operator_token, right);
+  }
+
+  return left;
 }
 
 static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser)

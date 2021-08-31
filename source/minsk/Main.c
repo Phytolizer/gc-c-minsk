@@ -42,7 +42,7 @@ int main(void)
     }
 
     struct Parser* parser = parser_new(line);
-    struct ExpressionSyntax* root = parser_parse(parser);
+    struct SyntaxTree* tree = parser_parse(parser);
     if (parser->diagnostics->length > 0)
     {
       for (long i = 0; i < parser->diagnostics->length; ++i)
@@ -50,7 +50,7 @@ int main(void)
         printf("%s\n", parser->diagnostics->data[i]);
       }
     }
-    pretty_print((struct SyntaxNode*)root, sdsempty(), true);
+    pretty_print((struct SyntaxNode*)tree->root, sdsempty(), true);
   }
   return 0;
 }
