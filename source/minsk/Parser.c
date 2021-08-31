@@ -18,6 +18,8 @@ static struct SyntaxToken* match_token(
     enum SyntaxKind kind);
 
 static struct ExpressionSyntax* parse_expression(struct Parser* parser);
+static struct ExpressionSyntax* parse_term(struct Parser* parser);
+static struct ExpressionSyntax* parse_factor(struct Parser* parser);
 static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser);
 
 struct Parser* parser_new(sds text)
@@ -111,9 +113,29 @@ static struct SyntaxToken* match_token(
 
 static struct ExpressionSyntax* parse_expression(struct Parser* parser)
 {
-  struct ExpressionSyntax* left = parse_primary_expression(parser);
+  return parse_term(parser);
+}
+
+static struct ExpressionSyntax* parse_term(struct Parser* parser)
+{
+  struct ExpressionSyntax* left = parse_factor(parser);
   while (current(parser)->kind == SYNTAX_KIND_PLUS_TOKEN
          || current(parser)->kind == SYNTAX_KIND_MINUS_TOKEN)
+  {
+    struct SyntaxToken* operator_token = next_token(parser);
+    struct ExpressionSyntax* right = parse_factor(parser);
+    left = (struct ExpressionSyntax*)
+        binary_expression_syntax_new(left, operator_token, right);
+  }
+
+  return left;
+}
+
+static struct ExpressionSyntax* parse_factor(struct Parser* parser)
+{
+  struct ExpressionSyntax* left = parse_primary_expression(parser);
+  while (current(parser)->kind == SYNTAX_KIND_STAR_TOKEN
+         || current(parser)->kind == SYNTAX_KIND_SLASH_TOKEN)
   {
     struct SyntaxToken* operator_token = next_token(parser);
     struct ExpressionSyntax* right = parse_primary_expression(parser);
