@@ -15,3 +15,4 @@ struct SyntaxTree* syntax_tree_new(
     struct StringList* diagnostics,
     struct ExpressionSyntax* root,
     struct SyntaxToken* end_of_file_token);
+struct SyntaxTree* syntax_tree_parse(sds text);

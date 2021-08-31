@@ -4,6 +4,7 @@
 
 #include "BinaryExpressionSyntax.h"
 #include "NumberExpressionSyntax.h"
+#include "ParenthesizedExpressionSyntax.h"
 
 static int evaluate_expression(struct ExpressionSyntax* root);
 
@@ -26,6 +27,11 @@ static int evaluate_expression(struct ExpressionSyntax* root)
     return OBJECT_AS_INTEGER(
                ((struct NumberExpressionSyntax*)root)->number_token->value)
         ->value;
+  }
+  if (root->kind == EXPRESSION_SYNTAX_KIND_PARENTHESIZED_EXPRESSION_SYNTAX)
+  {
+    return evaluate_expression(
+        ((struct ParenthesizedExpressionSyntax*)root)->expression);
   }
   if (root->kind == EXPRESSION_SYNTAX_KIND_BINARY_EXPRESSION_SYNTAX)
   {

@@ -7,6 +7,7 @@
 #include "Lexer.h"
 #include "List.h"
 #include "NumberExpressionSyntax.h"
+#include "ParenthesizedExpressionSyntax.h"
 #include "SyntaxTree.h"
 #include "sds.h"
 
@@ -148,6 +149,17 @@ static struct ExpressionSyntax* parse_factor(struct Parser* parser)
 
 static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser)
 {
+  if (current(parser)->kind == SYNTAX_KIND_OPEN_PARENTHESIS_TOKEN)
+  {
+    struct SyntaxToken* open_parenthesis_token = next_token(parser);
+    struct ExpressionSyntax* expression = parse_expression(parser);
+    struct SyntaxToken* close_parenthesis_token
+        = match_token(parser, SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN);
+    return (struct ExpressionSyntax*)parenthesized_expression_syntax_new(
+        open_parenthesis_token,
+        expression,
+        close_parenthesis_token);
+  }
   struct SyntaxToken* number_token
       = match_token(parser, SYNTAX_KIND_NUMBER_TOKEN);
   return (struct ExpressionSyntax*)number_expression_syntax_new(number_token);

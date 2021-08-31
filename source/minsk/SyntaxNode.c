@@ -30,16 +30,3 @@ struct SyntaxNodeList* syntax_node_get_children(struct SyntaxNode* node)
       return expression_syntax_get_children((struct ExpressionSyntax*)node);
   }
 }
-
-void syntax_node_free(struct SyntaxNode* node)
-{
-  switch (node->kind)
-  {
-    case SYNTAX_NODE_KIND_TOKEN:
-      syntax_token_free((struct SyntaxToken*)node);
-      break;
-    case SYNTAX_NODE_KIND_EXPRESSION:
-      expression_syntax_free((struct ExpressionSyntax*)node);
-      break;
-  }
-}

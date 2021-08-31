@@ -2,6 +2,7 @@
 
 #include "BinaryExpressionSyntax.h"
 #include "NumberExpressionSyntax.h"
+#include "ParenthesizedExpressionSyntax.h"
 
 void expression_syntax_init(
     struct ExpressionSyntax* syntax,
@@ -9,18 +10,6 @@ void expression_syntax_init(
 {
   syntax->base.kind = SYNTAX_NODE_KIND_EXPRESSION;
   syntax->kind = kind;
-}
-
-void expression_syntax_free(struct ExpressionSyntax* syntax)
-{
-  switch (syntax->kind) {
-    case EXPRESSION_SYNTAX_KIND_NUMBER_EXPRESSION_SYNTAX:
-      number_expression_syntax_free((struct NumberExpressionSyntax*)syntax);
-      break;
-    case EXPRESSION_SYNTAX_KIND_BINARY_EXPRESSION_SYNTAX:
-      binary_expression_syntax_free((struct BinaryExpressionSyntax*)syntax);
-      break;
-  }
 }
 
 enum SyntaxKind expression_syntax_get_kind(struct ExpressionSyntax* syntax)
@@ -33,6 +22,9 @@ enum SyntaxKind expression_syntax_get_kind(struct ExpressionSyntax* syntax)
     case EXPRESSION_SYNTAX_KIND_NUMBER_EXPRESSION_SYNTAX:
       return number_expression_syntax_get_kind(
           (struct NumberExpressionSyntax*)syntax);
+    case EXPRESSION_SYNTAX_KIND_PARENTHESIZED_EXPRESSION_SYNTAX:
+      return parenthesized_expression_syntax_get_kind(
+          (struct ParenthesizedExpressionSyntax*)syntax);
   }
 }
 
@@ -47,5 +39,8 @@ struct SyntaxNodeList* expression_syntax_get_children(
     case EXPRESSION_SYNTAX_KIND_BINARY_EXPRESSION_SYNTAX:
       return binary_expression_syntax_get_children(
           (struct BinaryExpressionSyntax*)syntax);
+    case EXPRESSION_SYNTAX_KIND_PARENTHESIZED_EXPRESSION_SYNTAX:
+      return parenthesized_expression_syntax_get_children(
+          (struct ParenthesizedExpressionSyntax*)syntax);
   }
 }

@@ -18,14 +18,6 @@ struct BinaryExpressionSyntax* binary_expression_syntax_new(
   return syntax;
 }
 
-void binary_expression_syntax_free(struct BinaryExpressionSyntax* syntax)
-{
-  expression_syntax_free(syntax->left);
-  syntax_token_free(syntax->operator_token);
-  expression_syntax_free(syntax->right);
-  mc_free(syntax);
-}
-
 enum SyntaxKind binary_expression_syntax_get_kind(
     struct BinaryExpressionSyntax* syntax)
 {

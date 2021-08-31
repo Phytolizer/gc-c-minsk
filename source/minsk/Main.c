@@ -42,15 +42,14 @@ int main(void)
       break;
     }
 
-    struct Parser* parser = parser_new(line);
-    struct SyntaxTree* tree = parser_parse(parser);
+    struct SyntaxTree* tree = syntax_tree_parse(line);
     pretty_print((struct SyntaxNode*)tree->root, sdsempty(), true);
-    if (parser->diagnostics->length > 0)
+    if (tree->diagnostics->length > 0)
     {
       printf("\x1b[31m");
-      for (long i = 0; i < parser->diagnostics->length; ++i)
+      for (long i = 0; i < tree->diagnostics->length; ++i)
       {
-        printf("%s\n", parser->diagnostics->data[i]);
+        printf("%s\n", tree->diagnostics->data[i]);
       }
       printf("\x1b[0m");
     }

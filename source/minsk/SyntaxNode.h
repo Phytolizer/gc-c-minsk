@@ -25,4 +25,3 @@ DECLARE_NAMED_LIST(SyntaxNodeList, struct SyntaxNode*);
 
 enum SyntaxKind syntax_node_get_kind(struct SyntaxNode* node);
 struct SyntaxNodeList* syntax_node_get_children(struct SyntaxNode* node);
-void syntax_node_free(struct SyntaxNode* node);

@@ -7,6 +7,7 @@ add_executable(
   Main.c
   NumberExpressionSyntax.c
   Object.c
+  ParenthesizedExpressionSyntax.c
   Parser.c
   SyntaxKind.c
   SyntaxNode.c

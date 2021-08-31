@@ -4,7 +4,8 @@
 
 #define EXPRESSION_SYNTAX_KINDS_ \
   X(NUMBER_EXPRESSION_SYNTAX) \
-  X(BINARY_EXPRESSION_SYNTAX)
+  X(BINARY_EXPRESSION_SYNTAX) \
+  X(PARENTHESIZED_EXPRESSION_SYNTAX)
 
 enum ExpressionSyntaxKind
 {
@@ -22,7 +23,6 @@ struct ExpressionSyntax
 void expression_syntax_init(
     struct ExpressionSyntax* syntax,
     enum ExpressionSyntaxKind kind);
-void expression_syntax_free(struct ExpressionSyntax* syntax);
 enum SyntaxKind expression_syntax_get_kind(struct ExpressionSyntax* syntax);
 struct SyntaxNodeList* expression_syntax_get_children(
     struct ExpressionSyntax* syntax);
