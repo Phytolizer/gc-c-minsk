@@ -4,12 +4,14 @@
 
 #include <sds.h>
 
+#include "List.h"
 #include "SyntaxToken.h"
 
 struct Lexer
 {
   sds text;
   size_t position;
+  struct StringList* diagnostics;
 };
 
 struct Lexer* lexer_new(sds text);

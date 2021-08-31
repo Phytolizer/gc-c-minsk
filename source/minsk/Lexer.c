@@ -7,7 +7,6 @@
 #include <string.h>
 
 #include "IncludeMe.h"
-
 #include "SyntaxToken.h"
 
 static char current(struct Lexer* lexer)
@@ -29,6 +28,8 @@ struct Lexer* lexer_new(sds text)
   struct Lexer* lexer = mc_malloc(sizeof(struct Lexer));
   lexer->text = text;
   lexer->position = 0;
+  lexer->diagnostics = mc_malloc(sizeof(struct StringList));
+  LIST_INIT(lexer->diagnostics);
   return lexer;
 }
 
@@ -128,6 +129,12 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
           OBJECT_NULL());
   }
 
+  LIST_PUSH(
+      lexer->diagnostics,
+      sdscatprintf(
+          sdsempty(),
+          "ERROR: bad input character: '%c'",
+          current(lexer)));
   return syntax_token_new(
       SYNTAX_KIND_BAD_TOKEN,
       lexer->position++,

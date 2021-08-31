@@ -3,13 +3,12 @@
 #include <string.h>
 
 #include "IncludeMe.h"
-
 #include "Parser.h"
 #include "SyntaxNode.h"
 #include "SyntaxToken.h"
 #include "sds.h"
 
-static void pretty_print(struct SyntaxNode* node, sds indent);
+static void pretty_print(struct SyntaxNode* node, sds indent, bool is_last);
 
 sds input_line(const char* prompt)
 {
@@ -44,14 +43,22 @@ int main(void)
 
     struct Parser* parser = parser_new(line);
     struct ExpressionSyntax* root = parser_parse(parser);
-    pretty_print((struct SyntaxNode*)root, sdsempty());
+    if (parser->diagnostics->length > 0)
+    {
+      for (long i = 0; i < parser->diagnostics->length; ++i)
+      {
+        printf("%s\n", parser->diagnostics->data[i]);
+      }
+    }
+    pretty_print((struct SyntaxNode*)root, sdsempty(), true);
   }
   return 0;
 }
 
-static void pretty_print(struct SyntaxNode* node, sds indent)
+static void pretty_print(struct SyntaxNode* node, sds indent, bool is_last)
 {
-  printf("%s%s", indent, SYNTAX_KINDS[syntax_node_get_kind(node)]);
+  sds marker = is_last ? sdsnew("└───") : sdsnew("├───");
+  printf("%s%s%s", indent, marker, SYNTAX_KINDS[syntax_node_get_kind(node)]);
 
   if (node->kind == SYNTAX_NODE_KIND_TOKEN
       && ((struct SyntaxToken*)node)->value->kind != OBJECT_KIND_NULL)
@@ -60,11 +67,11 @@ static void pretty_print(struct SyntaxNode* node, sds indent)
   }
   printf("\n");
   indent = sdsdup(indent);
-  indent = sdscat(indent, "    ");
+  indent = sdscat(indent, is_last ? "    " : "│   ");
   struct SyntaxNodeList* children = syntax_node_get_children(node);
   for (long i = 0; i < children->length; i++)
   {
-    pretty_print(children->data[i], indent);
+    pretty_print(children->data[i], indent, i == children->length - 1);
   }
   sdsfree(indent);
 }

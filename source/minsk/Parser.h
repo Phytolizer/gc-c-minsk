@@ -3,10 +3,13 @@
 #include <sds.h>
 
 #include "ExpressionSyntax.h"
+#include "List.h"
+
 struct Parser
 {
   struct SyntaxTokenList* tokens;
   int position;
+  struct StringList* diagnostics;
 };
 
 struct Parser* parser_new(sds text);

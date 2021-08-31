@@ -4,6 +4,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#include <sds.h>
+
 #include "IncludeMe.h"
 
 struct UnpackedList
@@ -91,3 +93,5 @@ struct UnpackedList
   while (false)
 
 #define LIST_POP(L) ((L)->data[--(L)->length])
+
+DECLARE_NAMED_LIST(StringList, sds);

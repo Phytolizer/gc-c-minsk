@@ -2,12 +2,12 @@
 
 #include <stdbool.h>
 
-#include "IncludeMe.h"
-
 #include "BinaryExpressionSyntax.h"
+#include "IncludeMe.h"
 #include "Lexer.h"
 #include "List.h"
 #include "NumberExpressionSyntax.h"
+#include "sds.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset);
 static struct SyntaxToken* current(struct Parser* parser);
@@ -38,7 +38,12 @@ struct Parser* parser_new(sds text)
       break;
     }
   }
-  lexer_free(lexer);
+  parser->diagnostics = mc_malloc(sizeof(struct StringList));
+  LIST_INIT(parser->diagnostics);
+  for (long i = 0; i < lexer->diagnostics->length; ++i)
+  {
+    LIST_PUSH(parser->diagnostics, lexer->diagnostics->data[i]);
+  }
   return parser;
 }
 
@@ -95,7 +100,18 @@ static struct SyntaxToken* match_token(
     return next_token(parser);
   }
 
-  return syntax_token_new(kind, current(parser)->position, sdsempty(), NULL);
+  LIST_PUSH(
+      parser->diagnostics,
+      sdscatprintf(
+          sdsempty(),
+          "ERROR: Unexpected token <%s>, expected <%s>",
+          SYNTAX_KINDS[current(parser)->kind],
+          SYNTAX_KINDS[kind]));
+  return syntax_token_new(
+      kind,
+      current(parser)->position,
+      sdsempty(),
+      OBJECT_NULL());
 }
 
 static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser)
