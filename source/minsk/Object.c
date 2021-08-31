@@ -1,8 +1,7 @@
 #include "Object.h"
 
 #include <gc.h>
-
-#include "StringUtils.h"
+#include <sds.h>
 
 struct Object* object_new_null(void)
 {
@@ -24,8 +23,8 @@ char* object_to_string(const struct Object* obj)
   switch (obj->kind)
   {
     case OBJECT_KIND_INTEGER:
-      return alloc_printf("%d", OBJECT_AS_INTEGER(obj)->value);
+      return sdsfromlonglong(OBJECT_AS_INTEGER(obj)->value);
     case OBJECT_KIND_NULL:
-      return alloc_printf("NULL");
+      return sdsnew("NULL");
   }
 }

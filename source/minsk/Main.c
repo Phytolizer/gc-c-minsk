@@ -5,12 +5,12 @@
 #include <gc.h>
 
 #include "Lexer.h"
+#include "sds.h"
 
-char* input_line(const char* prompt)
+sds input_line(const char* prompt)
 {
   printf("%s", prompt);
-  char* line = NULL;
-  size_t linelen = 0;
+  sds line = sdsempty();
   while (true)
   {
     char c = fgetc(stdin);
@@ -18,17 +18,11 @@ char* input_line(const char* prompt)
     {
       return NULL;
     }
-    if (c == '\n')
-    {
-      c = '\0';
-    }
-    ++linelen;
-    line = GC_REALLOC(line, linelen);
-    line[linelen - 1] = c;
-    if (c == '\0')
+    if (c == '\n' || c == '\0')
     {
       break;
     }
+    line = sdscatlen(line, &c, 1);
   }
   return line;
 }
@@ -37,7 +31,7 @@ int main(void)
 {
   while (true)
   {
-    char* line = input_line("> ");
+    sds line = input_line("> ");
     if (!line)
     {
       printf("\n");
