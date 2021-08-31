@@ -33,6 +33,7 @@ sds input_line(const char* prompt)
 
 int main(void)
 {
+  bool show_tree = false;
   while (true)
   {
     sds line = input_line("> ");
@@ -41,9 +42,28 @@ int main(void)
       printf("\n");
       break;
     }
+    if (strcmp(line, "#showTree") == 0)
+    {
+      show_tree = !show_tree;
+      printf(
+          "%s\n",
+          show_tree ? "Showing parse trees." : "Not showing parse trees.");
+      continue;
+    }
+    if (strcmp(line, "#cls") == 0)
+    {
+      printf("\x1b[2J");    // clear screen
+      printf("\x1b[0;0H");    // move cursor
+      continue;
+    }
 
     struct SyntaxTree* tree = syntax_tree_parse(line);
-    pretty_print((struct SyntaxNode*)tree->root, sdsempty(), true);
+    if (show_tree)
+    {
+      printf("\x1b[2;30m");
+      pretty_print((struct SyntaxNode*)tree->root, sdsempty(), true);
+      printf("\x1b[0m");
+    }
     if (tree->diagnostics->length > 0)
     {
       printf("\x1b[31m");
