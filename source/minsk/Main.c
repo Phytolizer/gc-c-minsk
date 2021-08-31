@@ -4,6 +4,8 @@
 
 #include <gc.h>
 
+#include "Lexer.h"
+
 char* input_line(const char* prompt)
 {
   printf("%s", prompt);
@@ -42,13 +44,21 @@ int main(void)
       break;
     }
 
-    if (strcmp(line, "1 + 2 * 3") == 0)
+    struct Lexer* lexer = lexer_new(line);
+
+    while (true)
     {
-      printf("7\n");
-    }
-    else
-    {
-      printf("ERROR: Invalid expression!\n");
+      struct SyntaxToken* token = lexer_next_token(lexer);
+      if (token->kind == SYNTAX_KIND_END_OF_FILE_TOKEN)
+      {
+        break;
+      }
+      printf("%s: '%s'", SYNTAX_KINDS[token->kind], token->text);
+      if (!OBJECT_IS_NULL(token->value))
+      {
+        printf(" %s", object_to_string(token->value));
+      }
+      printf("\n");
     }
   }
   return 0;
