@@ -1,6 +1,7 @@
 add_executable(
   mc
   BinaryExpressionSyntax.c
+  Evaluator.c
   ExpressionSyntax.c
   Lexer.c
   Main.c

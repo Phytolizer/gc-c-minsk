@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "Evaluator.h"
 #include "IncludeMe.h"
 #include "Parser.h"
 #include "SyntaxNode.h"
@@ -43,14 +44,22 @@ int main(void)
 
     struct Parser* parser = parser_new(line);
     struct SyntaxTree* tree = parser_parse(parser);
+    pretty_print((struct SyntaxNode*)tree->root, sdsempty(), true);
     if (parser->diagnostics->length > 0)
     {
+      printf("\x1b[31m");
       for (long i = 0; i < parser->diagnostics->length; ++i)
       {
         printf("%s\n", parser->diagnostics->data[i]);
       }
+      printf("\x1b[0m");
     }
-    pretty_print((struct SyntaxNode*)tree->root, sdsempty(), true);
+    else
+    {
+      struct Evaluator* e = evaluator_new(tree->root);
+      int result = evaluator_evaluate(e);
+      printf("%d\n", result);
+    }
   }
   return 0;
 }

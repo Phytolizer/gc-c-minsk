@@ -63,7 +63,12 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
     long value = strtol(text, NULL, 10);
     if (errno == ERANGE || value < INT_MIN || value > INT_MAX)
     {
-      // TODO
+      LIST_PUSH(
+          lexer->diagnostics,
+          sdscatprintf(
+              sdsempty(),
+              "The number %s cannot be represented by an Int32",
+              text));
     }
     return syntax_token_new(
         SYNTAX_KIND_NUMBER_TOKEN,
