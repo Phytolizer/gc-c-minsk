@@ -1,6 +1,6 @@
 #pragma once
 
-#include "List.h"
+#include "common/List.h"
 #include "SyntaxKind.h"
 
 #define SYNTAX_NODE_KINDS_ \

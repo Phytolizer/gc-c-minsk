@@ -1,4 +1,4 @@
-#include "BinaryExpressionSyntax.h"
+#include "minsk/CodeAnalysis/BinaryExpressionSyntax.h"
 
 #include "IncludeMe.h"
 

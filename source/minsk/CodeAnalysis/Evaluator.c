@@ -1,10 +1,10 @@
-#include "Evaluator.h"
+#include "minsk/CodeAnalysis/Evaluator.h"
 
 #include <assert.h>
 
-#include "BinaryExpressionSyntax.h"
-#include "NumberExpressionSyntax.h"
-#include "ParenthesizedExpressionSyntax.h"
+#include <minsk/CodeAnalysis/BinaryExpressionSyntax.h>
+#include <minsk/CodeAnalysis/NumberExpressionSyntax.h>
+#include <minsk/CodeAnalysis/ParenthesizedExpressionSyntax.h>
 
 static int evaluate_expression(struct ExpressionSyntax* root);
 

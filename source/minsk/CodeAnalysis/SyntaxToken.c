@@ -1,4 +1,4 @@
-#include "SyntaxToken.h"
+#include "minsk/CodeAnalysis/SyntaxToken.h"
 
 #include "IncludeMe.h"
 

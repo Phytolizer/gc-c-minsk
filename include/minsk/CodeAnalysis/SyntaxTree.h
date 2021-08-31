@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ExpressionSyntax.h"
-#include "List.h"
 #include "SyntaxToken.h"
+#include "common/List.h"
 
 struct SyntaxTree
 {

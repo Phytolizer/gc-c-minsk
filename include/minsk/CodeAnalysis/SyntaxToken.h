@@ -2,10 +2,10 @@
 
 #include <sds.h>
 
-#include "List.h"
-#include "Object.h"
 #include "SyntaxKind.h"
 #include "SyntaxNode.h"
+#include "common/List.h"
+#include "common/Object.h"
 
 struct SyntaxToken
 {

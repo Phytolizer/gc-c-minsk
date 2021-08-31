@@ -2,13 +2,14 @@
 
 #include <stdbool.h>
 
-#include "BinaryExpressionSyntax.h"
+#include <common/List.h>
+#include <minsk/CodeAnalysis/BinaryExpressionSyntax.h>
+#include <minsk/CodeAnalysis/NumberExpressionSyntax.h>
+#include <minsk/CodeAnalysis/ParenthesizedExpressionSyntax.h>
+#include <minsk/CodeAnalysis/SyntaxTree.h>
+
 #include "IncludeMe.h"
 #include "Lexer.h"
-#include "List.h"
-#include "NumberExpressionSyntax.h"
-#include "ParenthesizedExpressionSyntax.h"
-#include "SyntaxTree.h"
 #include "sds.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset);

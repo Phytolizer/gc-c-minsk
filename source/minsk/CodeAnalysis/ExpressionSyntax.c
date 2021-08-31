@@ -1,8 +1,8 @@
-#include "ExpressionSyntax.h"
+#include "minsk/CodeAnalysis/ExpressionSyntax.h"
 
-#include "BinaryExpressionSyntax.h"
-#include "NumberExpressionSyntax.h"
-#include "ParenthesizedExpressionSyntax.h"
+#include <minsk/CodeAnalysis/BinaryExpressionSyntax.h>
+#include <minsk/CodeAnalysis/NumberExpressionSyntax.h>
+#include <minsk/CodeAnalysis/ParenthesizedExpressionSyntax.h>
 
 void expression_syntax_init(
     struct ExpressionSyntax* syntax,

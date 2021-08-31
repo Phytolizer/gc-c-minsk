@@ -1,4 +1,4 @@
-#include "NumberExpressionSyntax.h"
+#include "minsk/CodeAnalysis/NumberExpressionSyntax.h"
 
 #include "IncludeMe.h"
 

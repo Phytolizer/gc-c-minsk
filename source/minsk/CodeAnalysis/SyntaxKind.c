@@ -1,4 +1,4 @@
-#include "SyntaxKind.h"
+#include "minsk/CodeAnalysis/SyntaxKind.h"
 
 const char* const SYNTAX_KINDS[] = {
 #define X(x) #x,

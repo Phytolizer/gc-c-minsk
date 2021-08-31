@@ -1,4 +1,4 @@
-#include "ParenthesizedExpressionSyntax.h"
+#include "minsk/CodeAnalysis/ParenthesizedExpressionSyntax.h"
 
 struct ParenthesizedExpressionSyntax* parenthesized_expression_syntax_new(
     struct SyntaxToken* open_parenthesis_token,

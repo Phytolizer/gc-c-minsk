@@ -2,8 +2,8 @@
 
 #include <sds.h>
 
-#include "SyntaxTree.h"
-#include "List.h"
+#include "minsk/CodeAnalysis/SyntaxTree.h"
+#include "common/List.h"
 
 struct Parser
 {
