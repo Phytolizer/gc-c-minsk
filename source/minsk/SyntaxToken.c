@@ -15,3 +15,8 @@ struct SyntaxToken* syntax_token_new(
   token->value = value;
   return token;
 }
+
+enum SyntaxKind syntax_token_get_kind(struct SyntaxToken* token)
+{
+  return token->kind;
+}
