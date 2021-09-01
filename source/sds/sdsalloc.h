@@ -37,7 +37,7 @@
  * the include of your alternate allocator if needed (not needed in order
  * to use the default libc allocator). */
 
-#include "IncludeMe.h"
+#include <IncludeMe.h>
 
 #define s_malloc mc_malloc
 #define s_realloc mc_realloc

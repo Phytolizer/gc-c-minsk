@@ -1,6 +1,6 @@
 #include "minsk/CodeAnalysis/SyntaxToken.h"
 
-#include "IncludeMe.h"
+#include <IncludeMe.h>
 
 struct SyntaxToken* syntax_token_new(
     enum SyntaxKind kind,

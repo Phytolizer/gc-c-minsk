@@ -1,6 +1,6 @@
 #include "minsk/CodeAnalysis/BinaryExpressionSyntax.h"
 
-#include "IncludeMe.h"
+#include <IncludeMe.h>
 
 struct BinaryExpressionSyntax* binary_expression_syntax_new(
     struct ExpressionSyntax* left,

@@ -6,9 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <IncludeMe.h>
 #include <minsk/CodeAnalysis/SyntaxToken.h>
-
-#include "IncludeMe.h"
 
 static char current(struct Lexer* lexer)
 {

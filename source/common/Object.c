@@ -1,8 +1,7 @@
 #include "common/Object.h"
 
+#include <IncludeMe.h>
 #include <sds.h>
-
-#include "IncludeMe.h"
 
 struct Object* object_new_null(void)
 {

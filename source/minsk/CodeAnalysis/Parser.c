@@ -2,17 +2,17 @@
 
 #include <stdbool.h>
 
+#include <IncludeMe.h>
 #include <common/List.h>
 #include <minsk/CodeAnalysis/BinaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/ParenthesizedExpressionSyntax.h>
 #include <minsk/CodeAnalysis/SyntaxTree.h>
+#include <minsk/CodeAnalysis/UnaryExpressionSyntax.h>
+#include <sds.h>
 
-#include "IncludeMe.h"
 #include "Lexer.h"
 #include "SyntaxFacts.h"
-#include "minsk/CodeAnalysis/UnaryExpressionSyntax.h"
-#include "sds.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset);
 static struct SyntaxToken* current(struct Parser* parser);

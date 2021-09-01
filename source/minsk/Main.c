@@ -2,13 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <IncludeMe.h>
 #include <minsk/CodeAnalysis/Evaluator.h>
 #include <minsk/CodeAnalysis/SyntaxNode.h>
 #include <minsk/CodeAnalysis/SyntaxToken.h>
 #include <minsk/CodeAnalysis/SyntaxTree.h>
 #include <sds.h>
-
-#include "IncludeMe.h"
 
 static void pretty_print(struct SyntaxNode* node, sds indent, bool is_last);
 

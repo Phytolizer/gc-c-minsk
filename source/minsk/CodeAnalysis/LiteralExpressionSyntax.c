@@ -1,6 +1,6 @@
 #include "minsk/CodeAnalysis/LiteralExpressionSyntax.h"
 
-#include "IncludeMe.h"
+#include <IncludeMe.h>
 
 struct LiteralExpressionSyntax* literal_expression_syntax_new(
     struct SyntaxToken* number_token)
