@@ -10,6 +10,7 @@
 
 #include "IncludeMe.h"
 #include "Lexer.h"
+#include "SyntaxFacts.h"
 #include "sds.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset);
@@ -18,8 +19,6 @@ static struct SyntaxToken* next_token(struct Parser* parser);
 static struct SyntaxToken* match_token(
     struct Parser* parser,
     enum SyntaxKind kind);
-
-static int get_binary_operator_precedence(enum SyntaxKind kind);
 
 static struct ExpressionSyntax* parse_expression(
     struct Parser* parser,
@@ -117,21 +116,6 @@ static struct SyntaxToken* match_token(
       OBJECT_NULL());
 }
 
-static int get_binary_operator_precedence(enum SyntaxKind kind)
-{
-  switch (kind)
-  {
-    case SYNTAX_KIND_STAR_TOKEN:
-    case SYNTAX_KIND_SLASH_TOKEN:
-      return 2;
-    case SYNTAX_KIND_PLUS_TOKEN:
-    case SYNTAX_KIND_MINUS_TOKEN:
-      return 1;
-    default:
-      return 0;
-  }
-}
-
 static struct ExpressionSyntax* parse_expression(
     struct Parser* parser,
     int parent_precedence)
@@ -139,7 +123,7 @@ static struct ExpressionSyntax* parse_expression(
   struct ExpressionSyntax* left = parse_primary_expression(parser);
   while (true)
   {
-    int precedence = get_binary_operator_precedence(current(parser)->kind);
+    int precedence = binary_operator_precedence(current(parser)->kind);
     if (precedence == 0 || precedence <= parent_precedence)
     {
       break;

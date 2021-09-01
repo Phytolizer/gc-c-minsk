@@ -7,6 +7,7 @@ add_executable(
   CodeAnalysis/LiteralExpressionSyntax.c
   CodeAnalysis/ParenthesizedExpressionSyntax.c
   CodeAnalysis/Parser.c
+  CodeAnalysis/SyntaxFacts.c
   CodeAnalysis/SyntaxKind.c
   CodeAnalysis/SyntaxNode.c
   CodeAnalysis/SyntaxToken.c
