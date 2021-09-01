@@ -86,17 +86,17 @@ static struct BoundExpression* bind_literal_expression(
     struct Binder* binder,
     struct LiteralExpressionSyntax* syntax)
 {
-  struct Object* value = syntax->literal_token->value;
-  struct Object* ival;
+  struct Object* value = syntax->value;
+  struct Object* actual_value;
   if (value->kind == OBJECT_KIND_NULL)
   {
-    ival = OBJECT_INTEGER(0);
+    actual_value = OBJECT_INTEGER(0);
   }
   else
   {
-    ival = OBJECT_INTEGER(OBJECT_AS_INTEGER(value)->value);
+    actual_value = value;
   }
-  return (struct BoundExpression*)bound_literal_expression_new(ival);
+  return (struct BoundExpression*)bound_literal_expression_new(actual_value);
 }
 
 static struct BoundExpression* bind_binary_expression(

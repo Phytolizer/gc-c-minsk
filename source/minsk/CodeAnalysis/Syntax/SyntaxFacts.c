@@ -1,5 +1,7 @@
 #include "SyntaxFacts.h"
 
+#include <string.h>
+
 int unary_operator_precedence(enum SyntaxKind kind)
 {
   switch (kind)
@@ -25,4 +27,17 @@ int binary_operator_precedence(enum SyntaxKind kind)
     default:
       return 0;
   }
+}
+
+enum SyntaxKind keyword_kind(sds text)
+{
+  if (strcmp(text, "true") == 0)
+  {
+    return SYNTAX_KIND_TRUE_KEYWORD;
+  }
+  if (strcmp(text, "false") == 0)
+  {
+    return SYNTAX_KIND_FALSE_KEYWORD;
+  }
+  return SYNTAX_KIND_IDENTIFIER_TOKEN;
 }

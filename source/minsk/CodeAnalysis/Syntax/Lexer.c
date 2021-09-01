@@ -9,6 +9,8 @@
 #include <IncludeMe.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxToken.h>
 
+#include "SyntaxFacts.h"
+
 static char current(struct Lexer* lexer)
 {
   if (lexer->position >= sdslen(lexer->text))
@@ -92,6 +94,20 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
         start,
         text,
         OBJECT_NULL());
+  }
+
+  if (isalpha(current(lexer)))
+  {
+    int start = lexer->position;
+    while (isalpha(current(lexer)))
+    {
+      next(lexer);
+    }
+
+    int length = lexer->position - start;
+    sds text = sdsnewlen(&lexer->text[start], length);
+    enum SyntaxKind kind = keyword_kind(text);
+    return syntax_token_new(kind, start, text, OBJECT_NULL());
   }
 
   switch (current(lexer))

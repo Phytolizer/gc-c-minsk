@@ -14,8 +14,10 @@
 #include "Lexer.h"
 #include "SyntaxFacts.h"
 
-static struct SyntaxToken* peek(struct Parser* parser, int offset);
-static struct SyntaxToken* current(struct Parser* parser);
+static struct SyntaxToken* peek(struct Parser* parser, int offset)
+    __attribute__((const));
+static struct SyntaxToken* current(struct Parser* parser)
+    __attribute__((const));
 static struct SyntaxToken* next_token(struct Parser* parser);
 static struct SyntaxToken* match_token(
     struct Parser* parser,
@@ -154,18 +156,35 @@ static struct ExpressionSyntax* parse_expression(
 
 static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser)
 {
-  if (current(parser)->kind == SYNTAX_KIND_OPEN_PARENTHESIS_TOKEN)
+  switch (current(parser)->kind)
   {
-    struct SyntaxToken* open_parenthesis_token = next_token(parser);
-    struct ExpressionSyntax* expression = parse_expression(parser, 0);
-    struct SyntaxToken* close_parenthesis_token
-        = match_token(parser, SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN);
-    return (struct ExpressionSyntax*)parenthesized_expression_syntax_new(
-        open_parenthesis_token,
-        expression,
-        close_parenthesis_token);
+    case SYNTAX_KIND_OPEN_PARENTHESIS_TOKEN:
+      {
+        struct SyntaxToken* open_parenthesis_token = next_token(parser);
+        struct ExpressionSyntax* expression = parse_expression(parser, 0);
+        struct SyntaxToken* close_parenthesis_token
+            = match_token(parser, SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN);
+        return (struct ExpressionSyntax*)parenthesized_expression_syntax_new(
+            open_parenthesis_token,
+            expression,
+            close_parenthesis_token);
+      }
+    case SYNTAX_KIND_TRUE_KEYWORD:
+    case SYNTAX_KIND_FALSE_KEYWORD:
+      {
+        struct SyntaxToken* keyword_token = next_token(parser);
+        bool value = keyword_token->kind == SYNTAX_KIND_TRUE_KEYWORD;
+        return (struct ExpressionSyntax*)literal_expression_syntax_new(
+            keyword_token,
+            OBJECT_BOOLEAN(value));
+      }
+    default:
+      {
+        struct SyntaxToken* number_token
+            = match_token(parser, SYNTAX_KIND_NUMBER_TOKEN);
+        return (struct ExpressionSyntax*)literal_expression_syntax_new(
+            number_token,
+            number_token->value);
+      }
   }
-  struct SyntaxToken* number_token
-      = match_token(parser, SYNTAX_KIND_NUMBER_TOKEN);
-  return (struct ExpressionSyntax*)literal_expression_syntax_new(number_token);
 }

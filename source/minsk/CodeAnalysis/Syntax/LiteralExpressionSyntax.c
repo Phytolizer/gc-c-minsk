@@ -3,7 +3,8 @@
 #include <IncludeMe.h>
 
 struct LiteralExpressionSyntax* literal_expression_syntax_new(
-    struct SyntaxToken* number_token)
+    struct SyntaxToken* number_token,
+    struct Object* value)
 {
   struct LiteralExpressionSyntax* syntax
       = mc_malloc(sizeof(struct LiteralExpressionSyntax));
@@ -11,6 +12,7 @@ struct LiteralExpressionSyntax* literal_expression_syntax_new(
       (struct ExpressionSyntax*)syntax,
       EXPRESSION_SYNTAX_KIND_LITERAL_EXPRESSION_SYNTAX);
   syntax->literal_token = number_token;
+  syntax->value = value;
   return syntax;
 }
 

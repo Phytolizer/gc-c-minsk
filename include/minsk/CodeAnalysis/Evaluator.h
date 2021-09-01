@@ -8,4 +8,4 @@ struct Evaluator
 };
 
 struct Evaluator* evaluator_new(struct BoundExpression* root);
-int evaluator_evaluate(struct Evaluator* evaluator);
+struct Object* evaluator_evaluate(struct Evaluator* evaluator);

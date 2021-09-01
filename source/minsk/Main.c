@@ -84,8 +84,8 @@ int main(void)
     else
     {
       struct Evaluator* e = evaluator_new(bound_expression);
-      int result = evaluator_evaluate(e);
-      printf("%d\n", result);
+      struct Object* result = evaluator_evaluate(e);
+      printf("%s\n", object_to_string(result));
     }
   }
   return 0;

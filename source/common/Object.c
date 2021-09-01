@@ -24,6 +24,14 @@ struct ObjectInteger* object_new_integer(int value)
   return i;
 }
 
+struct ObjectBoolean* object_new_boolean(bool value)
+{
+  struct ObjectBoolean* b = mc_malloc(sizeof(struct ObjectBoolean));
+  b->base.kind = OBJECT_KIND_BOOLEAN;
+  b->value = value;
+  return b;
+}
+
 void object_free(struct Object* obj)
 {
   switch (obj->kind)
@@ -33,6 +41,8 @@ void object_free(struct Object* obj)
       break;
     case OBJECT_KIND_NULL:
       mc_free(obj);
+      break;
+    default:
       break;
   }
 }
@@ -48,6 +58,8 @@ char* object_to_string(const struct Object* obj)
   {
     case OBJECT_KIND_INTEGER:
       return sdsfromlonglong(OBJECT_AS_INTEGER(obj)->value);
+    case OBJECT_KIND_BOOLEAN:
+      return sdsnew(OBJECT_AS_BOOLEAN(obj)->value ? "true" : "false");
     case OBJECT_KIND_NULL:
       return sdsnew("NULL");
   }
