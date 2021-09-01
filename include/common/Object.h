@@ -11,6 +11,8 @@ enum ObjectKind
 #undef X
 };
 
+extern const char* const OBJECT_KINDS[];
+
 struct Object
 {
   enum ObjectKind kind;

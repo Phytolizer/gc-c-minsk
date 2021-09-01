@@ -1,6 +1,12 @@
 add_executable(
   mc
   CodeAnalysis/Evaluator.c
+  CodeAnalysis/Binding/Binder.c
+  CodeAnalysis/Binding/BoundBinaryExpression.c
+  CodeAnalysis/Binding/BoundExpression.c
+  CodeAnalysis/Binding/BoundLiteralExpression.c
+  CodeAnalysis/Binding/BoundNode.c
+  CodeAnalysis/Binding/BoundUnaryExpression.c
   CodeAnalysis/Syntax/BinaryExpressionSyntax.c
   CodeAnalysis/Syntax/ExpressionSyntax.c
   CodeAnalysis/Syntax/Lexer.c

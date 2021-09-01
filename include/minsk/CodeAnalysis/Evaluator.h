@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Syntax/ExpressionSyntax.h"
+#include "Binding/BoundExpression.h"
 
 struct Evaluator
 {
-  struct ExpressionSyntax* root;
+  struct BoundExpression* root;
 };
 
-struct Evaluator* evaluator_new(struct ExpressionSyntax* root);
+struct Evaluator* evaluator_new(struct BoundExpression* root);
 int evaluator_evaluate(struct Evaluator* evaluator);

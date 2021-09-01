@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include <IncludeMe.h>
+#include <minsk/CodeAnalysis/Binding/Binder.h>
 #include <minsk/CodeAnalysis/Evaluator.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxNode.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxToken.h>
@@ -58,24 +59,31 @@ int main(void)
     }
 
     struct SyntaxTree* tree = syntax_tree_parse(line);
+    struct StringList* diagnostics = tree->diagnostics;
+    struct Binder* b = binder_new();
+    struct BoundExpression* bound_expression = binder_bind(b, tree->root);
+    for (long i = 0; i < b->diagnostics->length; ++i)
+    {
+      LIST_PUSH(diagnostics, b->diagnostics->data[i]);
+    }
     if (show_tree)
     {
       printf("\x1b[2;37m");
       pretty_print((struct SyntaxNode*)tree->root, sdsempty(), true);
       printf("\x1b[0m");
     }
-    if (tree->diagnostics->length > 0)
+    if (diagnostics->length > 0)
     {
       printf("\x1b[31m");
-      for (long i = 0; i < tree->diagnostics->length; ++i)
+      for (long i = 0; i < diagnostics->length; ++i)
       {
-        printf("%s\n", tree->diagnostics->data[i]);
+        printf("%s\n", diagnostics->data[i]);
       }
       printf("\x1b[0m");
     }
     else
     {
-      struct Evaluator* e = evaluator_new(tree->root);
+      struct Evaluator* e = evaluator_new(bound_expression);
       int result = evaluator_evaluate(e);
       printf("%d\n", result);
     }

@@ -3,6 +3,12 @@
 #include <IncludeMe.h>
 #include <sds.h>
 
+const char* const OBJECT_KINDS[] = {
+#define X(x) #x,
+    OBJECT_KINDS_
+#undef X
+};
+
 struct Object* object_new_null(void)
 {
   struct Object* o = mc_malloc(sizeof(struct Object));
