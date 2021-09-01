@@ -61,7 +61,7 @@ int main(void)
     struct SyntaxTree* tree = syntax_tree_parse(line);
     if (show_tree)
     {
-      printf("\x1b[2;30m");
+      printf("\x1b[2;37m");
       pretty_print((struct SyntaxNode*)tree->root, sdsempty(), true);
       printf("\x1b[0m");
     }

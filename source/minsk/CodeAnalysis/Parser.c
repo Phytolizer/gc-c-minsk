@@ -19,7 +19,11 @@ static struct SyntaxToken* match_token(
     struct Parser* parser,
     enum SyntaxKind kind);
 
-static struct ExpressionSyntax* parse_expression(struct Parser* parser);
+static int get_binary_operator_precedence(enum SyntaxKind kind);
+
+static struct ExpressionSyntax* parse_expression(
+    struct Parser* parser,
+    int parent_precedence);
 static struct ExpressionSyntax* parse_term(struct Parser* parser);
 static struct ExpressionSyntax* parse_factor(struct Parser* parser);
 static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser);
@@ -62,7 +66,7 @@ void parser_free(struct Parser* parser)
 
 struct SyntaxTree* parser_parse(struct Parser* parser)
 {
-  struct ExpressionSyntax* expression = parse_expression(parser);
+  struct ExpressionSyntax* expression = parse_expression(parser, 0);
   struct SyntaxToken* end_of_file_token
       = match_token(parser, SYNTAX_KIND_END_OF_FILE_TOKEN);
   return syntax_tree_new(parser->diagnostics, expression, end_of_file_token);
@@ -113,34 +117,36 @@ static struct SyntaxToken* match_token(
       OBJECT_NULL());
 }
 
-static struct ExpressionSyntax* parse_expression(struct Parser* parser)
+static int get_binary_operator_precedence(enum SyntaxKind kind)
 {
-  return parse_term(parser);
-}
-
-static struct ExpressionSyntax* parse_term(struct Parser* parser)
-{
-  struct ExpressionSyntax* left = parse_factor(parser);
-  while (current(parser)->kind == SYNTAX_KIND_PLUS_TOKEN
-         || current(parser)->kind == SYNTAX_KIND_MINUS_TOKEN)
+  switch (kind)
   {
-    struct SyntaxToken* operator_token = next_token(parser);
-    struct ExpressionSyntax* right = parse_factor(parser);
-    left = (struct ExpressionSyntax*)
-        binary_expression_syntax_new(left, operator_token, right);
+    case SYNTAX_KIND_STAR_TOKEN:
+    case SYNTAX_KIND_SLASH_TOKEN:
+      return 2;
+    case SYNTAX_KIND_PLUS_TOKEN:
+    case SYNTAX_KIND_MINUS_TOKEN:
+      return 1;
+    default:
+      return 0;
   }
-
-  return left;
 }
 
-static struct ExpressionSyntax* parse_factor(struct Parser* parser)
+static struct ExpressionSyntax* parse_expression(
+    struct Parser* parser,
+    int parent_precedence)
 {
   struct ExpressionSyntax* left = parse_primary_expression(parser);
-  while (current(parser)->kind == SYNTAX_KIND_STAR_TOKEN
-         || current(parser)->kind == SYNTAX_KIND_SLASH_TOKEN)
+  while (true)
   {
+    int precedence = get_binary_operator_precedence(current(parser)->kind);
+    if (precedence == 0 || precedence <= parent_precedence)
+    {
+      break;
+    }
+
     struct SyntaxToken* operator_token = next_token(parser);
-    struct ExpressionSyntax* right = parse_primary_expression(parser);
+    struct ExpressionSyntax* right = parse_expression(parser, precedence);
     left = (struct ExpressionSyntax*)
         binary_expression_syntax_new(left, operator_token, right);
   }
@@ -153,7 +159,7 @@ static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser)
   if (current(parser)->kind == SYNTAX_KIND_OPEN_PARENTHESIS_TOKEN)
   {
     struct SyntaxToken* open_parenthesis_token = next_token(parser);
-    struct ExpressionSyntax* expression = parse_expression(parser);
+    struct ExpressionSyntax* expression = parse_expression(parser, 0);
     struct SyntaxToken* close_parenthesis_token
         = match_token(parser, SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN);
     return (struct ExpressionSyntax*)parenthesized_expression_syntax_new(
