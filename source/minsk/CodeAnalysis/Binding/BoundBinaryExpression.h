@@ -3,19 +3,19 @@
 #include <common/Object.h>
 #include <minsk/CodeAnalysis/Binding/BoundExpression.h>
 
-#include "BoundBinaryOperatorKind.h"
+#include "BoundBinaryOperator.h"
 
 struct BoundBinaryExpression
 {
   struct BoundExpression base;
   struct BoundExpression* left;
-  enum BoundBinaryOperatorKind operator_kind;
+  struct BoundBinaryOperator* op;
   struct BoundExpression* right;
 };
 
 struct BoundBinaryExpression* bound_binary_expression_new(
     struct BoundExpression* left,
-    enum BoundBinaryOperatorKind operator_kind,
+    struct BoundBinaryOperator* op,
     struct BoundExpression* right);
 enum ObjectKind bound_binary_expression_get_type(
     struct BoundBinaryExpression* expr);

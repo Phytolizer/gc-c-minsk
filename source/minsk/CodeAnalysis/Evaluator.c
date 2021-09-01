@@ -39,7 +39,7 @@ static struct Object* evaluate_expression(struct BoundExpression* root)
       {
         struct Object* operand = evaluate_expression(
             ((struct BoundUnaryExpression*)root)->operand);
-        switch (((struct BoundUnaryExpression*)root)->operator_kind)
+        switch (((struct BoundUnaryExpression*)root)->op->kind)
         {
           case BOUND_UNARY_OPERATOR_KIND_IDENTITY:
             return operand;
@@ -56,7 +56,7 @@ static struct Object* evaluate_expression(struct BoundExpression* root)
         struct Object* right
             = evaluate_expression(((struct BoundBinaryExpression*)root)->right);
 
-        switch (((struct BoundBinaryExpression*)root)->operator_kind)
+        switch (((struct BoundBinaryExpression*)root)->op->kind)
         {
           case BOUND_BINARY_OPERATOR_KIND_ADDITION:
             return OBJECT_INTEGER(

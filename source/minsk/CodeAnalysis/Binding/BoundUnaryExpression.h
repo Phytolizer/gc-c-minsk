@@ -2,17 +2,17 @@
 
 #include <minsk/CodeAnalysis/Binding/BoundExpression.h>
 
-#include "BoundUnaryOperatorKind.h"
+#include "BoundUnaryOperator.h"
 
 struct BoundUnaryExpression
 {
   struct BoundExpression base;
-  enum BoundUnaryOperatorKind operator_kind;
+  struct BoundUnaryOperator* op;
   struct BoundExpression* operand;
 };
 
 struct BoundUnaryExpression* bound_unary_expression_new(
-    enum BoundUnaryOperatorKind operator_kind,
+    struct BoundUnaryOperator* op,
     struct BoundExpression* operand);
 enum ObjectKind bound_unary_expression_get_type(
     struct BoundUnaryExpression* expr);

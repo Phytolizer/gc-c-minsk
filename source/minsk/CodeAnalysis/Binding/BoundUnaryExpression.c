@@ -3,7 +3,7 @@
 #include <IncludeMe.h>
 
 struct BoundUnaryExpression* bound_unary_expression_new(
-    enum BoundUnaryOperatorKind operator_kind,
+    struct BoundUnaryOperator* op,
     struct BoundExpression* operand)
 {
   struct BoundUnaryExpression* expr
@@ -11,7 +11,7 @@ struct BoundUnaryExpression* bound_unary_expression_new(
   bound_expression_init(
       (struct BoundExpression*)expr,
       BOUND_EXPRESSION_KIND_BOUND_UNARY_EXPRESSION);
-  expr->operator_kind = operator_kind;
+  expr->op = op;
   expr->operand = operand;
   return expr;
 }

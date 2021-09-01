@@ -4,7 +4,7 @@
 
 struct BoundBinaryExpression* bound_binary_expression_new(
     struct BoundExpression* left,
-    enum BoundBinaryOperatorKind operator_kind,
+    struct BoundBinaryOperator* op,
     struct BoundExpression* right)
 {
   struct BoundBinaryExpression* expr
@@ -13,7 +13,7 @@ struct BoundBinaryExpression* bound_binary_expression_new(
       (struct BoundExpression*)expr,
       BOUND_EXPRESSION_KIND_BOUND_BINARY_EXPRESSION);
   expr->left = left;
-  expr->operator_kind = operator_kind;
+  expr->op = op;
   expr->right = right;
   return expr;
 }
