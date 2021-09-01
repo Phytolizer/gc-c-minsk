@@ -3,7 +3,7 @@
 #include <assert.h>
 
 #include <minsk/CodeAnalysis/BinaryExpressionSyntax.h>
-#include <minsk/CodeAnalysis/NumberExpressionSyntax.h>
+#include <minsk/CodeAnalysis/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/ParenthesizedExpressionSyntax.h>
 
 static int evaluate_expression(struct ExpressionSyntax* root);
@@ -22,10 +22,10 @@ int evaluator_evaluate(struct Evaluator* evaluator)
 
 static int evaluate_expression(struct ExpressionSyntax* root)
 {
-  if (root->kind == EXPRESSION_SYNTAX_KIND_NUMBER_EXPRESSION_SYNTAX)
+  if (root->kind == EXPRESSION_SYNTAX_KIND_LITERAL_EXPRESSION_SYNTAX)
   {
     return OBJECT_AS_INTEGER(
-               ((struct NumberExpressionSyntax*)root)->number_token->value)
+               ((struct LiteralExpressionSyntax*)root)->literal_token->value)
         ->value;
   }
   if (root->kind == EXPRESSION_SYNTAX_KIND_PARENTHESIZED_EXPRESSION_SYNTAX)

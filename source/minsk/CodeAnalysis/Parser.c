@@ -4,7 +4,7 @@
 
 #include <common/List.h>
 #include <minsk/CodeAnalysis/BinaryExpressionSyntax.h>
-#include <minsk/CodeAnalysis/NumberExpressionSyntax.h>
+#include <minsk/CodeAnalysis/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/ParenthesizedExpressionSyntax.h>
 #include <minsk/CodeAnalysis/SyntaxTree.h>
 
@@ -163,5 +163,5 @@ static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser)
   }
   struct SyntaxToken* number_token
       = match_token(parser, SYNTAX_KIND_NUMBER_TOKEN);
-  return (struct ExpressionSyntax*)number_expression_syntax_new(number_token);
+  return (struct ExpressionSyntax*)literal_expression_syntax_new(number_token);
 }

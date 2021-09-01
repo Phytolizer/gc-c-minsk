@@ -4,7 +4,7 @@ add_executable(
   CodeAnalysis/Evaluator.c
   CodeAnalysis/ExpressionSyntax.c
   CodeAnalysis/Lexer.c
-  CodeAnalysis/NumberExpressionSyntax.c
+  CodeAnalysis/LiteralExpressionSyntax.c
   CodeAnalysis/ParenthesizedExpressionSyntax.c
   CodeAnalysis/Parser.c
   CodeAnalysis/SyntaxKind.c
