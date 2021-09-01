@@ -82,6 +82,10 @@ static struct Object* evaluate_expression(struct BoundExpression* root)
             return OBJECT_BOOLEAN(
                 OBJECT_AS_BOOLEAN(left)->value
                 || OBJECT_AS_BOOLEAN(right)->value);
+          case BOUND_BINARY_OPERATOR_KIND_EQUALITY:
+            return OBJECT_BOOLEAN(objects_equal(left, right));
+          case BOUND_BINARY_OPERATOR_KIND_INEQUALITY:
+            return OBJECT_BOOLEAN(!objects_equal(left, right));
         }
       }
     default:

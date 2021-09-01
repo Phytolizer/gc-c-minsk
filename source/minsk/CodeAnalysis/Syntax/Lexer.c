@@ -160,11 +160,22 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
           sdsnew(")"),
           OBJECT_NULL());
     case '!':
-      return syntax_token_new(
-          SYNTAX_KIND_BANG_TOKEN,
-          lexer->position++,
-          sdsnew("!"),
-          OBJECT_NULL());
+      if (lookahead(lexer) == '=')
+      {
+        return syntax_token_new(
+            SYNTAX_KIND_BANG_EQUALS_TOKEN,
+            (lexer->position += 2) - 2,
+            sdsnew("!="),
+            OBJECT_NULL());
+      }
+      else
+      {
+        return syntax_token_new(
+            SYNTAX_KIND_BANG_TOKEN,
+            lexer->position++,
+            sdsnew("!"),
+            OBJECT_NULL());
+      }
     case '&':
       if (lookahead(lexer) == '&')
       {
@@ -181,6 +192,15 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
             SYNTAX_KIND_PIPE_PIPE_TOKEN,
             (lexer->position += 2) - 2,
             sdsnew("||"),
+            OBJECT_NULL());
+      }
+    case '=':
+      if (lookahead(lexer) == '=')
+      {
+        return syntax_token_new(
+            SYNTAX_KIND_EQUALS_EQUALS_TOKEN,
+            (lexer->position += 2) - 2,
+            sdsnew("=="),
             OBJECT_NULL());
       }
   }

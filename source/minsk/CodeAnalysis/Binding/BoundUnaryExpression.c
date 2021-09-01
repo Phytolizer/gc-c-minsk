@@ -19,7 +19,7 @@ struct BoundUnaryExpression* bound_unary_expression_new(
 enum ObjectKind bound_unary_expression_get_type(
     struct BoundUnaryExpression* expr)
 {
-  return bound_expression_get_type(expr->operand);
+  return expr->op->result_type;
 }
 
 enum BoundNodeKind bound_unary_expression_get_kind(

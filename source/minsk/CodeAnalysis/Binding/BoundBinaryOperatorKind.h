@@ -6,7 +6,9 @@
   X(MULTIPLICATION) \
   X(DIVISION) \
   X(LOGICAL_AND) \
-  X(LOGICAL_OR)
+  X(LOGICAL_OR) \
+  X(EQUALITY) \
+  X(INEQUALITY)
 
 enum BoundBinaryOperatorKind
 {

@@ -38,6 +38,7 @@ struct ObjectBoolean* object_new_boolean(bool value);
 void object_free(struct Object* obj);
 void object_integer_free(struct ObjectInteger* obj);
 
+bool objects_equal(struct Object* left, struct Object* right);
 char* object_to_string(const struct Object* obj);
 
 #define OBJECT_INTEGER(i) ((struct Object*)object_new_integer(i))

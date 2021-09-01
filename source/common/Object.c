@@ -52,6 +52,21 @@ void object_integer_free(struct ObjectInteger* obj)
   mc_free(obj);
 }
 
+bool objects_equal(struct Object* left, struct Object* right)
+{
+  switch (left->kind)
+  {
+    case OBJECT_KIND_NULL:
+      return right->kind == OBJECT_KIND_NULL;
+    case OBJECT_KIND_INTEGER:
+      return OBJECT_IS_INTEGER(right)
+          && OBJECT_AS_INTEGER(left)->value == OBJECT_AS_INTEGER(right)->value;
+    case OBJECT_KIND_BOOLEAN:
+      return OBJECT_IS_BOOLEAN(right)
+          && OBJECT_AS_BOOLEAN(left)->value == OBJECT_AS_BOOLEAN(right)->value;
+  }
+}
+
 char* object_to_string(const struct Object* obj)
 {
   switch (obj->kind)
