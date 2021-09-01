@@ -4,7 +4,9 @@
   X(ADDITION) \
   X(SUBTRACTION) \
   X(MULTIPLICATION) \
-  X(DIVISION)
+  X(DIVISION) \
+  X(LOGICAL_AND) \
+  X(LOGICAL_OR)
 
 enum BoundBinaryOperatorKind
 {

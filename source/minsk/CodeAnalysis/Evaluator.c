@@ -45,6 +45,8 @@ static struct Object* evaluate_expression(struct BoundExpression* root)
             return operand;
           case BOUND_UNARY_OPERATOR_KIND_NEGATION:
             return OBJECT_INTEGER(-OBJECT_AS_INTEGER(operand)->value);
+          case BOUND_UNARY_OPERATOR_KIND_LOGICAL_NEGATION:
+            return OBJECT_BOOLEAN(!OBJECT_AS_BOOLEAN(operand)->value);
         }
       }
     case BOUND_NODE_KIND_BINARY_EXPRESSION:
@@ -72,6 +74,14 @@ static struct Object* evaluate_expression(struct BoundExpression* root)
             return OBJECT_INTEGER(
                 OBJECT_AS_INTEGER(left)->value
                 / OBJECT_AS_INTEGER(right)->value);
+          case BOUND_BINARY_OPERATOR_KIND_LOGICAL_AND:
+            return OBJECT_BOOLEAN(
+                OBJECT_AS_BOOLEAN(left)->value
+                && OBJECT_AS_BOOLEAN(right)->value);
+          case BOUND_BINARY_OPERATOR_KIND_LOGICAL_OR:
+            return OBJECT_BOOLEAN(
+                OBJECT_AS_BOOLEAN(left)->value
+                || OBJECT_AS_BOOLEAN(right)->value);
         }
       }
     default:

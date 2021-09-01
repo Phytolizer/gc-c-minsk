@@ -167,25 +167,38 @@ static struct NullableBoundUnaryOperatorKind bind_unary_operator_kind(
     enum SyntaxKind kind,
     enum ObjectKind operand_type)
 {
-  if (operand_type != OBJECT_KIND_INTEGER)
+  switch (operand_type)
   {
-    return NOTHING(NullableBoundUnaryOperatorKind);
+    case OBJECT_KIND_INTEGER:
+      switch (kind)
+      {
+        case SYNTAX_KIND_PLUS_TOKEN:
+          return SOMETHING(
+              NullableBoundUnaryOperatorKind,
+              BOUND_UNARY_OPERATOR_KIND_IDENTITY);
+        case SYNTAX_KIND_MINUS_TOKEN:
+          return SOMETHING(
+              NullableBoundUnaryOperatorKind,
+              BOUND_UNARY_OPERATOR_KIND_NEGATION);
+        default:
+          break;
+      }
+      break;
+    case OBJECT_KIND_BOOLEAN:
+      switch (kind)
+      {
+        case SYNTAX_KIND_BANG_TOKEN:
+          return SOMETHING(
+              NullableBoundUnaryOperatorKind,
+              BOUND_UNARY_OPERATOR_KIND_LOGICAL_NEGATION);
+        default:
+          break;
+      }
+    default:
+      break;
   }
 
-  switch (kind)
-  {
-    case SYNTAX_KIND_PLUS_TOKEN:
-      return SOMETHING(
-          NullableBoundUnaryOperatorKind,
-          BOUND_UNARY_OPERATOR_KIND_IDENTITY);
-    case SYNTAX_KIND_MINUS_TOKEN:
-      return SOMETHING(
-          NullableBoundUnaryOperatorKind,
-          BOUND_UNARY_OPERATOR_KIND_NEGATION);
-    default:
-      fprintf(stderr, "Unexpected operator kind %s\n", SYNTAX_KINDS[kind]);
-      assert(false);
-  }
+  return NOTHING(NullableBoundUnaryOperatorKind);
 }
 
 static struct NullableBoundBinaryOperatorKind bind_binary_operator_kind(
@@ -193,31 +206,45 @@ static struct NullableBoundBinaryOperatorKind bind_binary_operator_kind(
     enum ObjectKind left_type,
     enum ObjectKind right_type)
 {
-  if (left_type != OBJECT_KIND_INTEGER || right_type != OBJECT_KIND_INTEGER)
+  if (left_type == OBJECT_KIND_INTEGER && right_type == OBJECT_KIND_INTEGER)
   {
-    return NOTHING(NullableBoundBinaryOperatorKind);
+    switch (kind)
+    {
+      case SYNTAX_KIND_PLUS_TOKEN:
+        return SOMETHING(
+            NullableBoundBinaryOperatorKind,
+            BOUND_BINARY_OPERATOR_KIND_ADDITION);
+      case SYNTAX_KIND_MINUS_TOKEN:
+        return SOMETHING(
+            NullableBoundBinaryOperatorKind,
+            BOUND_BINARY_OPERATOR_KIND_SUBTRACTION);
+      case SYNTAX_KIND_STAR_TOKEN:
+        return SOMETHING(
+            NullableBoundBinaryOperatorKind,
+            BOUND_BINARY_OPERATOR_KIND_MULTIPLICATION);
+      case SYNTAX_KIND_SLASH_TOKEN:
+        return SOMETHING(
+            NullableBoundBinaryOperatorKind,
+            BOUND_BINARY_OPERATOR_KIND_DIVISION);
+      default:
+        break;
+    }
   }
-
-  switch (kind)
+  if (left_type == OBJECT_KIND_BOOLEAN && right_type == OBJECT_KIND_BOOLEAN)
   {
-    case SYNTAX_KIND_PLUS_TOKEN:
-      return SOMETHING(
-          NullableBoundBinaryOperatorKind,
-          BOUND_BINARY_OPERATOR_KIND_ADDITION);
-    case SYNTAX_KIND_MINUS_TOKEN:
-      return SOMETHING(
-          NullableBoundBinaryOperatorKind,
-          BOUND_BINARY_OPERATOR_KIND_SUBTRACTION);
-    case SYNTAX_KIND_STAR_TOKEN:
-      return SOMETHING(
-          NullableBoundBinaryOperatorKind,
-          BOUND_BINARY_OPERATOR_KIND_MULTIPLICATION);
-    case SYNTAX_KIND_SLASH_TOKEN:
-      return SOMETHING(
-          NullableBoundBinaryOperatorKind,
-          BOUND_BINARY_OPERATOR_KIND_DIVISION);
-    default:
-      fprintf(stderr, "unexpected binary operator %s\n", SYNTAX_KINDS[kind]);
-      assert(false);
+    switch (kind)
+    {
+      case SYNTAX_KIND_AMPERSAND_AMPERSAND_TOKEN:
+        return SOMETHING(
+            NullableBoundBinaryOperatorKind,
+            BOUND_BINARY_OPERATOR_KIND_LOGICAL_AND);
+      case SYNTAX_KIND_PIPE_PIPE_TOKEN:
+        return SOMETHING(
+            NullableBoundBinaryOperatorKind,
+            BOUND_BINARY_OPERATOR_KIND_LOGICAL_OR);
+      default:
+        break;
+    }
   }
+  return NOTHING(NullableBoundBinaryOperatorKind);
 }

@@ -11,13 +11,24 @@
 
 #include "SyntaxFacts.h"
 
-static char current(struct Lexer* lexer)
+__attribute__((const)) static char peek(struct Lexer* lexer, int offset)
 {
-  if (lexer->position >= sdslen(lexer->text))
+  int index = lexer->position + offset;
+  if (index >= sdslen(lexer->text))
   {
     return '\0';
   }
-  return lexer->text[lexer->position];
+  return lexer->text[index];
+}
+
+__attribute__((const)) static char current(struct Lexer* lexer)
+{
+  return peek(lexer, 0);
+}
+
+__attribute__((const)) static char lookahead(struct Lexer* lexer)
+{
+  return peek(lexer, 1);
 }
 
 static void next(struct Lexer* lexer)
@@ -148,6 +159,30 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
           lexer->position++,
           sdsnew(")"),
           OBJECT_NULL());
+    case '!':
+      return syntax_token_new(
+          SYNTAX_KIND_BANG_TOKEN,
+          lexer->position++,
+          sdsnew("!"),
+          OBJECT_NULL());
+    case '&':
+      if (lookahead(lexer) == '&')
+      {
+        return syntax_token_new(
+            SYNTAX_KIND_AMPERSAND_AMPERSAND_TOKEN,
+            (lexer->position += 2) - 2,
+            sdsnew("&&"),
+            OBJECT_NULL());
+      }
+    case '|':
+      if (lookahead(lexer) == '|')
+      {
+        return syntax_token_new(
+            SYNTAX_KIND_PIPE_PIPE_TOKEN,
+            (lexer->position += 2) - 2,
+            sdsnew("||"),
+            OBJECT_NULL());
+      }
   }
 
   LIST_PUSH(
