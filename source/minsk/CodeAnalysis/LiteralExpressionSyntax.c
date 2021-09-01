@@ -24,7 +24,7 @@ enum SyntaxKind literal_expression_syntax_get_kind(
     struct LiteralExpressionSyntax* syntax)
 {
   (void)syntax;
-  return SYNTAX_KIND_NUMBER_EXPRESSION;
+  return SYNTAX_KIND_LITERAL_EXPRESSION;
 }
 
 struct SyntaxNodeList* literal_expression_syntax_get_children(

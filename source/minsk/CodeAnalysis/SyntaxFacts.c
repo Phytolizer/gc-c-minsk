@@ -1,5 +1,17 @@
 #include "SyntaxFacts.h"
 
+int unary_operator_precedence(enum SyntaxKind kind)
+{
+  switch (kind)
+  {
+    case SYNTAX_KIND_PLUS_TOKEN:
+    case SYNTAX_KIND_MINUS_TOKEN:
+      return 3;
+    default:
+      return 0;
+  }
+}
+
 int binary_operator_precedence(enum SyntaxKind kind)
 {
   switch (kind)

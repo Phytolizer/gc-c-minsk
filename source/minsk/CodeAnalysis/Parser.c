@@ -11,6 +11,7 @@
 #include "IncludeMe.h"
 #include "Lexer.h"
 #include "SyntaxFacts.h"
+#include "minsk/CodeAnalysis/UnaryExpressionSyntax.h"
 #include "sds.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset);
@@ -23,8 +24,6 @@ static struct SyntaxToken* match_token(
 static struct ExpressionSyntax* parse_expression(
     struct Parser* parser,
     int parent_precedence);
-static struct ExpressionSyntax* parse_term(struct Parser* parser);
-static struct ExpressionSyntax* parse_factor(struct Parser* parser);
 static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser);
 
 struct Parser* parser_new(sds text)
@@ -120,7 +119,22 @@ static struct ExpressionSyntax* parse_expression(
     struct Parser* parser,
     int parent_precedence)
 {
-  struct ExpressionSyntax* left = parse_primary_expression(parser);
+  struct ExpressionSyntax* left;
+  int unary_operator_prec = unary_operator_precedence(current(parser)->kind);
+  if (unary_operator_prec != 0 && unary_operator_prec >= parent_precedence)
+  {
+    struct SyntaxToken* operator_token = next_token(parser);
+    struct ExpressionSyntax* operand
+        = parse_expression(parser, unary_operator_prec);
+    left = (struct ExpressionSyntax*)unary_expression_syntax_new(
+        operator_token,
+        operand);
+  }
+  else
+  {
+    left = parse_primary_expression(parser);
+  }
+
   while (true)
   {
     int precedence = binary_operator_precedence(current(parser)->kind);

@@ -4,6 +4,8 @@
 #include <minsk/CodeAnalysis/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/ParenthesizedExpressionSyntax.h>
 
+#include "minsk/CodeAnalysis/UnaryExpressionSyntax.h"
+
 void expression_syntax_init(
     struct ExpressionSyntax* syntax,
     enum ExpressionSyntaxKind kind)
@@ -25,6 +27,9 @@ enum SyntaxKind expression_syntax_get_kind(struct ExpressionSyntax* syntax)
     case EXPRESSION_SYNTAX_KIND_PARENTHESIZED_EXPRESSION_SYNTAX:
       return parenthesized_expression_syntax_get_kind(
           (struct ParenthesizedExpressionSyntax*)syntax);
+    case EXPRESSION_SYNTAX_KIND_UNARY_EXPRESSION_SYNTAX:
+      return unary_expression_syntax_get_kind(
+          (struct UnaryExpressionSyntax*)syntax);
   }
 }
 
@@ -42,5 +47,8 @@ struct SyntaxNodeList* expression_syntax_get_children(
     case EXPRESSION_SYNTAX_KIND_PARENTHESIZED_EXPRESSION_SYNTAX:
       return parenthesized_expression_syntax_get_children(
           (struct ParenthesizedExpressionSyntax*)syntax);
+    case EXPRESSION_SYNTAX_KIND_UNARY_EXPRESSION_SYNTAX:
+      return unary_expression_syntax_get_children(
+          (struct UnaryExpressionSyntax*)syntax);
   }
 }

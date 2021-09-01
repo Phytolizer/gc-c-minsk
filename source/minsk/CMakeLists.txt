@@ -12,5 +12,6 @@ add_executable(
   CodeAnalysis/SyntaxNode.c
   CodeAnalysis/SyntaxToken.c
   CodeAnalysis/SyntaxTree.c
+  CodeAnalysis/UnaryExpressionSyntax.c
   Main.c)
 target_link_libraries(mc PRIVATE ${BDWGC} sds common)
