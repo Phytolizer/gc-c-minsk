@@ -4,9 +4,9 @@
 
 #include <IncludeMe.h>
 #include <minsk/CodeAnalysis/Evaluator.h>
-#include <minsk/CodeAnalysis/SyntaxNode.h>
-#include <minsk/CodeAnalysis/SyntaxToken.h>
-#include <minsk/CodeAnalysis/SyntaxTree.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxNode.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxToken.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
 #include <sds.h>
 
 static void pretty_print(struct SyntaxNode* node, sds indent, bool is_last);

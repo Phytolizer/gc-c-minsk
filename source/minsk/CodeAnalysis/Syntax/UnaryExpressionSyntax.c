@@ -1,4 +1,4 @@
-#include "minsk/CodeAnalysis/UnaryExpressionSyntax.h"
+#include "minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h"
 
 struct UnaryExpressionSyntax* unary_expression_syntax_new(
     struct SyntaxToken* operator_token,

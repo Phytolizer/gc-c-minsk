@@ -1,4 +1,4 @@
-#include "minsk/CodeAnalysis/SyntaxTree.h"
+#include "minsk/CodeAnalysis/Syntax/SyntaxTree.h"
 
 #include "Parser.h"
 

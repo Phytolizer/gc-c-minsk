@@ -1,7 +1,7 @@
-#include "minsk/CodeAnalysis/SyntaxNode.h"
+#include "minsk/CodeAnalysis/Syntax/SyntaxNode.h"
 
-#include <minsk/CodeAnalysis/ExpressionSyntax.h>
-#include <minsk/CodeAnalysis/SyntaxToken.h>
+#include <minsk/CodeAnalysis/Syntax/ExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxToken.h>
 
 const char* const SYNTAX_NODE_KINDS[] = {
 #define X(x) #x,

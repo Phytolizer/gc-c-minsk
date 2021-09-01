@@ -3,10 +3,10 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include <minsk/CodeAnalysis/BinaryExpressionSyntax.h>
-#include <minsk/CodeAnalysis/LiteralExpressionSyntax.h>
-#include <minsk/CodeAnalysis/ParenthesizedExpressionSyntax.h>
-#include <minsk/CodeAnalysis/UnaryExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
 
 static int evaluate_expression(struct ExpressionSyntax* root);
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ExpressionSyntax.h"
+#include "Syntax/ExpressionSyntax.h"
 
 struct Evaluator
 {

@@ -1,9 +1,8 @@
 #pragma once
 
+#include <common/List.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
 #include <sds.h>
-
-#include "minsk/CodeAnalysis/SyntaxTree.h"
-#include "common/List.h"
 
 struct Parser
 {

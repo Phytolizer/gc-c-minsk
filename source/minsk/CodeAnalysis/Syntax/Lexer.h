@@ -5,7 +5,7 @@
 #include <sds.h>
 
 #include <common/List.h>
-#include <minsk/CodeAnalysis/SyntaxToken.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxToken.h>
 
 struct Lexer
 {

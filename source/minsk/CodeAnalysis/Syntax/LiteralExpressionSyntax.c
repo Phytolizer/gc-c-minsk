@@ -1,4 +1,4 @@
-#include "minsk/CodeAnalysis/LiteralExpressionSyntax.h"
+#include "minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h"
 
 #include <IncludeMe.h>
 
