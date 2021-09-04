@@ -32,6 +32,7 @@ enum SyntaxKind syntax_token_get_kind(struct SyntaxToken* token)
 
 struct SyntaxNodeList* syntax_token_get_children(struct SyntaxToken* token)
 {
+  (void)token;
   struct SyntaxNodeList* empty = mc_malloc(sizeof(struct SyntaxNodeList));
   LIST_INIT(empty);
   return empty;

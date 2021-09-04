@@ -6,16 +6,20 @@
 #include <IncludeMe.h>
 #include <common/Nullable.h>
 #include <common/Object.h>
+#include <minsk/CodeAnalysis/Syntax/AssignmentExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/NameExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
 
+#include "BoundAssignmentExpression.h"
 #include "BoundBinaryExpression.h"
 #include "BoundBinaryOperator.h"
 #include "BoundLiteralExpression.h"
 #include "BoundUnaryExpression.h"
 #include "BoundUnaryOperator.h"
+#include "BoundVariableExpression.h"
 
 static struct BoundExpression* bind_expression(
     struct Binder* binder,
@@ -32,11 +36,18 @@ static struct BoundExpression* bind_parenthesized_expression(
 static struct BoundExpression* bind_unary_expression(
     struct Binder* binder,
     struct UnaryExpressionSyntax* syntax);
+static struct BoundExpression* bind_name_expression(
+    struct Binder* binder,
+    struct NameExpressionSyntax* syntax);
+static struct BoundExpression* bind_assignment_expression(
+    struct Binder* binder,
+    struct AssignmentExpressionSyntax* syntax);
 
-struct Binder* binder_new(void)
+struct Binder* binder_new(struct VariableStore* variables)
 {
   struct Binder* binder = mc_malloc(sizeof(struct Binder));
   binder->diagnostics = diagnostic_bag_new();
+  binder->variables = variables;
   return binder;
 }
 
@@ -69,6 +80,12 @@ static struct BoundExpression* bind_expression(
       return bind_unary_expression(
           binder,
           (struct UnaryExpressionSyntax*)syntax);
+    case EXPRESSION_SYNTAX_KIND_NAME_EXPRESSION_SYNTAX:
+      return bind_name_expression(binder, (struct NameExpressionSyntax*)syntax);
+    case EXPRESSION_SYNTAX_KIND_ASSIGNMENT_EXPRESSION_SYNTAX:
+      return bind_assignment_expression(
+          binder,
+          (struct AssignmentExpressionSyntax*)syntax);
   }
 }
 
@@ -76,6 +93,7 @@ static struct BoundExpression* bind_literal_expression(
     struct Binder* binder,
     struct LiteralExpressionSyntax* syntax)
 {
+  (void)binder;
   struct Object* value = syntax->value;
   struct Object* actual_value;
   if (value->kind == OBJECT_KIND_NULL)
@@ -141,4 +159,36 @@ static struct BoundExpression* bind_unary_expression(
   return (struct BoundExpression*)bound_unary_expression_new(
       bound_operator,
       bound_operand);
+}
+
+static struct BoundExpression* bind_name_expression(
+    struct Binder* binder,
+    struct NameExpressionSyntax* syntax)
+{
+  sds name = syntax->identifier_token->text;
+  struct Object** value = variable_store_lookup(binder->variables, name);
+  if (!value)
+  {
+    diagnostic_bag_report_undefined_name(
+        binder->diagnostics,
+        syntax_token_get_span(syntax->identifier_token),
+        name);
+    return (struct BoundExpression*)bound_literal_expression_new(
+        OBJECT_INTEGER(0));
+  }
+
+  enum ObjectKind type = (*value)->kind;
+  return (struct BoundExpression*)bound_variable_expression_new(name, type);
+}
+
+static struct BoundExpression* bind_assignment_expression(
+    struct Binder* binder,
+    struct AssignmentExpressionSyntax* syntax)
+{
+  sds name = syntax->identifier_token->text;
+  struct BoundExpression* bound_expression
+      = bind_expression(binder, syntax->expression);
+  return (struct BoundExpression*)bound_assignment_expression_new(
+      name,
+      bound_expression);
 }

@@ -35,6 +35,7 @@ sds input_line(const char* prompt)
 int main(void)
 {
   bool show_tree = false;
+  struct VariableStore* variables = variable_store_new();
   while (true)
   {
     sds line = input_line("> ");
@@ -60,7 +61,8 @@ int main(void)
 
     struct SyntaxTree* tree = syntax_tree_parse(line);
     struct Compilation* compilation = compilation_new(tree);
-    struct EvaluationResult* result = compilation_evaluate(compilation);
+    struct EvaluationResult* result
+        = compilation_evaluate(compilation, variables);
     struct DiagnosticList* diagnostics = result->diagnostics;
     if (show_tree)
     {

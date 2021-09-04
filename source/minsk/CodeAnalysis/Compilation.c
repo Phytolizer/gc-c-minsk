@@ -12,9 +12,11 @@ struct Compilation* compilation_new(struct SyntaxTree* syntax)
   return result;
 }
 
-struct EvaluationResult* compilation_evaluate(struct Compilation* compilation)
+struct EvaluationResult* compilation_evaluate(
+    struct Compilation* compilation,
+    struct VariableStore* variables)
 {
-  struct Binder* binder = binder_new();
+  struct Binder* binder = binder_new(variables);
   struct BoundExpression* bound_expression
       = binder_bind(binder, compilation->syntax->root);
   struct DiagnosticList* diagnostics
@@ -27,7 +29,7 @@ struct EvaluationResult* compilation_evaluate(struct Compilation* compilation)
   {
     return evaluation_result_new(diagnostics, OBJECT_NULL());
   }
-  struct Evaluator* evaluator = evaluator_new(bound_expression);
+  struct Evaluator* evaluator = evaluator_new(bound_expression, variables);
   struct Object* value = evaluator_evaluate(evaluator);
   return evaluation_result_new(diagnostics, value);
 }

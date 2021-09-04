@@ -23,5 +23,6 @@ enum ObjectKind bound_literal_expression_get_type(
 enum BoundNodeKind bound_literal_expression_get_kind(
     struct BoundLiteralExpression* expr)
 {
+  (void)expr;
   return BOUND_NODE_KIND_LITERAL_EXPRESSION;
 }

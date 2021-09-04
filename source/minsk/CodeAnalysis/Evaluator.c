@@ -8,28 +8,37 @@
 #include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
 
+#include "Binding/BoundAssignmentExpression.h"
 #include "Binding/BoundBinaryExpression.h"
 #include "Binding/BoundBinaryOperatorKind.h"
 #include "Binding/BoundExpression.h"
 #include "Binding/BoundLiteralExpression.h"
 #include "Binding/BoundUnaryExpression.h"
 #include "Binding/BoundUnaryOperatorKind.h"
+#include "Binding/BoundVariableExpression.h"
 
-static struct Object* evaluate_expression(struct BoundExpression* root);
+static struct Object* evaluate_expression(
+    struct Evaluator* evaluator,
+    struct BoundExpression* root);
 
-struct Evaluator* evaluator_new(struct BoundExpression* root)
+struct Evaluator* evaluator_new(
+    struct BoundExpression* root,
+    struct VariableStore* variables)
 {
   struct Evaluator* evaluator = mc_malloc(sizeof(struct Evaluator));
   evaluator->root = root;
+  evaluator->variables = variables;
   return evaluator;
 }
 
 struct Object* evaluator_evaluate(struct Evaluator* evaluator)
 {
-  return evaluate_expression(evaluator->root);
+  return evaluate_expression(evaluator, evaluator->root);
 }
 
-static struct Object* evaluate_expression(struct BoundExpression* root)
+static struct Object* evaluate_expression(
+    struct Evaluator* evaluator,
+    struct BoundExpression* root)
 {
   switch (bound_expression_get_kind(root))
   {
@@ -38,6 +47,7 @@ static struct Object* evaluate_expression(struct BoundExpression* root)
     case BOUND_NODE_KIND_UNARY_EXPRESSION:
       {
         struct Object* operand = evaluate_expression(
+            evaluator,
             ((struct BoundUnaryExpression*)root)->operand);
         switch (((struct BoundUnaryExpression*)root)->op->kind)
         {
@@ -51,10 +61,12 @@ static struct Object* evaluate_expression(struct BoundExpression* root)
       }
     case BOUND_NODE_KIND_BINARY_EXPRESSION:
       {
-        struct Object* left
-            = evaluate_expression(((struct BoundBinaryExpression*)root)->left);
-        struct Object* right
-            = evaluate_expression(((struct BoundBinaryExpression*)root)->right);
+        struct Object* left = evaluate_expression(
+            evaluator,
+            ((struct BoundBinaryExpression*)root)->left);
+        struct Object* right = evaluate_expression(
+            evaluator,
+            ((struct BoundBinaryExpression*)root)->right);
 
         switch (((struct BoundBinaryExpression*)root)->op->kind)
         {
@@ -87,6 +99,21 @@ static struct Object* evaluate_expression(struct BoundExpression* root)
           case BOUND_BINARY_OPERATOR_KIND_INEQUALITY:
             return OBJECT_BOOLEAN(!objects_equal(left, right));
         }
+      }
+    case BOUND_EXPRESSION_KIND_BOUND_VARIABLE_EXPRESSION:
+      return *variable_store_lookup(
+          evaluator->variables,
+          ((struct BoundVariableExpression*)root)->name);
+    case BOUND_EXPRESSION_KIND_BOUND_ASSIGNMENT_EXPRESSION:
+      {
+        struct Object* value = evaluate_expression(
+            evaluator,
+            ((struct BoundAssignmentExpression*)root)->expression);
+        variable_store_insert(
+            evaluator->variables,
+            ((struct BoundAssignmentExpression*)root)->name,
+            value);
+        return value;
       }
     default:
       fprintf(

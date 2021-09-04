@@ -27,5 +27,6 @@ enum ObjectKind bound_binary_expression_get_type(
 enum BoundNodeKind bound_binary_expression_get_kind(
     struct BoundBinaryExpression* expr)
 {
+  (void)expr;
   return BOUND_NODE_KIND_BINARY_EXPRESSION;
 }

@@ -25,5 +25,6 @@ enum ObjectKind bound_unary_expression_get_type(
 enum BoundNodeKind bound_unary_expression_get_kind(
     struct BoundUnaryExpression* expr)
 {
+  (void)expr;
   return BOUND_NODE_KIND_UNARY_EXPRESSION;
 }

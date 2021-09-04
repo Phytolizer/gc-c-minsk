@@ -17,6 +17,7 @@ struct UnaryExpressionSyntax* unary_expression_syntax_new(
 enum SyntaxKind unary_expression_syntax_get_kind(
     struct UnaryExpressionSyntax* syntax)
 {
+  (void)syntax;
   return SYNTAX_KIND_UNARY_EXPRESSION;
 }
 

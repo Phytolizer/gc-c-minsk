@@ -7,6 +7,7 @@ add_library(
   CodeAnalysis/Evaluator.c
   CodeAnalysis/TextSpan.c
   CodeAnalysis/Binding/Binder.c
+  CodeAnalysis/Binding/BoundAssignmentExpression.c
   CodeAnalysis/Binding/BoundBinaryExpression.c
   CodeAnalysis/Binding/BoundBinaryOperator.c
   CodeAnalysis/Binding/BoundExpression.c
@@ -14,10 +15,13 @@ add_library(
   CodeAnalysis/Binding/BoundNode.c
   CodeAnalysis/Binding/BoundUnaryExpression.c
   CodeAnalysis/Binding/BoundUnaryOperator.c
+  CodeAnalysis/Binding/BoundVariableExpression.c
+  CodeAnalysis/Syntax/AssignmentExpressionSyntax.c
   CodeAnalysis/Syntax/BinaryExpressionSyntax.c
   CodeAnalysis/Syntax/ExpressionSyntax.c
   CodeAnalysis/Syntax/Lexer.c
   CodeAnalysis/Syntax/LiteralExpressionSyntax.c
+  CodeAnalysis/Syntax/NameExpressionSyntax.c
   CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.c
   CodeAnalysis/Syntax/Parser.c
   CodeAnalysis/Syntax/SyntaxFacts.c

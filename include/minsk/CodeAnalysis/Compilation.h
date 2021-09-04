@@ -1,5 +1,7 @@
 #pragma once
 
+#include <common/VariableStore.h>
+
 #include "EvaluationResult.h"
 #include "Syntax/SyntaxTree.h"
 
@@ -9,4 +11,6 @@ struct Compilation
 };
 
 struct Compilation* compilation_new(struct SyntaxTree* syntax);
-struct EvaluationResult* compilation_evaluate(struct Compilation* compilation);
+struct EvaluationResult* compilation_evaluate(
+    struct Compilation* compilation,
+    struct VariableStore* variables);

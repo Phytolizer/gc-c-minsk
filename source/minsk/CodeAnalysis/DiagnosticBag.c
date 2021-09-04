@@ -80,6 +80,15 @@ void diagnostic_bag_report_undefined_unary_operator(
   report(bag, span, message);
 }
 
+void diagnostic_bag_report_undefined_name(
+    struct DiagnosticBag* bag,
+    struct TextSpan* span,
+    sds name)
+{
+  sds message = sdscatfmt(sdsempty(), "Variable '%S' doesn't exist.", name);
+  report(bag, span, message);
+}
+
 void diagnostic_bag_add_range(
     struct DiagnosticBag* bag,
     const struct DiagnosticBag* other)

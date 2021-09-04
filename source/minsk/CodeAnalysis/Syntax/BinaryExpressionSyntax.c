@@ -21,6 +21,7 @@ struct BinaryExpressionSyntax* binary_expression_syntax_new(
 enum SyntaxKind binary_expression_syntax_get_kind(
     struct BinaryExpressionSyntax* syntax)
 {
+  (void)syntax;
   return SYNTAX_KIND_BINARY_EXPRESSION;
 }
 

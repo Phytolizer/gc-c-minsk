@@ -13,6 +13,8 @@
 
 #include "Lexer.h"
 #include "SyntaxFacts.h"
+#include "minsk/CodeAnalysis/Syntax/AssignmentExpressionSyntax.h"
+#include "minsk/CodeAnalysis/Syntax/NameExpressionSyntax.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset)
     __attribute__((const));
@@ -23,7 +25,10 @@ static struct SyntaxToken* match_token(
     struct Parser* parser,
     enum SyntaxKind kind);
 
-static struct ExpressionSyntax* parse_expression(
+static struct ExpressionSyntax* parse_expression(struct Parser* parser);
+static struct ExpressionSyntax* parse_assignment_expression(
+    struct Parser* parser);
+static struct ExpressionSyntax* parse_binary_expression(
     struct Parser* parser,
     int parent_precedence);
 static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser);
@@ -62,7 +67,7 @@ void parser_free(struct Parser* parser)
 
 struct SyntaxTree* parser_parse(struct Parser* parser)
 {
-  struct ExpressionSyntax* expression = parse_expression(parser, 0);
+  struct ExpressionSyntax* expression = parse_expression(parser);
   struct SyntaxToken* end_of_file_token
       = match_token(parser, SYNTAX_KIND_END_OF_FILE_TOKEN);
   return syntax_tree_new(parser->diagnostics, expression, end_of_file_token);
@@ -111,7 +116,28 @@ static struct SyntaxToken* match_token(
       OBJECT_NULL());
 }
 
-static struct ExpressionSyntax* parse_expression(
+static struct ExpressionSyntax* parse_expression(struct Parser* parser)
+{
+  return parse_assignment_expression(parser);
+}
+
+static struct ExpressionSyntax* parse_assignment_expression(
+    struct Parser* parser)
+{
+  if (peek(parser, 0)->kind == SYNTAX_KIND_IDENTIFIER_TOKEN
+      && peek(parser, 1)->kind == SYNTAX_KIND_EQUALS_TOKEN)
+  {
+    struct SyntaxToken* identifier_token = next_token(parser);
+    struct SyntaxToken* equals_token = next_token(parser);
+    struct ExpressionSyntax* right = parse_assignment_expression(parser);
+    return (struct ExpressionSyntax*)
+        assignment_expression_new(identifier_token, equals_token, right);
+  }
+
+  return parse_binary_expression(parser, 0);
+}
+
+static struct ExpressionSyntax* parse_binary_expression(
     struct Parser* parser,
     int parent_precedence)
 {
@@ -121,7 +147,7 @@ static struct ExpressionSyntax* parse_expression(
   {
     struct SyntaxToken* operator_token = next_token(parser);
     struct ExpressionSyntax* operand
-        = parse_expression(parser, unary_operator_prec);
+        = parse_binary_expression(parser, unary_operator_prec);
     left = (struct ExpressionSyntax*)unary_expression_syntax_new(
         operator_token,
         operand);
@@ -140,7 +166,8 @@ static struct ExpressionSyntax* parse_expression(
     }
 
     struct SyntaxToken* operator_token = next_token(parser);
-    struct ExpressionSyntax* right = parse_expression(parser, precedence);
+    struct ExpressionSyntax* right
+        = parse_binary_expression(parser, precedence);
     left = (struct ExpressionSyntax*)
         binary_expression_syntax_new(left, operator_token, right);
   }
@@ -155,7 +182,7 @@ static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser)
     case SYNTAX_KIND_OPEN_PARENTHESIS_TOKEN:
       {
         struct SyntaxToken* open_parenthesis_token = next_token(parser);
-        struct ExpressionSyntax* expression = parse_expression(parser, 0);
+        struct ExpressionSyntax* expression = parse_expression(parser);
         struct SyntaxToken* close_parenthesis_token
             = match_token(parser, SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN);
         return (struct ExpressionSyntax*)parenthesized_expression_syntax_new(
@@ -171,6 +198,12 @@ static struct ExpressionSyntax* parse_primary_expression(struct Parser* parser)
         return (struct ExpressionSyntax*)literal_expression_syntax_new(
             keyword_token,
             OBJECT_BOOLEAN(value));
+      }
+    case SYNTAX_KIND_IDENTIFIER_TOKEN:
+      {
+        struct SyntaxToken* identifier_token = next_token(parser);
+        return (struct ExpressionSyntax*)name_expression_syntax_new(
+            identifier_token);
       }
     default:
       {

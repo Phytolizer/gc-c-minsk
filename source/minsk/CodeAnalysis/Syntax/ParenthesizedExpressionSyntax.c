@@ -19,6 +19,7 @@ struct ParenthesizedExpressionSyntax* parenthesized_expression_syntax_new(
 enum SyntaxKind parenthesized_expression_syntax_get_kind(
     struct ParenthesizedExpressionSyntax* syntax)
 {
+  (void)syntax;
   return SYNTAX_KIND_PARENTHESIZED_EXPRESSION;
 }
 

@@ -8,9 +8,13 @@ project(
   VERSION 0.1.0
   DESCRIPTION "Minsk in C with garbage collection")
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3")
 endif()
+
+set(CMAKE_C_FLAGS
+    "${CMAKE_C_FLAGS} -Wall -Wextra -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -Werror=return-type -Wno-sign-compare"
+)
 
 include(FindPkgConfig)
 include(FetchContent)

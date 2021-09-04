@@ -1,8 +1,10 @@
 #include "BoundExpression.h"
 
+#include "BoundAssignmentExpression.h"
 #include "BoundBinaryExpression.h"
 #include "BoundLiteralExpression.h"
 #include "BoundUnaryExpression.h"
+#include "BoundVariableExpression.h"
 
 void bound_expression_init(
     struct BoundExpression* expr,
@@ -25,6 +27,12 @@ enum ObjectKind bound_expression_get_type(struct BoundExpression* expr)
     case BOUND_EXPRESSION_KIND_BOUND_BINARY_EXPRESSION:
       return bound_binary_expression_get_type(
           (struct BoundBinaryExpression*)expr);
+    case BOUND_EXPRESSION_KIND_BOUND_VARIABLE_EXPRESSION:
+      return bound_variable_expression_get_type(
+          (struct BoundVariableExpression*)expr);
+    case BOUND_EXPRESSION_KIND_BOUND_ASSIGNMENT_EXPRESSION:
+      return bound_assignment_expression_get_type(
+          (struct BoundAssignmentExpression*)expr);
   }
 }
 
@@ -41,5 +49,11 @@ enum BoundNodeKind bound_expression_get_kind(struct BoundExpression* expr)
     case BOUND_EXPRESSION_KIND_BOUND_BINARY_EXPRESSION:
       return bound_binary_expression_get_kind(
           (struct BoundBinaryExpression*)expr);
+    case BOUND_EXPRESSION_KIND_BOUND_VARIABLE_EXPRESSION:
+      return bound_variable_expression_get_kind(
+          (struct BoundVariableExpression*)expr);
+    case BOUND_EXPRESSION_KIND_BOUND_ASSIGNMENT_EXPRESSION:
+      return bound_assignment_expression_get_kind(
+          (struct BoundAssignmentExpression*)expr);
   }
 }

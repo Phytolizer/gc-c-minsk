@@ -1,7 +1,9 @@
 #include "minsk/CodeAnalysis/Syntax/ExpressionSyntax.h"
 
+#include <minsk/CodeAnalysis/Syntax/AssignmentExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/NameExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
 
@@ -29,6 +31,12 @@ enum SyntaxKind expression_syntax_get_kind(struct ExpressionSyntax* syntax)
     case EXPRESSION_SYNTAX_KIND_UNARY_EXPRESSION_SYNTAX:
       return unary_expression_syntax_get_kind(
           (struct UnaryExpressionSyntax*)syntax);
+    case EXPRESSION_SYNTAX_KIND_NAME_EXPRESSION_SYNTAX:
+      return name_expression_syntax_get_kind(
+          (struct NameExpressionSyntax*)syntax);
+    case EXPRESSION_SYNTAX_KIND_ASSIGNMENT_EXPRESSION_SYNTAX:
+      return assignment_expression_syntax_get_kind(
+          (struct AssignmentExpressionSyntax*)syntax);
   }
 }
 
@@ -49,5 +57,11 @@ struct SyntaxNodeList* expression_syntax_get_children(
     case EXPRESSION_SYNTAX_KIND_UNARY_EXPRESSION_SYNTAX:
       return unary_expression_syntax_get_children(
           (struct UnaryExpressionSyntax*)syntax);
+    case EXPRESSION_SYNTAX_KIND_NAME_EXPRESSION_SYNTAX:
+      return name_expression_syntax_get_children(
+          (struct NameExpressionSyntax*)syntax);
+    case EXPRESSION_SYNTAX_KIND_ASSIGNMENT_EXPRESSION_SYNTAX:
+      return assignment_expression_syntax_get_children(
+          (struct AssignmentExpressionSyntax*)syntax);
   }
 }

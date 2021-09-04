@@ -211,6 +211,15 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
             sdsnew("=="),
             OBJECT_NULL());
       }
+      else
+      {
+        lexer->position++;
+        return syntax_token_new(
+            SYNTAX_KIND_EQUALS_TOKEN,
+            start,
+            sdsnew("="),
+            OBJECT_NULL());
+      }
   }
 
   diagnostic_bag_report_bad_character(
