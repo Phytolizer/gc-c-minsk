@@ -1,6 +1,7 @@
 #include "minsk/CodeAnalysis/Syntax/SyntaxToken.h"
 
 #include <IncludeMe.h>
+#include <minsk/CodeAnalysis/TextSpan.h>
 
 struct SyntaxToken* syntax_token_new(
     enum SyntaxKind kind,
@@ -34,4 +35,9 @@ struct SyntaxNodeList* syntax_token_get_children(struct SyntaxToken* token)
   struct SyntaxNodeList* empty = mc_malloc(sizeof(struct SyntaxNodeList));
   LIST_INIT(empty);
   return empty;
+}
+
+struct TextSpan* syntax_token_get_span(const struct SyntaxToken* token)
+{
+  return text_span_new(token->position, token->position + sdslen(token->text));
 }

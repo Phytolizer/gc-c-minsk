@@ -1,7 +1,7 @@
 #include "minsk/CodeAnalysis/EvaluationResult.h"
 
 struct EvaluationResult* evaluation_result_new(
-    struct StringList* diagnostics,
+    struct DiagnosticList* diagnostics,
     struct Object* value)
 {
   struct EvaluationResult* result = mc_malloc(sizeof(struct EvaluationResult));

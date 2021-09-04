@@ -61,7 +61,7 @@ int main(void)
     struct SyntaxTree* tree = syntax_tree_parse(line);
     struct Compilation* compilation = compilation_new(tree);
     struct EvaluationResult* result = compilation_evaluate(compilation);
-    struct StringList* diagnostics = result->diagnostics;
+    struct DiagnosticList* diagnostics = result->diagnostics;
     if (show_tree)
     {
       printf("\x1b[2;37m");
@@ -73,7 +73,7 @@ int main(void)
       printf("\x1b[31m");
       for (long i = 0; i < diagnostics->length; ++i)
       {
-        printf("%s\n", diagnostics->data[i]);
+        printf("%s\n", diagnostics->data[i]->message);
       }
       printf("\x1b[0m");
     }

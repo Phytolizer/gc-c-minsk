@@ -48,12 +48,8 @@ struct Parser* parser_new(sds text)
       break;
     }
   }
-  parser->diagnostics = mc_malloc(sizeof(struct StringList));
-  LIST_INIT(parser->diagnostics);
-  for (long i = 0; i < lexer->diagnostics->length; ++i)
-  {
-    LIST_PUSH(parser->diagnostics, lexer->diagnostics->data[i]);
-  }
+  parser->diagnostics = diagnostic_bag_new();
+  diagnostic_bag_add_range(parser->diagnostics, lexer->diagnostics);
   return parser;
 }
 
@@ -103,13 +99,11 @@ static struct SyntaxToken* match_token(
     return next_token(parser);
   }
 
-  LIST_PUSH(
+  diagnostic_bag_report_unexpected_token(
       parser->diagnostics,
-      sdscatprintf(
-          sdsempty(),
-          "ERROR: Unexpected token <%s>, expected <%s>",
-          SYNTAX_KINDS[current(parser)->kind],
-          SYNTAX_KINDS[kind]));
+      syntax_token_get_span(current(parser)),
+      current(parser)->kind,
+      kind);
   return syntax_token_new(
       kind,
       current(parser)->position,

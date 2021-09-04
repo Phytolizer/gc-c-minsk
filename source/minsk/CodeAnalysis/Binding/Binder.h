@@ -1,13 +1,14 @@
 #pragma once
 
 #include <common/List.h>
+#include <minsk/CodeAnalysis/DiagnosticBag.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionSyntax.h>
 
 #include "BoundExpression.h"
 
 struct Binder
 {
-  struct StringList* diagnostics;
+  struct DiagnosticBag* diagnostics;
 };
 
 struct Binder* binder_new(void);

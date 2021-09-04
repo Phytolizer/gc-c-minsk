@@ -1,6 +1,7 @@
 #pragma once
 
 #include <common/List.h>
+#include <minsk/CodeAnalysis/DiagnosticBag.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
 #include <sds.h>
 
@@ -8,7 +9,7 @@ struct Parser
 {
   struct SyntaxTokenList* tokens;
   int position;
-  struct StringList* diagnostics;
+  struct DiagnosticBag* diagnostics;
 };
 
 struct Parser* parser_new(sds text);

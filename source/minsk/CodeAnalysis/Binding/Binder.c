@@ -36,8 +36,7 @@ static struct BoundExpression* bind_unary_expression(
 struct Binder* binder_new(void)
 {
   struct Binder* binder = mc_malloc(sizeof(struct Binder));
-  binder->diagnostics = mc_malloc(sizeof(struct StringList));
-  LIST_INIT(binder->diagnostics);
+  binder->diagnostics = diagnostic_bag_new();
   return binder;
 }
 
@@ -102,14 +101,12 @@ static struct BoundExpression* bind_binary_expression(
       bound_expression_get_type(bound_right));
   if (!bound_operator)
   {
-    LIST_PUSH(
+    diagnostic_bag_report_undefined_binary_operator(
         binder->diagnostics,
-        sdscatprintf(
-            sdsempty(),
-            "Binary operator '%s' is not defined for types %s and %s.",
-            syntax->operator_token->text,
-            OBJECT_KINDS[bound_expression_get_type(bound_left)],
-            OBJECT_KINDS[bound_expression_get_type(bound_right)]));
+        syntax_token_get_span(syntax->operator_token),
+        syntax->operator_token->text,
+        bound_expression_get_type(bound_left),
+        bound_expression_get_type(bound_right));
     return bound_left;
   }
   return (struct BoundExpression*)
@@ -134,13 +131,11 @@ static struct BoundExpression* bind_unary_expression(
       bound_expression_get_type(bound_operand));
   if (!bound_operator)
   {
-    LIST_PUSH(
+    diagnostic_bag_report_undefined_unary_operator(
         binder->diagnostics,
-        sdscatprintf(
-            sdsempty(),
-            "Unary operator '%s' is not defined for type %s.",
-            syntax->operator_token->text,
-            OBJECT_KINDS[bound_expression_get_type(bound_operand)]));
+        syntax_token_get_span(syntax->operator_token),
+        syntax->operator_token->text,
+        bound_expression_get_type(bound_operand));
     return bound_operand;
   }
   return (struct BoundExpression*)bound_unary_expression_new(

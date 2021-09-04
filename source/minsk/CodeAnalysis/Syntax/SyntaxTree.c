@@ -3,7 +3,7 @@
 #include "Parser.h"
 
 struct SyntaxTree* syntax_tree_new(
-    struct StringList* diagnostics,
+    struct DiagnosticBag* diagnostics,
     struct ExpressionSyntax* root,
     struct SyntaxToken* end_of_file_token)
 {

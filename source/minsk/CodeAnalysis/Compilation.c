@@ -17,10 +17,11 @@ struct EvaluationResult* compilation_evaluate(struct Compilation* compilation)
   struct Binder* binder = binder_new();
   struct BoundExpression* bound_expression
       = binder_bind(binder, compilation->syntax->root);
-  struct StringList* diagnostics = compilation->syntax->diagnostics;
-  for (long i = 0; i < binder->diagnostics->length; i++)
+  struct DiagnosticList* diagnostics
+      = compilation->syntax->diagnostics->diagnostics;
+  for (long i = 0; i < binder->diagnostics->diagnostics->length; i++)
   {
-    LIST_PUSH(diagnostics, binder->diagnostics->data[i]);
+    LIST_PUSH(diagnostics, binder->diagnostics->diagnostics->data[i]);
   }
   if (diagnostics->length > 0)
   {

@@ -2,13 +2,14 @@
 
 #include <common/List.h>
 #include <common/Object.h>
+#include <minsk/CodeAnalysis/Diagnostic.h>
 
 struct EvaluationResult
 {
-  struct StringList* diagnostics;
+  struct DiagnosticList* diagnostics;
   struct Object* value;
 };
 
 struct EvaluationResult* evaluation_result_new(
-    struct StringList* diagnostics,
+    struct DiagnosticList* diagnostics,
     struct Object* value);

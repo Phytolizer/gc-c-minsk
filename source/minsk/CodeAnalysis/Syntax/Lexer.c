@@ -41,8 +41,7 @@ struct Lexer* lexer_new(sds text)
   struct Lexer* lexer = mc_malloc(sizeof(struct Lexer));
   lexer->text = text;
   lexer->position = 0;
-  lexer->diagnostics = mc_malloc(sizeof(struct StringList));
-  LIST_INIT(lexer->diagnostics);
+  lexer->diagnostics = diagnostic_bag_new();
   return lexer;
 }
 
@@ -76,12 +75,11 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
     long value = strtol(text, NULL, 10);
     if (errno == ERANGE || value < INT_MIN || value > INT_MAX)
     {
-      LIST_PUSH(
+      diagnostic_bag_report_invalid_number(
           lexer->diagnostics,
-          sdscatprintf(
-              sdsempty(),
-              "The number %s cannot be represented by an Int32",
-              text));
+          text_span_new(start, length),
+          text,
+          OBJECT_KIND_INTEGER);
     }
     return syntax_token_new(
         SYNTAX_KIND_NUMBER_TOKEN,
@@ -205,12 +203,10 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
       }
   }
 
-  LIST_PUSH(
+  diagnostic_bag_report_bad_character(
       lexer->diagnostics,
-      sdscatprintf(
-          sdsempty(),
-          "ERROR: bad input character: '%c'",
-          current(lexer)));
+      lexer->position,
+      current(lexer));
   return syntax_token_new(
       SYNTAX_KIND_BAD_TOKEN,
       lexer->position++,
