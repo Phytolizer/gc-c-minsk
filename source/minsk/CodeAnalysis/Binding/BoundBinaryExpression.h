@@ -1,9 +1,9 @@
 #pragma once
 
 #include <common/Object.h>
-#include <minsk/CodeAnalysis/Binding/BoundExpression.h>
 
 #include "BoundBinaryOperator.h"
+#include "BoundExpression.h"
 
 struct BoundBinaryExpression
 {

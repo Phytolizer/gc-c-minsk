@@ -1,7 +1,6 @@
 #pragma once
 
-#include <minsk/CodeAnalysis/Binding/BoundExpression.h>
-
+#include "BoundExpression.h"
 #include "BoundUnaryOperator.h"
 
 struct BoundUnaryExpression

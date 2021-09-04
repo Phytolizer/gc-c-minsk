@@ -1,4 +1,4 @@
-#include "minsk/CodeAnalysis/Binding/Binder.h"
+#include "Binder.h"
 
 #include <assert.h>
 #include <stdio.h>

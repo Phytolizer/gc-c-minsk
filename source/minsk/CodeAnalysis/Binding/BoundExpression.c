@@ -1,4 +1,4 @@
-#include "minsk/CodeAnalysis/Binding/BoundExpression.h"
+#include "BoundExpression.h"
 
 #include "BoundBinaryExpression.h"
 #include "BoundLiteralExpression.h"

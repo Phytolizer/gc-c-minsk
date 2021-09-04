@@ -1,9 +1,8 @@
-#include "minsk/CodeAnalysis/Evaluator.h"
+#include "Evaluator.h"
 
 #include <assert.h>
 #include <stdio.h>
 
-#include <minsk/CodeAnalysis/Binding/BoundExpression.h>
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
@@ -11,6 +10,7 @@
 
 #include "Binding/BoundBinaryExpression.h"
 #include "Binding/BoundBinaryOperatorKind.h"
+#include "Binding/BoundExpression.h"
 #include "Binding/BoundLiteralExpression.h"
 #include "Binding/BoundUnaryExpression.h"
 #include "Binding/BoundUnaryOperatorKind.h"

@@ -1,5 +1,7 @@
 add_library(
   minsk SHARED
+  CodeAnalysis/Compilation.c
+  CodeAnalysis/EvaluationResult.c
   CodeAnalysis/Evaluator.c
   CodeAnalysis/Binding/Binder.c
   CodeAnalysis/Binding/BoundBinaryExpression.c

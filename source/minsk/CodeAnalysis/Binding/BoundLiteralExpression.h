@@ -1,7 +1,8 @@
 #pragma once
 
 #include <common/Object.h>
-#include <minsk/CodeAnalysis/Binding/BoundExpression.h>
+
+#include "BoundExpression.h"
 
 struct BoundLiteralExpression
 {
