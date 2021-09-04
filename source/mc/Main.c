@@ -72,7 +72,7 @@ int main(void)
     {
       for (long i = 0; i < diagnostics->length; ++i)
       {
-        printf("\x1b[31m%s\x1b[0m\n", diagnostics->data[i]->message);
+        printf("\n\x1b[31m%s\x1b[0m\n", diagnostics->data[i]->message);
         sds prefix
             = sdscatlen(sdsempty(), line, diagnostics->data[i]->span->start);
         sds error = sdscatlen(
@@ -85,7 +85,7 @@ int main(void)
 
         printf("    %s\x1b[31m%s\x1b[0m%s\n", prefix, error, suffix);
       }
-      printf("\x1b[0m");
+      printf("\n");
     }
     else
     {
