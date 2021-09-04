@@ -62,9 +62,10 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
         OBJECT_NULL());
   }
 
+  int start = lexer->position;
+
   if (isdigit(current(lexer)))
   {
-    int start = lexer->position;
     while (isdigit(current(lexer)))
     {
       next(lexer);
@@ -90,7 +91,6 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
 
   if (isspace(current(lexer)))
   {
-    int start = lexer->position;
     while (isspace(current(lexer)))
     {
       next(lexer);
@@ -107,7 +107,6 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
 
   if (isalpha(current(lexer)))
   {
-    int start = lexer->position;
     while (isalpha(current(lexer)))
     {
       next(lexer);
@@ -122,82 +121,93 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
   switch (current(lexer))
   {
     case '+':
+      lexer->position++;
       return syntax_token_new(
           SYNTAX_KIND_PLUS_TOKEN,
-          lexer->position++,
+          start,
           sdsnew("+"),
           OBJECT_NULL());
     case '-':
+      lexer->position++;
       return syntax_token_new(
           SYNTAX_KIND_MINUS_TOKEN,
-          lexer->position++,
+          start,
           sdsnew("-"),
           OBJECT_NULL());
     case '*':
+      lexer->position++;
       return syntax_token_new(
           SYNTAX_KIND_STAR_TOKEN,
-          lexer->position++,
+          start,
           sdsnew("*"),
           OBJECT_NULL());
     case '/':
+      lexer->position++;
       return syntax_token_new(
           SYNTAX_KIND_SLASH_TOKEN,
-          lexer->position++,
+          start,
           sdsnew("/"),
           OBJECT_NULL());
     case '(':
+      lexer->position++;
       return syntax_token_new(
           SYNTAX_KIND_OPEN_PARENTHESIS_TOKEN,
-          lexer->position++,
+          start,
           sdsnew("("),
           OBJECT_NULL());
     case ')':
+      lexer->position++;
       return syntax_token_new(
           SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN,
-          lexer->position++,
+          start,
           sdsnew(")"),
           OBJECT_NULL());
     case '!':
       if (lookahead(lexer) == '=')
       {
+        lexer->position += 2;
         return syntax_token_new(
             SYNTAX_KIND_BANG_EQUALS_TOKEN,
-            (lexer->position += 2) - 2,
+            start,
             sdsnew("!="),
             OBJECT_NULL());
       }
       else
       {
+        lexer->position++;
         return syntax_token_new(
             SYNTAX_KIND_BANG_TOKEN,
-            lexer->position++,
+            start,
             sdsnew("!"),
             OBJECT_NULL());
       }
     case '&':
       if (lookahead(lexer) == '&')
       {
+        lexer->position += 2;
         return syntax_token_new(
             SYNTAX_KIND_AMPERSAND_AMPERSAND_TOKEN,
-            (lexer->position += 2) - 2,
+            start,
             sdsnew("&&"),
             OBJECT_NULL());
       }
     case '|':
       if (lookahead(lexer) == '|')
       {
+        lexer->position += 2;
         return syntax_token_new(
             SYNTAX_KIND_PIPE_PIPE_TOKEN,
-            (lexer->position += 2) - 2,
+            start,
             sdsnew("||"),
             OBJECT_NULL());
       }
     case '=':
       if (lookahead(lexer) == '=')
       {
+        lexer->position += 2;
         return syntax_token_new(
             SYNTAX_KIND_EQUALS_EQUALS_TOKEN,
-            (lexer->position += 2) - 2,
+            start,
             sdsnew("=="),
             OBJECT_NULL());
       }
@@ -205,11 +215,12 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
 
   diagnostic_bag_report_bad_character(
       lexer->diagnostics,
-      lexer->position,
+      start,
       current(lexer));
+  lexer->position++;
   return syntax_token_new(
       SYNTAX_KIND_BAD_TOKEN,
-      lexer->position++,
-      sdscatlen(sdsempty(), &lexer->text[lexer->position - 1], 1),
+      start,
+      sdscatlen(sdsempty(), &lexer->text[start], 1),
       OBJECT_NULL());
 }
