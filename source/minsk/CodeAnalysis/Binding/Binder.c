@@ -16,6 +16,7 @@
 #include "BoundAssignmentExpression.h"
 #include "BoundBinaryExpression.h"
 #include "BoundBinaryOperator.h"
+#include "BoundExpression.h"
 #include "BoundLiteralExpression.h"
 #include "BoundUnaryExpression.h"
 #include "BoundUnaryOperator.h"
@@ -188,6 +189,30 @@ static struct BoundExpression* bind_assignment_expression(
   sds name = syntax->identifier_token->text;
   struct BoundExpression* bound_expression
       = bind_expression(binder, syntax->expression);
+  // HACK
+  struct Object* default_value
+      = bound_expression_get_type(bound_expression) == OBJECT_KIND_INTEGER
+      ? OBJECT_INTEGER(0)
+      : bound_expression_get_type(bound_expression) == OBJECT_KIND_BOOLEAN
+      ? OBJECT_BOOLEAN(false)
+      : OBJECT_NULL();
+  if (OBJECT_IS_NULL(default_value))
+  {
+    fprintf(
+        stderr,
+        "Unsupported variable type: %s\n",
+        OBJECT_KINDS[bound_expression_get_type(bound_expression)]);
+    assert(false && "Unsupported variable type");
+  }
+  struct Object** pvalue = variable_store_lookup(binder->variables, name);
+  if (pvalue)
+  {
+    *pvalue = default_value;
+  }
+  else
+  {
+    variable_store_insert(binder->variables, name, default_value);
+  }
   return (struct BoundExpression*)bound_assignment_expression_new(
       name,
       bound_expression);
