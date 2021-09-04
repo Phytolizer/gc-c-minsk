@@ -39,5 +39,5 @@ struct SyntaxNodeList* syntax_token_get_children(struct SyntaxToken* token)
 
 struct TextSpan* syntax_token_get_span(const struct SyntaxToken* token)
 {
-  return text_span_new(token->position, token->position + sdslen(token->text));
+  return text_span_new(token->position, sdslen(token->text));
 }

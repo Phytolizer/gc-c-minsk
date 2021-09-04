@@ -70,10 +70,20 @@ int main(void)
     }
     if (diagnostics->length > 0)
     {
-      printf("\x1b[31m");
       for (long i = 0; i < diagnostics->length; ++i)
       {
-        printf("%s\n", diagnostics->data[i]->message);
+        printf("\x1b[31m%s\x1b[0m\n", diagnostics->data[i]->message);
+        sds prefix
+            = sdscatlen(sdsempty(), line, diagnostics->data[i]->span->start);
+        sds error = sdscatlen(
+            sdsempty(),
+            &line[diagnostics->data[i]->span->start],
+            diagnostics->data[i]->span->length);
+        sds suffix = sdscat(
+            sdsempty(),
+            &line[text_span_end(diagnostics->data[i]->span)]);
+
+        printf("    %s\x1b[31m%s\x1b[0m%s\n", prefix, error, suffix);
       }
       printf("\x1b[0m");
     }

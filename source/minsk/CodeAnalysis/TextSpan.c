@@ -9,3 +9,8 @@ struct TextSpan* text_span_new(int start, int length)
   span->length = length;
   return span;
 }
+
+int text_span_end(const struct TextSpan* span)
+{
+  return span->start + span->length;
+}
