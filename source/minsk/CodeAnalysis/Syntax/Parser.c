@@ -4,17 +4,17 @@
 
 #include <IncludeMe.h>
 #include <common/List.h>
+#include <minsk/CodeAnalysis/Syntax/AssignmentExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/NameExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxFacts.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
 #include <sds.h>
 
 #include "Lexer.h"
-#include "SyntaxFacts.h"
-#include "minsk/CodeAnalysis/Syntax/AssignmentExpressionSyntax.h"
-#include "minsk/CodeAnalysis/Syntax/NameExpressionSyntax.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset)
     __attribute__((const));

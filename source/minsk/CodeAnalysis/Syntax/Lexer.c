@@ -7,9 +7,8 @@
 #include <string.h>
 
 #include <IncludeMe.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxFacts.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxToken.h>
-
-#include "SyntaxFacts.h"
 
 __attribute__((const)) static char peek(struct Lexer* lexer, int offset)
 {

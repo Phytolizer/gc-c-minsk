@@ -1,4 +1,4 @@
-#include "SyntaxFacts.h"
+#include "minsk/CodeAnalysis/Syntax/SyntaxFacts.h"
 
 #include <string.h>
 
