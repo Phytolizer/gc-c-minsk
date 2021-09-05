@@ -32,16 +32,11 @@ __attribute__((const)) static char lookahead(struct Lexer* lexer)
   return peek(lexer, 1);
 }
 
-static void next(struct Lexer* lexer)
-{
-  ++lexer->position;
-}
-
 static void read_number(struct Lexer* lexer)
 {
   while (isdigit(current(lexer)))
   {
-    next(lexer);
+    lexer->position++;
   }
 
   int length = lexer->position - lexer->start;
@@ -63,7 +58,7 @@ static void read_whitespace(struct Lexer* lexer)
 {
   while (isspace(current(lexer)))
   {
-    next(lexer);
+    lexer->position++;
   }
   lexer->kind = SYNTAX_KIND_WHITESPACE_TOKEN;
 }
@@ -72,7 +67,7 @@ static void read_identifier_or_keyword(struct Lexer* lexer)
 {
   while (isalpha(current(lexer)))
   {
-    next(lexer);
+    lexer->position++;
   }
 
   int length = lexer->position - lexer->start;
