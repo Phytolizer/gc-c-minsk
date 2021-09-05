@@ -3,7 +3,7 @@
 #include <IncludeMe.h>
 
 struct BoundAssignmentExpression* bound_assignment_expression_new(
-    sds name,
+    struct VariableSymbol* name,
     struct BoundExpression* expression)
 {
   struct BoundAssignmentExpression* expr
@@ -11,7 +11,7 @@ struct BoundAssignmentExpression* bound_assignment_expression_new(
   bound_expression_init(
       (struct BoundExpression*)expr,
       BOUND_EXPRESSION_KIND_BOUND_ASSIGNMENT_EXPRESSION);
-  expr->name = name;
+  expr->variable = name;
   expr->expression = expression;
   return expr;
 }

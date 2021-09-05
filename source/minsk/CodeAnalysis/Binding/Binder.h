@@ -1,9 +1,9 @@
 #pragma once
 
 #include <common/List.h>
-#include <common/VariableStore.h>
 #include <minsk/CodeAnalysis/DiagnosticBag.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionSyntax.h>
+#include <minsk/CodeAnalysis/VariableStore.h>
 
 #include "BoundExpression.h"
 

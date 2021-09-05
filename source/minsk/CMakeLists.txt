@@ -6,6 +6,8 @@ add_library(
   CodeAnalysis/EvaluationResult.c
   CodeAnalysis/Evaluator.c
   CodeAnalysis/TextSpan.c
+  CodeAnalysis/VariableStore.c
+  CodeAnalysis/VariableSymbol.c
   CodeAnalysis/Binding/Binder.c
   CodeAnalysis/Binding/BoundAssignmentExpression.c
   CodeAnalysis/Binding/BoundBinaryExpression.c

@@ -1,12 +1,12 @@
 #pragma once
 
+#include <common/Object.h>
+#include <minsk/CodeAnalysis/VariableSymbol.h>
 #include <sds.h>
-
-#include "Object.h"
 
 struct VariableStoreEntry
 {
-  sds name;
+  struct VariableSymbol* symbol;
   struct Object* value;
 };
 
@@ -18,8 +18,10 @@ struct VariableStore
 };
 
 struct VariableStore* variable_store_new(void);
-void variable_store_insert(
+void variable_store_insert_or_assign(
     struct VariableStore* store,
-    sds name,
+    struct VariableSymbol* symbol,
     struct Object* value);
-struct Object** variable_store_lookup(struct VariableStore* store, sds name);
+struct Object** variable_store_lookup(
+    struct VariableStore* store,
+    struct VariableSymbol* symbol);

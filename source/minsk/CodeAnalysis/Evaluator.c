@@ -103,15 +103,15 @@ static struct Object* evaluate_expression(
     case BOUND_EXPRESSION_KIND_BOUND_VARIABLE_EXPRESSION:
       return *variable_store_lookup(
           evaluator->variables,
-          ((struct BoundVariableExpression*)root)->name);
+          ((struct BoundVariableExpression*)root)->variable);
     case BOUND_EXPRESSION_KIND_BOUND_ASSIGNMENT_EXPRESSION:
       {
         struct Object* value = evaluate_expression(
             evaluator,
             ((struct BoundAssignmentExpression*)root)->expression);
-        variable_store_insert(
+        variable_store_insert_or_assign(
             evaluator->variables,
-            ((struct BoundAssignmentExpression*)root)->name,
+            ((struct BoundAssignmentExpression*)root)->variable,
             value);
         return value;
       }

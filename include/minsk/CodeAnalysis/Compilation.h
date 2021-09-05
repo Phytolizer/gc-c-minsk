@@ -1,6 +1,6 @@
 #pragma once
 
-#include <common/VariableStore.h>
+#include <minsk/CodeAnalysis/VariableStore.h>
 
 #include "EvaluationResult.h"
 #include "Syntax/SyntaxTree.h"

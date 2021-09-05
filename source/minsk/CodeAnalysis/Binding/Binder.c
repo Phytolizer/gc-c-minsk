@@ -167,8 +167,18 @@ static struct BoundExpression* bind_name_expression(
     struct NameExpressionSyntax* syntax)
 {
   sds name = syntax->identifier_token->text;
-  struct Object** value = variable_store_lookup(binder->variables, name);
-  if (!value)
+
+  struct VariableSymbol* variable = NULL;
+  for (long i = 0; i < binder->variables->num_entries; ++i)
+  {
+    if (binder->variables->entries[i].symbol
+        && sdscmp(name, binder->variables->entries[i].symbol->name) == 0)
+    {
+      variable = binder->variables->entries[i].symbol;
+    }
+  }
+
+  if (!variable)
   {
     diagnostic_bag_report_undefined_name(
         binder->diagnostics,
@@ -178,8 +188,7 @@ static struct BoundExpression* bind_name_expression(
         OBJECT_INTEGER(0));
   }
 
-  enum ObjectKind type = (*value)->kind;
-  return (struct BoundExpression*)bound_variable_expression_new(name, type);
+  return (struct BoundExpression*)bound_variable_expression_new(variable);
 }
 
 static struct BoundExpression* bind_assignment_expression(
@@ -190,30 +199,20 @@ static struct BoundExpression* bind_assignment_expression(
   struct BoundExpression* bound_expression
       = bind_expression(binder, syntax->expression);
   // HACK
-  struct Object* default_value
-      = bound_expression_get_type(bound_expression) == OBJECT_KIND_INTEGER
-      ? OBJECT_INTEGER(0)
-      : bound_expression_get_type(bound_expression) == OBJECT_KIND_BOOLEAN
-      ? OBJECT_BOOLEAN(false)
-      : OBJECT_NULL();
-  if (OBJECT_IS_NULL(default_value))
+  for (long i = 0; i < binder->variables->num_entries; ++i)
   {
-    fprintf(
-        stderr,
-        "Unsupported variable type: %s\n",
-        OBJECT_KINDS[bound_expression_get_type(bound_expression)]);
-    assert(false && "Unsupported variable type");
+    if (binder->variables->entries[i].symbol
+        && sdscmp(name, binder->variables->entries[i].symbol->name) == 0)
+    {
+      // remove existing variable
+      binder->variables->entries[i].value = OBJECT_NULL();
+      break;
+    }
   }
-  struct Object** pvalue = variable_store_lookup(binder->variables, name);
-  if (pvalue)
-  {
-    *pvalue = default_value;
-  }
-  else
-  {
-    variable_store_insert(binder->variables, name, default_value);
-  }
+  struct VariableSymbol* variable
+      = variable_symbol_new(name, bound_expression_get_type(bound_expression));
+  variable_store_insert_or_assign(binder->variables, variable, OBJECT_NULL());
   return (struct BoundExpression*)bound_assignment_expression_new(
-      name,
+      variable,
       bound_expression);
 }

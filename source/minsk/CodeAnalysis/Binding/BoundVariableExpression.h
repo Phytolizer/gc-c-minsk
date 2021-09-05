@@ -1,5 +1,6 @@
 #pragma once
 
+#include <minsk/CodeAnalysis/VariableSymbol.h>
 #include <sds.h>
 
 #include "BoundExpression.h"
@@ -7,13 +8,11 @@
 struct BoundVariableExpression
 {
   struct BoundExpression base;
-  sds name;
-  enum ObjectKind type;
+  struct VariableSymbol* variable;
 };
 
 struct BoundVariableExpression* bound_variable_expression_new(
-    sds name,
-    enum ObjectKind type);
+    struct VariableSymbol* variable);
 enum BoundNodeKind bound_variable_expression_get_kind(
     struct BoundVariableExpression* expression);
 enum ObjectKind bound_variable_expression_get_type(

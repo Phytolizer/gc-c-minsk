@@ -3,16 +3,14 @@
 #include <IncludeMe.h>
 
 struct BoundVariableExpression* bound_variable_expression_new(
-    sds name,
-    enum ObjectKind type)
+    struct VariableSymbol* variable)
 {
   struct BoundVariableExpression* expression
       = mc_malloc(sizeof(struct BoundVariableExpression));
   bound_expression_init(
       (struct BoundExpression*)expression,
       BOUND_EXPRESSION_KIND_BOUND_VARIABLE_EXPRESSION);
-  expression->name = name;
-  expression->type = type;
+  expression->variable = variable;
   return expression;
 }
 
@@ -26,5 +24,5 @@ enum BoundNodeKind bound_variable_expression_get_kind(
 enum ObjectKind bound_variable_expression_get_type(
     struct BoundVariableExpression* expression)
 {
-  return expression->type;
+  return expression->variable->type;
 }
