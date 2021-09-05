@@ -32,5 +32,11 @@ else()
   set(BDWGC "gc-lib")
 endif()
 
+FetchContent_Declare(
+  Tau
+  GIT_REPOSITORY "https://github.com/jasmcaus/tau.git"
+  GIT_TAG "dev")
+FetchContent_MakeAvailable(Tau)
+
 include_directories(include)
 add_subdirectory(source)
