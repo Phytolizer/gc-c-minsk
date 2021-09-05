@@ -55,17 +55,17 @@ TEST_CASE("")
     auto* result = compilation_evaluate(compilation, variables);
 
     CHECK(result->diagnostics->length == 0);
-    std::cout << OBJECT_KINDS[result->value->kind] << " ";
-    if (OBJECT_IS_INTEGER(result->value))
-    {
-      std::cout << OBJECT_AS_INTEGER(result->value)->value << " ";
-    }
-    std::cout << "== " << OBJECT_KINDS[test.expected_value->kind] << " ";
-    if (OBJECT_IS_INTEGER(test.expected_value))
-    {
-      std::cout << OBJECT_AS_INTEGER(test.expected_value)->value;
-    }
-    std::cout << std::endl;
+    // std::cout << OBJECT_KINDS[result->value->kind] << " ";
+    // if (OBJECT_IS_INTEGER(result->value))
+    // {
+    //   std::cout << OBJECT_AS_INTEGER(result->value)->value << " ";
+    // }
+    // std::cout << "== " << OBJECT_KINDS[test.expected_value->kind] << " ";
+    // if (OBJECT_IS_INTEGER(test.expected_value))
+    // {
+    //   std::cout << OBJECT_AS_INTEGER(test.expected_value)->value;
+    // }
+    // std::cout << std::endl;
     CHECK(objects_equal(test.expected_value, result->value));
   }
 }

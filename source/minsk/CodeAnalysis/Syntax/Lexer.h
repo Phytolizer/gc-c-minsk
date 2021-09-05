@@ -11,6 +11,9 @@ struct Lexer
 {
   sds text;
   size_t position;
+  size_t start;
+  enum SyntaxKind kind;
+  struct Object* value;
   struct DiagnosticBag* diagnostics;
 };
 
