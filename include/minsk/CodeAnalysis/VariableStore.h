@@ -25,3 +25,4 @@ void variable_store_insert_or_assign(
 struct Object** variable_store_lookup(
     struct VariableStore* store,
     struct VariableSymbol* symbol);
+void variable_store_dump(const struct VariableStore* store);

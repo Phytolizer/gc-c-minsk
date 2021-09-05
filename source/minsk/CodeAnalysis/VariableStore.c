@@ -1,5 +1,6 @@
 #include "minsk/CodeAnalysis/VariableStore.h"
 
+#include <stdio.h>
 #include <string.h>
 
 #include <IncludeMe.h>
@@ -71,6 +72,24 @@ struct Object** variable_store_lookup(
     return NULL;
   }
   return &entry->value;
+}
+
+void variable_store_dump(const struct VariableStore* store)
+{
+  for (long i = 0; i < store->num_entries; ++i)
+  {
+    struct VariableStoreEntry* entry = &store->entries[i];
+    printf("[%2li] : ", i);
+    if (entry->symbol)
+    {
+      printf("%s => %s", entry->symbol->name, object_to_string(entry->value));
+    }
+    else
+    {
+      printf("-- empty --");
+    }
+    printf("\n");
+  }
 }
 
 static struct VariableStoreEntry* find_entry_for(

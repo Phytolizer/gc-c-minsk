@@ -21,6 +21,7 @@
 #include "BoundUnaryExpression.h"
 #include "BoundUnaryOperator.h"
 #include "BoundVariableExpression.h"
+#include "minsk/CodeAnalysis/VariableStore.h"
 
 static struct BoundExpression* bind_expression(
     struct Binder* binder,
@@ -171,10 +172,10 @@ static struct BoundExpression* bind_name_expression(
   struct VariableSymbol* variable = NULL;
   for (long i = 0; i < binder->variables->num_entries; ++i)
   {
-    if (binder->variables->entries[i].symbol
-        && sdscmp(name, binder->variables->entries[i].symbol->name) == 0)
+    struct VariableSymbol* sym = binder->variables->entries[i].symbol;
+    if (sym && sdscmp(sym->name, name) == 0)
     {
-      variable = binder->variables->entries[i].symbol;
+      variable = sym;
     }
   }
 
