@@ -1,2 +1,2 @@
-add_executable(MinskTests TauMain.c TestLexer.c)
-target_link_libraries(MinskTests PUBLIC minsk Tau)
+add_executable(MinskTests DoctestMain.cpp CodeAnalysis/Syntax/LexerTests.cpp)
+target_link_libraries(MinskTests PUBLIC minsk doctest)

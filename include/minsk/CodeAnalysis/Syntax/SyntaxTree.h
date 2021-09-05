@@ -18,3 +18,4 @@ struct SyntaxTree* syntax_tree_new(
     struct ExpressionSyntax* root,
     struct SyntaxToken* end_of_file_token);
 struct SyntaxTree* syntax_tree_parse(sds text);
+struct SyntaxTokenList* syntax_tree_parse_tokens(const sds text);

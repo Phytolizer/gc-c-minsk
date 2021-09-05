@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 
 project(
   cminsk
-  LANGUAGES C
+  LANGUAGES C CXX
   VERSION 0.1.0
   DESCRIPTION "Minsk in C with garbage collection")
 
@@ -33,10 +34,10 @@ else()
 endif()
 
 FetchContent_Declare(
-  Tau
-  GIT_REPOSITORY "https://github.com/jasmcaus/tau.git"
-  GIT_TAG "dev")
-FetchContent_MakeAvailable(Tau)
+  doctest
+  GIT_REPOSITORY "https://github.com/onqtam/doctest.git"
+  GIT_TAG "2.4.6")
+FetchContent_MakeAvailable(doctest)
 
 include_directories(include)
 add_subdirectory(source)
