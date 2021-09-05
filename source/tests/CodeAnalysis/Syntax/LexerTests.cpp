@@ -59,7 +59,7 @@ TEST_CASE("lexer lexes token")
     CHECK(tokens->length == 1);
     SyntaxToken* token = tokens->data[0];
     CHECK(token->kind == test.kind);
-    CHECK(token->text == test.text);
+    CHECK(std::string{token->text} == test.text);
   }
 }
 
@@ -168,11 +168,14 @@ TEST_CASE("lexer lexes token pairs")
 
     REQUIRE(tokens->length == 2);
 
-    CHECK(SYNTAX_KINDS[tokens->data[0]->kind] == SYNTAX_KINDS[test.first.kind]);
+    CHECK(
+        std::string{SYNTAX_KINDS[tokens->data[0]->kind]}
+        == std::string{SYNTAX_KINDS[test.first.kind]});
     CHECK(tokens->data[0]->text == test.first.text);
 
     CHECK(
-        SYNTAX_KINDS[tokens->data[1]->kind] == SYNTAX_KINDS[test.second.kind]);
+        std::string{SYNTAX_KINDS[tokens->data[1]->kind]}
+        == std::string{SYNTAX_KINDS[test.second.kind]});
     CHECK(tokens->data[1]->text == test.second.text);
   }
 }
@@ -191,15 +194,19 @@ TEST_CASE("lexer lexes token pairs with separator")
 
     REQUIRE(tokens->length == 3);
 
-    CHECK(SYNTAX_KINDS[tokens->data[0]->kind] == SYNTAX_KINDS[test.t1.kind]);
+    CHECK(
+        std::string{SYNTAX_KINDS[tokens->data[0]->kind]}
+        == std::string{SYNTAX_KINDS[test.t1.kind]});
     CHECK(tokens->data[0]->text == test.t1.text);
 
     CHECK(
-        SYNTAX_KINDS[tokens->data[1]->kind]
-        == SYNTAX_KINDS[test.separator.kind]);
+        std::string{SYNTAX_KINDS[tokens->data[1]->kind]}
+        == std::string{SYNTAX_KINDS[test.separator.kind]});
     CHECK(tokens->data[1]->text == test.separator.text);
 
-    CHECK(SYNTAX_KINDS[tokens->data[2]->kind] == SYNTAX_KINDS[test.t2.kind]);
+    CHECK(
+        std::string{SYNTAX_KINDS[tokens->data[2]->kind]}
+        == std::string{SYNTAX_KINDS[test.t2.kind]});
     CHECK(tokens->data[2]->text == test.t2.text);
   }
 }
