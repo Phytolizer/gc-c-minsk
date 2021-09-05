@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 #define SYNTAX_KINDS_ \
   X(NUMBER_TOKEN) \
   X(WHITESPACE_TOKEN) \
@@ -35,3 +37,6 @@ enum SyntaxKind
   SYNTAX_KINDS_
 #undef X
 };
+
+extern const enum SyntaxKind SYNTAX_KIND_VARIANTS[];
+extern const size_t NUM_SYNTAX_KIND_VARIANTS;

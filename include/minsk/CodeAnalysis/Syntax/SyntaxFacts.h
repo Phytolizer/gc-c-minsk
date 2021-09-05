@@ -6,3 +6,4 @@
 int unary_operator_precedence(enum SyntaxKind kind);
 int binary_operator_precedence(enum SyntaxKind kind);
 enum SyntaxKind keyword_kind(sds text);
+sds syntax_facts_get_text(enum SyntaxKind kind);

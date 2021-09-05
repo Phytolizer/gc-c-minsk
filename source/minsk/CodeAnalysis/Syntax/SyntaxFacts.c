@@ -49,3 +49,36 @@ enum SyntaxKind keyword_kind(sds text)
   }
   return SYNTAX_KIND_IDENTIFIER_TOKEN;
 }
+
+sds syntax_facts_get_text(enum SyntaxKind kind)
+{
+  switch (kind)
+  {
+    case SYNTAX_KIND_PLUS_TOKEN:
+      return sdsnew("+");
+    case SYNTAX_KIND_MINUS_TOKEN:
+      return sdsnew("-");
+    case SYNTAX_KIND_STAR_TOKEN:
+      return sdsnew("*");
+    case SYNTAX_KIND_SLASH_TOKEN:
+      return sdsnew("/");
+    case SYNTAX_KIND_BANG_TOKEN:
+      return sdsnew("!");
+    case SYNTAX_KIND_EQUALS_TOKEN:
+      return sdsnew("=");
+    case SYNTAX_KIND_AMPERSAND_AMPERSAND_TOKEN:
+      return sdsnew("&&");
+    case SYNTAX_KIND_PIPE_PIPE_TOKEN:
+      return sdsnew("||");
+    case SYNTAX_KIND_EQUALS_EQUALS_TOKEN:
+      return sdsnew("==");
+    case SYNTAX_KIND_BANG_EQUALS_TOKEN:
+      return sdsnew("!=");
+    case SYNTAX_KIND_OPEN_PARENTHESIS_TOKEN:
+      return sdsnew("(");
+    case SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN:
+      return sdsnew(")");
+    default:
+      return NULL;
+  }
+}
