@@ -12,6 +12,6 @@ struct Parser
   struct DiagnosticBag* diagnostics;
 };
 
-struct Parser* parser_new(sds text);
+struct Parser* parser_new(struct SourceText* source_text);
 void parser_free(struct Parser* parser);
 struct SyntaxTree* parser_parse(struct Parser* parser);

@@ -8,18 +8,18 @@
 
 #include <IncludeMe.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxFacts.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxKind.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxToken.h>
-
-#include "minsk/CodeAnalysis/Syntax/SyntaxKind.h"
+#include <minsk/CodeAnalysis/Text/SourceText.h>
 
 __attribute__((const)) static char peek(struct Lexer* lexer, int offset)
 {
   int index = lexer->position + offset;
-  if (index >= sdslen(lexer->text))
+  if (index >= source_text_get_length(lexer->text))
   {
     return '\0';
   }
-  return lexer->text[index];
+  return source_text_at(lexer->text, index);
 }
 
 __attribute__((const)) static char current(struct Lexer* lexer)
@@ -40,7 +40,7 @@ static void read_number(struct Lexer* lexer)
   }
 
   int length = lexer->position - lexer->start;
-  sds text = sdsnewlen(&lexer->text[lexer->start], length);
+  sds text = source_text_to_string_bounded(lexer->text, lexer->start, length);
   long value = strtol(text, NULL, 10);
   if (errno == ERANGE || value < INT_MIN || value > INT_MAX)
   {
@@ -71,26 +71,20 @@ static void read_identifier_or_keyword(struct Lexer* lexer)
   }
 
   int length = lexer->position - lexer->start;
-  sds text = sdsnewlen(&lexer->text[lexer->start], length);
+  sds text = source_text_to_string_bounded(lexer->text, lexer->start, length);
   lexer->kind = keyword_kind(text);
 }
 
-struct Lexer* lexer_new(sds text)
+struct Lexer* lexer_new(struct SourceText* source_text)
 {
   struct Lexer* lexer = mc_malloc(sizeof(struct Lexer));
-  lexer->text = text;
+  lexer->text = source_text;
   lexer->position = 0;
   lexer->start = 0;
   lexer->kind = SYNTAX_KIND_BAD_TOKEN;
   lexer->value = OBJECT_NULL();
   lexer->diagnostics = diagnostic_bag_new();
   return lexer;
-}
-
-void lexer_free(struct Lexer* lexer)
-{
-  sdsfree(lexer->text);
-  mc_free(lexer);
 }
 
 struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
@@ -191,7 +185,7 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
   sds text = syntax_facts_get_text(lexer->kind);
   if (!text)
   {
-    text = sdsnewlen(&lexer->text[lexer->start], length);
+    text = source_text_to_string_bounded(lexer->text, lexer->start, length);
   }
   return syntax_token_new(lexer->kind, lexer->start, text, lexer->value);
 }

@@ -39,13 +39,13 @@ static struct ExpressionSyntax* parse_boolean_literal(struct Parser* parser);
 static struct ExpressionSyntax* parse_name_expression(struct Parser* parser);
 static struct ExpressionSyntax* parse_number_literal(struct Parser* parser);
 
-struct Parser* parser_new(sds text)
+struct Parser* parser_new(struct SourceText* source_text)
 {
   struct Parser* parser = mc_malloc(sizeof(struct Parser));
   parser->tokens = mc_malloc(sizeof(struct SyntaxTokenList));
   LIST_INIT(parser->tokens);
   parser->position = 0;
-  struct Lexer* lexer = lexer_new(text);
+  struct Lexer* lexer = lexer_new(source_text);
   while (true)
   {
     struct SyntaxToken* token = lexer_next_token(lexer);

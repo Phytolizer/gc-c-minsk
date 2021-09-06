@@ -17,14 +17,25 @@ struct SyntaxTree* syntax_tree_new(
 
 struct SyntaxTree* syntax_tree_parse(sds text)
 {
-  struct Parser* parser = parser_new(text);
+  return syntax_tree_parse_text(source_text_from(text));
+}
+
+struct SyntaxTree* syntax_tree_parse_text(struct SourceText* source_text)
+{
+  struct Parser* parser = parser_new(source_text);
   return parser_parse(parser);
 }
 
-struct SyntaxTokenList* syntax_tree_parse_tokens(const sds text)
+struct SyntaxTokenList* syntax_tree_parse_tokens(sds text)
+{
+  return syntax_tree_parse_text_tokens(source_text_from(text));
+}
+
+struct SyntaxTokenList* syntax_tree_parse_text_tokens(
+    struct SourceText* source_text)
 {
   struct SyntaxTokenList* list = mc_malloc(sizeof(struct SyntaxTokenList));
-  struct Lexer* lexer = lexer_new(text);
+  struct Lexer* lexer = lexer_new(source_text);
   while (true)
   {
     struct SyntaxToken* token = lexer_next_token(lexer);

@@ -31,5 +31,7 @@ add_library(
   CodeAnalysis/Syntax/SyntaxToken.c
   CodeAnalysis/Syntax/SyntaxTree.c
   CodeAnalysis/Syntax/UnaryExpressionSyntax.c
+  CodeAnalysis/Text/SourceText.c
+  CodeAnalysis/Text/TextLine.c
   CodeAnalysis/Text/TextSpan.c)
 target_link_libraries(minsk PUBLIC ${BDWGC} sds common)
