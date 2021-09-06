@@ -34,34 +34,58 @@ int main(void)
 {
   bool show_tree = false;
   struct VariableStore* variables = variable_store_new();
+  sds text = sdsempty();
   while (true)
   {
-    sds line = input_line("> ");
-    if (!line)
+    if (sdslen(text) == 0)
     {
-      printf("\n");
-      break;
+      printf("> ");
     }
-    if (strcmp(line, "#showTree") == 0)
+    else
     {
-      show_tree = !show_tree;
-      printf(
-          "%s\n",
-          show_tree ? "Showing parse trees." : "Not showing parse trees.");
-      continue;
+      printf("| ");
     }
-    if (strcmp(line, "#cls") == 0)
+    sds input = input_line("");
+    bool is_blank = !input || sdslen(input) == 0;
+
+    if (sdslen(text) == 0)
     {
-      printf("\x1b[2J");    // clear screen
-      printf("\x1b[0;0H");    // move cursor
-      continue;
+      if (is_blank)
+      {
+        printf("\n");
+        break;
+      }
+      if (strcmp(input, "#showTree") == 0)
+      {
+        show_tree = !show_tree;
+        printf(
+            "%s\n",
+            show_tree ? "Showing parse trees." : "Not showing parse trees.");
+        continue;
+      }
+      if (strcmp(input, "#cls") == 0)
+      {
+        printf("\x1b[2J");    // clear screen
+        printf("\x1b[0;0H");    // move cursor
+        continue;
+      }
     }
 
-    struct SyntaxTree* tree = syntax_tree_parse(line);
+    if (input)
+    {
+      text = sdscatfmt(text, "%S\n", input);
+    }
+
+    struct SyntaxTree* tree = syntax_tree_parse(text);
+    if (!is_blank && tree->diagnostics->diagnostics->length > 0)
+    {
+      continue;
+    }
     struct Compilation* compilation = compilation_new(tree);
     struct EvaluationResult* result
         = compilation_evaluate(compilation, variables);
     struct DiagnosticList* diagnostics = result->diagnostics;
+
     if (show_tree)
     {
       printf("\x1b[2;37m");
@@ -74,28 +98,28 @@ int main(void)
 
       for (long i = 0; i < diagnostics->length; ++i)
       {
-        int line_index = source_text_get_line_index(
-            text,
-            diagnostics->data[i]->span->start);
+        struct Diagnostic* diagnostic = diagnostics->data[i];
+        int line_index
+            = source_text_get_line_index(text, diagnostic->span->start);
         int line_number = line_index + 1;
-        int character = diagnostics->data[i]->span->start
-            - text->lines->data[line_index]->start + 1;
+        struct TextLine* line = text->lines->data[line_index];
+        int character = diagnostic->span->start - line->start + 1;
 
         printf(
             "\n\x1b[31m(%d, %d): %s\x1b[0m\n",
             line_number,
             character,
-            diagnostics->data[i]->message);
-        sds prefix
-            = sdscatlen(sdsempty(), line, diagnostics->data[i]->span->start);
-        sds error = sdscatlen(
-            sdsempty(),
-            &line[diagnostics->data[i]->span->start],
-            diagnostics->data[i]->span->length);
-        sds suffix = sdscat(
-            sdsempty(),
-            &line[text_span_end(diagnostics->data[i]->span)]);
+            diagnostic->message);
 
+        struct TextSpan* prefix_span
+            = text_span_from_bounds(line->start, diagnostic->span->start);
+        struct TextSpan* suffix_span = text_span_from_bounds(
+            text_span_end(diagnostic->span),
+            text_line_get_end(line));
+
+        sds prefix = source_text_to_string_spanned(text, prefix_span);
+        sds error = source_text_to_string_spanned(text, diagnostic->span);
+        sds suffix = source_text_to_string_spanned(text, suffix_span);
         printf("    %s\x1b[31m%s\x1b[0m%s\n", prefix, error, suffix);
       }
       printf("\n");
@@ -104,6 +128,7 @@ int main(void)
     {
       printf("%s\n", object_to_string(result->value));
     }
+    text = sdsempty();
   }
   return 0;
 }
