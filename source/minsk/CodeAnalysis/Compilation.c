@@ -1,6 +1,7 @@
 #include "minsk/CodeAnalysis/Compilation.h"
 
 #include <minsk/CodeAnalysis/EvaluationResult.h>
+#include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
 
 #include "Binding/Binder.h"
 #include "Evaluator.h"
@@ -18,7 +19,7 @@ struct EvaluationResult* compilation_evaluate(
 {
   struct Binder* binder = binder_new(variables);
   struct BoundExpression* bound_expression
-      = binder_bind(binder, compilation->syntax->root);
+      = binder_bind(binder, compilation->syntax->root->expression);
   struct DiagnosticList* diagnostics
       = compilation->syntax->diagnostics->diagnostics;
   for (long i = 0; i < binder->diagnostics->diagnostics->length; i++)

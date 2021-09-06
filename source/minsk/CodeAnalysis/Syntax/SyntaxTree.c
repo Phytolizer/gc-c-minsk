@@ -3,17 +3,17 @@
 #include "Lexer.h"
 #include "Parser.h"
 
-struct SyntaxTree* syntax_tree_new(
-    struct SourceText* source_text,
-    struct DiagnosticBag* diagnostics,
-    struct ExpressionSyntax* root,
-    struct SyntaxToken* end_of_file_token)
+static struct SyntaxTree* syntax_tree_new(struct SourceText* source_text)
 {
   struct SyntaxTree* tree = mc_malloc(sizeof(struct SyntaxTree));
+  struct Parser* parser = parser_new(source_text);
+  struct CompilationUnitSyntax* root = parser_parse_compilation_unit(parser);
+  struct DiagnosticBag* diagnostics = parser->diagnostics;
+
   tree->source_text = source_text;
   tree->diagnostics = diagnostics;
   tree->root = root;
-  tree->end_of_file_token = end_of_file_token;
+
   return tree;
 }
 
@@ -24,8 +24,7 @@ struct SyntaxTree* syntax_tree_parse(sds text)
 
 struct SyntaxTree* syntax_tree_parse_text(struct SourceText* source_text)
 {
-  struct Parser* parser = parser_new(source_text);
-  return parser_parse(parser);
+  return syntax_tree_new(source_text);
 }
 
 struct SyntaxTokenList* syntax_tree_parse_tokens(sds text)

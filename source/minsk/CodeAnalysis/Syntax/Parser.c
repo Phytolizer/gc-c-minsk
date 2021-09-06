@@ -15,6 +15,7 @@
 #include <sds.h>
 
 #include "Lexer.h"
+#include "minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h"
 #include "minsk/CodeAnalysis/Syntax/SyntaxKind.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset)
@@ -72,16 +73,13 @@ void parser_free(struct Parser* parser)
   mc_free(parser);
 }
 
-struct SyntaxTree* parser_parse(struct Parser* parser)
+struct CompilationUnitSyntax* parser_parse_compilation_unit(
+    struct Parser* parser)
 {
   struct ExpressionSyntax* expression = parse_expression(parser);
   struct SyntaxToken* end_of_file_token
       = match_token(parser, SYNTAX_KIND_END_OF_FILE_TOKEN);
-  return syntax_tree_new(
-      parser->source_text,
-      parser->diagnostics,
-      expression,
-      end_of_file_token);
+  return compilation_unit_syntax_new(expression, end_of_file_token);
 }
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset)
