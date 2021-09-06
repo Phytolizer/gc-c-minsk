@@ -32,7 +32,8 @@ void diagnostic_bag_report_bad_character(
     int position,
     char character)
 {
-  sds message = sdscatfmt(sdsempty(), "bad character input: '%c'.", character);
+  sds message
+      = sdscatprintf(sdsempty(), "bad character input: '%c'.", character);
   report(bag, text_span_new(position, 1), message);
 }
 

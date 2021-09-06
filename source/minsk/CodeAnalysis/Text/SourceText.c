@@ -107,7 +107,7 @@ static struct TextLineList* parse_lines(
       line_start = position;
     }
   }
-  if (position > line_start)
+  if (position >= line_start)
   {
     add_line(result, source_text, position, line_start, 0);
   }
