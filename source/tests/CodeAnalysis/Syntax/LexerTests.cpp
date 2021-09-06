@@ -259,13 +259,6 @@ TEST_SUITE("Lexer")
   {
     for (auto& test : get_token_pairs())
     {
-      // std::cout << "\nt1 kind: " << SYNTAX_KINDS[test.first.kind];
-      // std::cout << "\nt1 text: '" << test.first.text << "'";
-      // std::cout << "\nt2 kind: " << SYNTAX_KINDS[test.second.kind];
-      // std::cout << "\nt2 text: '" << test.second.text << "'";
-      // std::cout << "\nconcatenated: '" << test.first.text << test.second.text
-      //           << "'";
-      // std::cout << "\n";
       sds text
           = sdscatfmt(sdsempty(), "%S%S", test.first.text, test.second.text);
       auto* tokens = syntax_tree_parse_tokens(text);
