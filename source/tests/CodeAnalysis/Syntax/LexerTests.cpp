@@ -89,76 +89,6 @@ const std::array SEPARATORS = {
 
 DECLARE_NAMED_LIST(SyntaxKindList, SyntaxKind);
 
-TEST_CASE("lexer: tests all token types")
-{
-  auto* token_kinds = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
-  LIST_INIT(token_kinds);
-  for (long i = 0; i < NUM_SYNTAX_KIND_VARIANTS; ++i)
-  {
-    std::string kind = SYNTAX_KINDS[i];
-    if (kind.ends_with("KEYWORD") || kind.ends_with("TOKEN"))
-    {
-      LIST_PUSH(token_kinds, SYNTAX_KIND_VARIANTS[i]);
-    }
-  }
-  auto* tested_token_kinds = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
-  for (long i = 0; i < TOKENS->length; ++i)
-  {
-    LIST_PUSH(tested_token_kinds, TOKENS->data[i].kind);
-  }
-  for (long i = 0; i < SEPARATORS.size(); ++i)
-  {
-    LIST_PUSH(tested_token_kinds, SEPARATORS[i].kind);
-  }
-  auto* untested_token_kinds
-      = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
-  for (long i = 0; i < token_kinds->length; ++i)
-  {
-    bool tested = false;
-    for (long j = 0; j < tested_token_kinds->length; ++j)
-    {
-      if (token_kinds->data[i] == tested_token_kinds->data[j])
-      {
-        tested = true;
-        break;
-      }
-    }
-    if (!tested && token_kinds->data[i] != SYNTAX_KIND_BAD_TOKEN
-        && token_kinds->data[i] != SYNTAX_KIND_END_OF_FILE_TOKEN)
-    {
-      LIST_PUSH(untested_token_kinds, token_kinds->data[i]);
-    }
-  }
-
-  CHECK(untested_token_kinds->length == 0);
-  for (long i = 0; i < untested_token_kinds->length; ++i)
-  {
-    std::cerr << "untested: " << SYNTAX_KINDS[untested_token_kinds->data[i]]
-              << std::endl;
-  }
-}
-
-TEST_CASE("lexer lexes token")
-{
-  std::vector<BasicToken> tests;
-  std::copy(
-      TOKENS->data,
-      &TOKENS->data[TOKENS->length],
-      std::back_inserter(tests));
-  std::copy(SEPARATORS.begin(), SEPARATORS.end(), std::back_inserter(tests));
-
-  for (auto& test : tests)
-  {
-    SyntaxTokenList* tokens = syntax_tree_parse_tokens(test.text);
-    CHECK(tokens->length == 1);
-    SyntaxToken* token = tokens->data[0];
-    CHECK(
-        std::string{SYNTAX_KINDS[token->kind]}
-        == std::string{SYNTAX_KINDS[test.kind]});
-    CHECK(std::string{token->text} == std::string{test.text});
-  }
-}
-
 static inline bool requires_separator(SyntaxKind t1kind, SyntaxKind t2kind)
 {
   bool t1_is_keyword = std::string{SYNTAX_KINDS[t1kind]}.ends_with("KEYWORD");
@@ -252,69 +182,146 @@ static TokenPairWithSeparatorList* get_token_pairs_with_separator()
 const TokenPairWithSeparatorList* TOKEN_PAIRS_WITH_SEPARATOR
     = get_token_pairs_with_separator();
 
-TEST_CASE("lexer lexes token pairs")
+TEST_SUITE("Lexer")
 {
-  for (auto& test : get_token_pairs())
+  TEST_CASE("tests all token types")
   {
-    // std::cout << "\nt1 kind: " << SYNTAX_KINDS[test.first.kind];
-    // std::cout << "\nt1 text: '" << test.first.text << "'";
-    // std::cout << "\nt2 kind: " << SYNTAX_KINDS[test.second.kind];
-    // std::cout << "\nt2 text: '" << test.second.text << "'";
-    // std::cout << "\nconcatenated: '" << test.first.text << test.second.text
-    //           << "'";
-    // std::cout << "\n";
-    sds text = sdscatfmt(sdsempty(), "%S%S", test.first.text, test.second.text);
-    auto* tokens = syntax_tree_parse_tokens(text);
+    auto* token_kinds = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
+    LIST_INIT(token_kinds);
+    for (long i = 0; i < NUM_SYNTAX_KIND_VARIANTS; ++i)
+    {
+      std::string kind = SYNTAX_KINDS[i];
+      if (kind.ends_with("KEYWORD") || kind.ends_with("TOKEN"))
+      {
+        LIST_PUSH(token_kinds, SYNTAX_KIND_VARIANTS[i]);
+      }
+    }
+    auto* tested_token_kinds
+        = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
+    for (long i = 0; i < TOKENS->length; ++i)
+    {
+      LIST_PUSH(tested_token_kinds, TOKENS->data[i].kind);
+    }
+    for (long i = 0; i < SEPARATORS.size(); ++i)
+    {
+      LIST_PUSH(tested_token_kinds, SEPARATORS[i].kind);
+    }
+    auto* untested_token_kinds
+        = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
+    for (long i = 0; i < token_kinds->length; ++i)
+    {
+      bool tested = false;
+      for (long j = 0; j < tested_token_kinds->length; ++j)
+      {
+        if (token_kinds->data[i] == tested_token_kinds->data[j])
+        {
+          tested = true;
+          break;
+        }
+      }
+      if (!tested && token_kinds->data[i] != SYNTAX_KIND_BAD_TOKEN
+          && token_kinds->data[i] != SYNTAX_KIND_END_OF_FILE_TOKEN)
+      {
+        LIST_PUSH(untested_token_kinds, token_kinds->data[i]);
+      }
+    }
 
-    REQUIRE(tokens->length == 2);
-
-    CHECK(
-        std::string{SYNTAX_KINDS[tokens->data[0]->kind]}
-        == std::string{SYNTAX_KINDS[test.first.kind]});
-    CHECK(std::string{tokens->data[0]->text} == std::string{test.first.text});
-
-    CHECK(
-        std::string{SYNTAX_KINDS[tokens->data[1]->kind]}
-        == std::string{SYNTAX_KINDS[test.second.kind]});
-    CHECK(std::string{tokens->data[1]->text} == std::string{test.second.text});
+    CHECK(untested_token_kinds->length == 0);
+    for (long i = 0; i < untested_token_kinds->length; ++i)
+    {
+      std::cerr << "untested: " << SYNTAX_KINDS[untested_token_kinds->data[i]]
+                << std::endl;
+    }
   }
-}
 
-TEST_CASE("lexer lexes token pairs with separator")
-{
-  for (long i = 0; i < TOKEN_PAIRS_WITH_SEPARATOR->length; ++i)
+  TEST_CASE("lexes token")
   {
-    auto& test = TOKEN_PAIRS_WITH_SEPARATOR->data[i];
-    sds text = sdscatfmt(
-        sdsempty(),
-        "%S%S%S",
-        test.t1.text,
-        test.separator.text,
-        test.t2.text);
-    auto* tokens = syntax_tree_parse_tokens(text);
+    std::vector<BasicToken> tests;
+    std::copy(
+        TOKENS->data,
+        &TOKENS->data[TOKENS->length],
+        std::back_inserter(tests));
+    std::copy(SEPARATORS.begin(), SEPARATORS.end(), std::back_inserter(tests));
 
-    REQUIRE(tokens->length > 0);
+    for (auto& test : tests)
+    {
+      SyntaxTokenList* tokens = syntax_tree_parse_tokens(test.text);
+      CHECK(tokens->length == 1);
+      SyntaxToken* token = tokens->data[0];
+      CHECK(
+          std::string{SYNTAX_KINDS[token->kind]}
+          == std::string{SYNTAX_KINDS[test.kind]});
+      CHECK(std::string{token->text} == std::string{test.text});
+    }
+  }
 
-    CHECK(
-        std::string{SYNTAX_KINDS[tokens->data[0]->kind]}
-        == std::string{SYNTAX_KINDS[test.t1.kind]});
-    CHECK(std::string{tokens->data[0]->text} == std::string{test.t1.text});
+  TEST_CASE("lexes token pairs")
+  {
+    for (auto& test : get_token_pairs())
+    {
+      // std::cout << "\nt1 kind: " << SYNTAX_KINDS[test.first.kind];
+      // std::cout << "\nt1 text: '" << test.first.text << "'";
+      // std::cout << "\nt2 kind: " << SYNTAX_KINDS[test.second.kind];
+      // std::cout << "\nt2 text: '" << test.second.text << "'";
+      // std::cout << "\nconcatenated: '" << test.first.text << test.second.text
+      //           << "'";
+      // std::cout << "\n";
+      sds text
+          = sdscatfmt(sdsempty(), "%S%S", test.first.text, test.second.text);
+      auto* tokens = syntax_tree_parse_tokens(text);
 
-    REQUIRE(tokens->length > 1);
+      REQUIRE(tokens->length == 2);
 
-    CHECK(
-        std::string{SYNTAX_KINDS[tokens->data[1]->kind]}
-        == std::string{SYNTAX_KINDS[test.separator.kind]});
-    CHECK(
-        std::string{tokens->data[1]->text} == std::string{test.separator.text});
+      CHECK(
+          std::string{SYNTAX_KINDS[tokens->data[0]->kind]}
+          == std::string{SYNTAX_KINDS[test.first.kind]});
+      CHECK(std::string{tokens->data[0]->text} == std::string{test.first.text});
 
-    REQUIRE(tokens->length > 2);
+      CHECK(
+          std::string{SYNTAX_KINDS[tokens->data[1]->kind]}
+          == std::string{SYNTAX_KINDS[test.second.kind]});
+      CHECK(
+          std::string{tokens->data[1]->text} == std::string{test.second.text});
+    }
+  }
 
-    CHECK(
-        std::string{SYNTAX_KINDS[tokens->data[2]->kind]}
-        == std::string{SYNTAX_KINDS[test.t2.kind]});
-    CHECK(std::string{tokens->data[2]->text} == std::string{test.t2.text});
+  TEST_CASE("lexes token pairs with separator")
+  {
+    for (long i = 0; i < TOKEN_PAIRS_WITH_SEPARATOR->length; ++i)
+    {
+      auto& test = TOKEN_PAIRS_WITH_SEPARATOR->data[i];
+      sds text = sdscatfmt(
+          sdsempty(),
+          "%S%S%S",
+          test.t1.text,
+          test.separator.text,
+          test.t2.text);
+      auto* tokens = syntax_tree_parse_tokens(text);
 
-    CHECK(tokens->length == 3);
+      REQUIRE(tokens->length > 0);
+
+      CHECK(
+          std::string{SYNTAX_KINDS[tokens->data[0]->kind]}
+          == std::string{SYNTAX_KINDS[test.t1.kind]});
+      CHECK(std::string{tokens->data[0]->text} == std::string{test.t1.text});
+
+      REQUIRE(tokens->length > 1);
+
+      CHECK(
+          std::string{SYNTAX_KINDS[tokens->data[1]->kind]}
+          == std::string{SYNTAX_KINDS[test.separator.kind]});
+      CHECK(
+          std::string{tokens->data[1]->text}
+          == std::string{test.separator.text});
+
+      REQUIRE(tokens->length > 2);
+
+      CHECK(
+          std::string{SYNTAX_KINDS[tokens->data[2]->kind]}
+          == std::string{SYNTAX_KINDS[test.t2.kind]});
+      CHECK(std::string{tokens->data[2]->text} == std::string{test.t2.text});
+
+      CHECK(tokens->length == 3);
+    }
   }
 }
