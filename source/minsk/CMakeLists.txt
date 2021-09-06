@@ -19,6 +19,7 @@ add_library(
   CodeAnalysis/Binding/BoundVariableExpression.c
   CodeAnalysis/Syntax/AssignmentExpressionSyntax.c
   CodeAnalysis/Syntax/BinaryExpressionSyntax.c
+  CodeAnalysis/Syntax/CompilationUnitSyntax.c
   CodeAnalysis/Syntax/ExpressionSyntax.c
   CodeAnalysis/Syntax/Lexer.c
   CodeAnalysis/Syntax/LiteralExpressionSyntax.c

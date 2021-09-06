@@ -1,5 +1,6 @@
 #include "minsk/CodeAnalysis/Syntax/SyntaxNode.h"
 
+#include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxToken.h>
 
@@ -23,6 +24,9 @@ enum SyntaxKind syntax_node_get_kind(struct SyntaxNode* node)
       return syntax_token_get_kind((struct SyntaxToken*)node);
     case SYNTAX_NODE_KIND_EXPRESSION:
       return expression_syntax_get_kind((struct ExpressionSyntax*)node);
+    case SYNTAX_NODE_KIND_COMPILATION_UNIT:
+      return compilation_unit_syntax_get_kind(
+          (struct CompilationUnitSyntax*)node);
   }
 }
 
@@ -34,6 +38,9 @@ struct SyntaxNodeList* syntax_node_get_children(struct SyntaxNode* node)
       return syntax_token_get_children((struct SyntaxToken*)node);
     case SYNTAX_NODE_KIND_EXPRESSION:
       return expression_syntax_get_children((struct ExpressionSyntax*)node);
+    case SYNTAX_NODE_KIND_COMPILATION_UNIT:
+      return compilation_unit_syntax_get_children(
+          (struct CompilationUnitSyntax*)node);
   }
 }
 
@@ -44,6 +51,7 @@ struct TextSpan* syntax_node_get_span(struct SyntaxNode* node)
     case SYNTAX_NODE_KIND_TOKEN:
       return syntax_token_get_span((struct SyntaxToken*)node);
     case SYNTAX_NODE_KIND_EXPRESSION:
+    case SYNTAX_NODE_KIND_COMPILATION_UNIT:
       break;
   }
   struct SyntaxNodeList* children = syntax_node_get_children(node);

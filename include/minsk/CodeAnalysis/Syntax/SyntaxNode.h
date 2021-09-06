@@ -9,7 +9,8 @@
 
 #define SYNTAX_NODE_KINDS_ \
   X(TOKEN) \
-  X(EXPRESSION)
+  X(EXPRESSION) \
+  X(COMPILATION_UNIT)
 
 enum SyntaxNodeKind
 {
