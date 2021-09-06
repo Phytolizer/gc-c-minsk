@@ -17,7 +17,9 @@
 #include "BoundBinaryExpression.h"
 #include "BoundBinaryOperator.h"
 #include "BoundExpression.h"
+#include "BoundGlobalScope.h"
 #include "BoundLiteralExpression.h"
+#include "BoundScope.h"
 #include "BoundUnaryExpression.h"
 #include "BoundUnaryOperator.h"
 #include "BoundVariableExpression.h"
@@ -45,11 +47,38 @@ static struct BoundExpression* bind_assignment_expression(
     struct Binder* binder,
     struct AssignmentExpressionSyntax* syntax);
 
-struct Binder* binder_new(struct VariableStore* variables)
+static struct BoundScope* create_parent_scopes(
+    struct BoundGlobalScope* previous);
+
+struct BoundGlobalScope* bind_global_scope(
+    struct BoundGlobalScope* previous,
+    struct CompilationUnitSyntax* syntax)
+{
+  struct BoundScope* parent_scope = create_parent_scopes(previous);
+  struct Binder* binder = binder_new(parent_scope);
+  struct BoundExpression* expression = binder_bind(binder, syntax->expression);
+  struct VariableSymbolList* variables
+      = bound_scope_get_declared_variables(binder->scope);
+  struct DiagnosticList* diagnostics = mc_malloc(sizeof(struct DiagnosticList));
+  if (previous)
+  {
+    for (long i = 0; i < previous->diagnostics->length; ++i)
+    {
+      LIST_PUSH(diagnostics, previous->diagnostics->data[i]);
+    }
+  }
+  for (long i = 0; i < binder->diagnostics->diagnostics->length; ++i)
+  {
+    LIST_PUSH(diagnostics, binder->diagnostics->diagnostics->data[i]);
+  }
+  return bound_global_scope_new(NULL, diagnostics, variables, expression);
+}
+
+struct Binder* binder_new(struct BoundScope* parent)
 {
   struct Binder* binder = mc_malloc(sizeof(struct Binder));
   binder->diagnostics = diagnostic_bag_new();
-  binder->variables = variables;
+  binder->scope = bound_scope_new(parent);
   return binder;
 }
 
@@ -169,15 +198,8 @@ static struct BoundExpression* bind_name_expression(
 {
   sds name = syntax->identifier_token->text;
 
-  struct VariableSymbol* variable = NULL;
-  for (long i = 0; i < binder->variables->num_entries; ++i)
-  {
-    struct VariableSymbol* sym = binder->variables->entries[i].symbol;
-    if (sym && sdscmp(sym->name, name) == 0)
-    {
-      variable = sym;
-    }
-  }
+  struct VariableSymbol** variable
+      = bound_scope_try_lookup(binder->scope, name);
 
   if (!variable)
   {
@@ -189,7 +211,7 @@ static struct BoundExpression* bind_name_expression(
         OBJECT_INTEGER(0));
   }
 
-  return (struct BoundExpression*)bound_variable_expression_new(variable);
+  return (struct BoundExpression*)bound_variable_expression_new(*variable);
 }
 
 static struct BoundExpression* bind_assignment_expression(
@@ -199,21 +221,44 @@ static struct BoundExpression* bind_assignment_expression(
   sds name = syntax->identifier_token->text;
   struct BoundExpression* bound_expression
       = bind_expression(binder, syntax->expression);
-  // HACK
-  for (long i = 0; i < binder->variables->num_entries; ++i)
-  {
-    if (binder->variables->entries[i].symbol
-        && sdscmp(name, binder->variables->entries[i].symbol->name) == 0)
-    {
-      // remove existing variable
-      binder->variables->entries[i].value = OBJECT_NULL();
-      break;
-    }
-  }
   struct VariableSymbol* variable
       = variable_symbol_new(name, bound_expression_get_type(bound_expression));
-  variable_store_insert_or_assign(binder->variables, variable, OBJECT_NULL());
+
+  if (!bound_scope_try_declare(binder->scope, variable))
+  {
+    diagnostic_bag_report_variable_already_declared(
+        binder->diagnostics,
+        syntax_token_get_span(syntax->identifier_token),
+        name);
+  }
+
   return (struct BoundExpression*)bound_assignment_expression_new(
       variable,
       bound_expression);
+}
+
+static struct BoundScope* create_parent_scopes(
+    struct BoundGlobalScope* previous)
+{
+  struct BoundGlobalScopeList* stack
+      = mc_malloc(sizeof(struct BoundGlobalScopeList));
+  LIST_INIT(stack);
+  while (previous != NULL)
+  {
+    LIST_PUSH(stack, previous);
+    previous = previous->previous;
+  }
+  struct BoundScope* parent = NULL;
+  while (stack->length > 0)
+  {
+    previous = LIST_POP(stack);
+    struct BoundScope* scope = bound_scope_new(parent);
+    for (long i = 0; i < previous->variables->length; ++i)
+    {
+      bound_scope_try_declare(scope, previous->variables->data[i]);
+    }
+    parent = scope;
+  }
+
+  return parent;
 }

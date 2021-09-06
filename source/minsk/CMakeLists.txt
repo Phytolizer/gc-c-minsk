@@ -12,8 +12,10 @@ add_library(
   CodeAnalysis/Binding/BoundBinaryExpression.c
   CodeAnalysis/Binding/BoundBinaryOperator.c
   CodeAnalysis/Binding/BoundExpression.c
+  CodeAnalysis/Binding/BoundGlobalScope.c
   CodeAnalysis/Binding/BoundLiteralExpression.c
   CodeAnalysis/Binding/BoundNode.c
+  CodeAnalysis/Binding/BoundScope.c
   CodeAnalysis/Binding/BoundUnaryExpression.c
   CodeAnalysis/Binding/BoundUnaryOperator.c
   CodeAnalysis/Binding/BoundVariableExpression.c

@@ -90,6 +90,16 @@ void diagnostic_bag_report_undefined_name(
   report(bag, span, message);
 }
 
+void diagnostic_bag_report_variable_already_declared(
+    struct DiagnosticBag* bag,
+    struct TextSpan* span,
+    sds name)
+{
+  sds message
+      = sdscatfmt(sdsempty(), "Variable '%S' is already declared.", name);
+  report(bag, span, message);
+}
+
 void diagnostic_bag_add_range(
     struct DiagnosticBag* bag,
     const struct DiagnosticBag* other)

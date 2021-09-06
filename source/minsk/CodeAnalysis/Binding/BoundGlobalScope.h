@@ -1,0 +1,23 @@
+#pragma once
+
+#include <common/List.h>
+#include <minsk/CodeAnalysis/Diagnostic.h>
+
+#include "BoundExpression.h"
+#include "BoundScope.h"
+
+struct BoundGlobalScope
+{
+  struct BoundGlobalScope* previous;
+  struct DiagnosticList* diagnostics;
+  struct VariableSymbolList* variables;
+  struct BoundExpression* expression;
+};
+
+DECLARE_NAMED_LIST(BoundGlobalScopeList, struct BoundGlobalScope*);
+
+struct BoundGlobalScope* bound_global_scope_new(
+    struct BoundGlobalScope* previous,
+    struct DiagnosticList* diagnostics,
+    struct VariableSymbolList* variables,
+    struct BoundExpression* expression);

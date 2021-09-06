@@ -35,6 +35,7 @@ int main(void)
   bool show_tree = false;
   struct VariableStore* variables = variable_store_new();
   sds text = sdsempty();
+  struct Compilation* previous = NULL;
   while (true)
   {
     printf("\x1b[32m");
@@ -71,6 +72,11 @@ int main(void)
         printf("\x1b[0;0H");    // move cursor
         continue;
       }
+      if (strcmp(input, "#reset") == 0)
+      {
+        previous = NULL;
+        continue;
+      }
     }
 
     if (input)
@@ -83,7 +89,9 @@ int main(void)
     {
       continue;
     }
-    struct Compilation* compilation = compilation_new(tree);
+    struct Compilation* compilation = (previous == NULL)
+        ? compilation_new(tree)
+        : compilation_continue_with(previous, tree);
     struct EvaluationResult* result
         = compilation_evaluate(compilation, variables);
     struct DiagnosticList* diagnostics = result->diagnostics;
@@ -129,6 +137,7 @@ int main(void)
     else
     {
       printf("\x1b[35m%s\x1b[0m\n", object_to_string(result->value));
+      previous = compilation;
     }
     text = sdsempty();
   }

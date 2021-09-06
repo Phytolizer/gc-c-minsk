@@ -40,6 +40,10 @@ void diagnostic_bag_report_undefined_name(
     struct DiagnosticBag* bag,
     struct TextSpan* span,
     sds name);
+void diagnostic_bag_report_variable_already_declared(
+    struct DiagnosticBag* bag,
+    struct TextSpan* span,
+    sds name);
 
 void diagnostic_bag_add_range(
     struct DiagnosticBag* bag,
