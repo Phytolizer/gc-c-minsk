@@ -4,11 +4,13 @@
 #include "Parser.h"
 
 struct SyntaxTree* syntax_tree_new(
+    struct SourceText* source_text,
     struct DiagnosticBag* diagnostics,
     struct ExpressionSyntax* root,
     struct SyntaxToken* end_of_file_token)
 {
   struct SyntaxTree* tree = mc_malloc(sizeof(struct SyntaxTree));
+  tree->source_text = source_text;
   tree->diagnostics = diagnostics;
   tree->root = root;
   tree->end_of_file_token = end_of_file_token;

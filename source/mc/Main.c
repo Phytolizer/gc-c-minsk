@@ -70,9 +70,22 @@ int main(void)
     }
     if (diagnostics->length > 0)
     {
+      struct SourceText* text = tree->source_text;
+
       for (long i = 0; i < diagnostics->length; ++i)
       {
-        printf("\n\x1b[31m%s\x1b[0m\n", diagnostics->data[i]->message);
+        int line_index = source_text_get_line_index(
+            text,
+            diagnostics->data[i]->span->start);
+        int line_number = line_index + 1;
+        int character = diagnostics->data[i]->span->start
+            - text->lines->data[line_index]->start + 1;
+
+        printf(
+            "\n\x1b[31m(%d, %d): %s\x1b[0m\n",
+            line_number,
+            character,
+            diagnostics->data[i]->message);
         sds prefix
             = sdscatlen(sdsempty(), line, diagnostics->data[i]->span->start);
         sds error = sdscatlen(

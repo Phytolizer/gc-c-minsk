@@ -3,10 +3,12 @@
 #include <common/List.h>
 #include <minsk/CodeAnalysis/DiagnosticBag.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
+#include <minsk/CodeAnalysis/Text/SourceText.h>
 #include <sds.h>
 
 struct Parser
 {
+  struct SourceText* source_text;
   struct SyntaxTokenList* tokens;
   int position;
   struct DiagnosticBag* diagnostics;

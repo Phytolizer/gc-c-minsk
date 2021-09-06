@@ -42,6 +42,7 @@ static struct ExpressionSyntax* parse_number_literal(struct Parser* parser);
 struct Parser* parser_new(struct SourceText* source_text)
 {
   struct Parser* parser = mc_malloc(sizeof(struct Parser));
+  parser->source_text = source_text;
   parser->tokens = mc_malloc(sizeof(struct SyntaxTokenList));
   LIST_INIT(parser->tokens);
   parser->position = 0;
@@ -76,7 +77,11 @@ struct SyntaxTree* parser_parse(struct Parser* parser)
   struct ExpressionSyntax* expression = parse_expression(parser);
   struct SyntaxToken* end_of_file_token
       = match_token(parser, SYNTAX_KIND_END_OF_FILE_TOKEN);
-  return syntax_tree_new(parser->diagnostics, expression, end_of_file_token);
+  return syntax_tree_new(
+      parser->source_text,
+      parser->diagnostics,
+      expression,
+      end_of_file_token);
 }
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset)

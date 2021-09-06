@@ -22,7 +22,7 @@ struct SourceText* source_text_from(sds text)
 int source_text_get_line_index(struct SourceText* self, int position)
 {
   int lower = 0;
-  int upper = sdslen(self->text) - 1;
+  int upper = self->lines->length - 1;
 
   while (lower <= upper)
   {
