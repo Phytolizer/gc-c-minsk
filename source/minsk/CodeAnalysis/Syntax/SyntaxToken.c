@@ -1,7 +1,7 @@
 #include "minsk/CodeAnalysis/Syntax/SyntaxToken.h"
 
 #include <IncludeMe.h>
-#include <minsk/CodeAnalysis/TextSpan.h>
+#include <minsk/CodeAnalysis/Text/TextSpan.h>
 
 struct SyntaxToken* syntax_token_new(
     enum SyntaxKind kind,

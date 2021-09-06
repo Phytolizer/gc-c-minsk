@@ -3,7 +3,7 @@
 #include <common/List.h>
 #include <sds.h>
 
-#include "TextSpan.h"
+#include "Text/TextSpan.h"
 
 struct Diagnostic
 {

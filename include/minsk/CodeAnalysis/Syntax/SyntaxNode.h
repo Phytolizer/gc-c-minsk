@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #include <common/List.h>
-#include <minsk/CodeAnalysis/TextSpan.h>
+#include <minsk/CodeAnalysis/Text/TextSpan.h>
 
 #include "SyntaxKind.h"
 

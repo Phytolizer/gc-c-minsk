@@ -5,7 +5,6 @@ add_library(
   CodeAnalysis/DiagnosticBag.c
   CodeAnalysis/EvaluationResult.c
   CodeAnalysis/Evaluator.c
-  CodeAnalysis/TextSpan.c
   CodeAnalysis/VariableStore.c
   CodeAnalysis/VariableSymbol.c
   CodeAnalysis/Binding/Binder.c
@@ -31,5 +30,6 @@ add_library(
   CodeAnalysis/Syntax/SyntaxNode.c
   CodeAnalysis/Syntax/SyntaxToken.c
   CodeAnalysis/Syntax/SyntaxTree.c
-  CodeAnalysis/Syntax/UnaryExpressionSyntax.c)
+  CodeAnalysis/Syntax/UnaryExpressionSyntax.c
+  CodeAnalysis/Text/TextSpan.c)
 target_link_libraries(minsk PUBLIC ${BDWGC} sds common)
