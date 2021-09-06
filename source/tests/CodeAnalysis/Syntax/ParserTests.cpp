@@ -90,6 +90,7 @@ TEST_SUITE("Parser")
       if (op1_precedence >= op2_precedence)
       {
         AssertingEnumerator e{expression};
+        e.assert_node(SYNTAX_KIND_COMPILATION_UNIT);
         e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
         e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
@@ -100,10 +101,12 @@ TEST_SUITE("Parser")
         e.assert_token(test.second, op2_text);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
         e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "c");
+        e.assert_token(SYNTAX_KIND_END_OF_FILE_TOKEN, "");
       }
       else
       {
         AssertingEnumerator e{expression};
+        e.assert_node(SYNTAX_KIND_COMPILATION_UNIT);
         e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
         e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "a");
@@ -114,6 +117,7 @@ TEST_SUITE("Parser")
         e.assert_token(test.second, op2_text);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
         e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "c");
+        e.assert_token(SYNTAX_KIND_END_OF_FILE_TOKEN, "");
       }
     }
   }
@@ -133,6 +137,7 @@ TEST_SUITE("Parser")
       if (unary_precedence >= binary_precedence)
       {
         AssertingEnumerator e{expression};
+        e.assert_node(SYNTAX_KIND_COMPILATION_UNIT);
         e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
         e.assert_node(SYNTAX_KIND_UNARY_EXPRESSION);
         e.assert_token(test.first, unary_text);
@@ -141,10 +146,12 @@ TEST_SUITE("Parser")
         e.assert_token(test.second, binary_text);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
         e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
+        e.assert_token(SYNTAX_KIND_END_OF_FILE_TOKEN, "");
       }
       else
       {
         AssertingEnumerator e{expression};
+        e.assert_node(SYNTAX_KIND_COMPILATION_UNIT);
         e.assert_node(SYNTAX_KIND_UNARY_EXPRESSION);
         e.assert_token(test.first, unary_text);
         e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
@@ -153,6 +160,7 @@ TEST_SUITE("Parser")
         e.assert_token(test.second, binary_text);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
         e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
+        e.assert_token(SYNTAX_KIND_END_OF_FILE_TOKEN, "");
       }
     }
   }
