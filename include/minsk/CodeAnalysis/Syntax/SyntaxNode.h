@@ -1,6 +1,8 @@
 #pragma once
 
-#include "common/List.h"
+#include <common/List.h>
+#include <minsk/CodeAnalysis/TextSpan.h>
+
 #include "SyntaxKind.h"
 
 #define SYNTAX_NODE_KINDS_ \
@@ -25,3 +27,4 @@ DECLARE_NAMED_LIST(SyntaxNodeList, struct SyntaxNode*);
 
 enum SyntaxKind syntax_node_get_kind(struct SyntaxNode* node);
 struct SyntaxNodeList* syntax_node_get_children(struct SyntaxNode* node);
+struct TextSpan* syntax_node_get_span(struct SyntaxNode* node);
