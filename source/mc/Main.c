@@ -10,8 +10,6 @@
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
 #include <sds.h>
 
-static void pretty_print(struct SyntaxNode* node, sds indent, bool is_last);
-
 sds input_line(const char* prompt)
 {
   printf("%s", prompt);
@@ -67,7 +65,7 @@ int main(void)
     if (show_tree)
     {
       printf("\x1b[2;37m");
-      pretty_print((struct SyntaxNode*)tree->root, sdsempty(), true);
+      syntax_node_pretty_print(stdout, (struct SyntaxNode*)tree->root);
       printf("\x1b[0m");
     }
     if (diagnostics->length > 0)
@@ -95,25 +93,4 @@ int main(void)
     }
   }
   return 0;
-}
-
-static void pretty_print(struct SyntaxNode* node, sds indent, bool is_last)
-{
-  sds marker = is_last ? sdsnew("└───") : sdsnew("├───");
-  printf("%s%s%s", indent, marker, SYNTAX_KINDS[syntax_node_get_kind(node)]);
-
-  if (node->kind == SYNTAX_NODE_KIND_TOKEN
-      && ((struct SyntaxToken*)node)->value->kind != OBJECT_KIND_NULL)
-  {
-    printf(" %s", object_to_string(((struct SyntaxToken*)node)->value));
-  }
-  printf("\n");
-  indent = sdsdup(indent);
-  indent = sdscat(indent, is_last ? "    " : "│   ");
-  struct SyntaxNodeList* children = syntax_node_get_children(node);
-  for (long i = 0; i < children->length; i++)
-  {
-    pretty_print(children->data[i], indent, i == children->length - 1);
-  }
-  sdsfree(indent);
 }

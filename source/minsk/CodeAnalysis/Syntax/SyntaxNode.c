@@ -9,6 +9,12 @@ const char* const SYNTAX_NODE_KINDS[] = {
 #undef X
 };
 
+static void pretty_print(
+    FILE* stream,
+    struct SyntaxNode* node,
+    sds indent,
+    bool is_last);
+
 enum SyntaxKind syntax_node_get_kind(struct SyntaxNode* node)
 {
   switch (node->kind)
@@ -45,4 +51,41 @@ struct TextSpan* syntax_node_get_span(struct SyntaxNode* node)
   struct TextSpan* last
       = syntax_node_get_span(children->data[children->length - 1]);
   return text_span_from_bounds(first->start, text_span_end(last));
+}
+
+void syntax_node_pretty_print(FILE* stream, struct SyntaxNode* node)
+{
+  pretty_print(stream, node, sdsempty(), true);
+}
+
+static void pretty_print(
+    FILE* stream,
+    struct SyntaxNode* node,
+    sds indent,
+    bool is_last)
+{
+  sds marker = is_last ? sdsnew("└───") : sdsnew("├───");
+  fprintf(
+      stream,
+      "%s%s%s",
+      indent,
+      marker,
+      SYNTAX_KINDS[syntax_node_get_kind(node)]);
+
+  if (node->kind == SYNTAX_NODE_KIND_TOKEN
+      && ((struct SyntaxToken*)node)->value->kind != OBJECT_KIND_NULL)
+  {
+    fprintf(
+        stream,
+        " %s",
+        object_to_string(((struct SyntaxToken*)node)->value));
+  }
+  fprintf(stream, "\n");
+  indent = sdsdup(indent);
+  indent = sdscat(indent, is_last ? "    " : "│   ");
+  struct SyntaxNodeList* children = syntax_node_get_children(node);
+  for (long i = 0; i < children->length; i++)
+  {
+    pretty_print(stream, children->data[i], indent, i == children->length - 1);
+  }
 }
