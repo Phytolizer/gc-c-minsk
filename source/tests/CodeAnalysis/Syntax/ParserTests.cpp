@@ -60,49 +60,6 @@ static std::vector<std::pair<SyntaxKind, SyntaxKind>>
   return binary_operator_pairs;
 }
 
-TEST_CASE("parser: binary expression honors precedences")
-{
-  for (auto& test : get_binary_operator_pairs())
-  {
-    int op1_precedence = binary_operator_precedence(test.first);
-    int op2_precedence = binary_operator_precedence(test.second);
-    sds op1_text = syntax_facts_get_text(test.first);
-    sds op2_text = syntax_facts_get_text(test.second);
-    sds text = sdscatfmt(sdsempty(), "a %S b %S c", op1_text, op2_text);
-    SyntaxNode* expression
-        = reinterpret_cast<SyntaxNode*>(syntax_tree_parse(text)->root);
-
-    if (op1_precedence >= op2_precedence)
-    {
-      AssertingEnumerator e{expression};
-      e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
-      e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
-      e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
-      e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "a");
-      e.assert_token(test.first, op1_text);
-      e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
-      e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
-      e.assert_token(test.second, op2_text);
-      e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
-      e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "c");
-    }
-    else
-    {
-      AssertingEnumerator e{expression};
-      e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
-      e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
-      e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "a");
-      e.assert_token(test.first, op1_text);
-      e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
-      e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
-      e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
-      e.assert_token(test.second, op2_text);
-      e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
-      e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "c");
-    }
-  }
-}
-
 static std::vector<std::pair<SyntaxKind, SyntaxKind>> get_unary_operator_pairs()
 {
   std::vector<std::pair<SyntaxKind, SyntaxKind>> binary_operator_pairs;
@@ -116,41 +73,87 @@ static std::vector<std::pair<SyntaxKind, SyntaxKind>> get_unary_operator_pairs()
   return binary_operator_pairs;
 }
 
-TEST_CASE("parser: unary expression honors precedences")
+TEST_SUITE("Parser")
 {
-  for (auto& test : get_unary_operator_pairs())
+  TEST_CASE("binary expression honors precedences")
   {
-    int unary_precedence = unary_operator_precedence(test.first);
-    int binary_precedence = binary_operator_precedence(test.second);
-    sds unary_text = syntax_facts_get_text(test.first);
-    sds binary_text = syntax_facts_get_text(test.second);
-    sds text = sdscatfmt(sdsempty(), "%S a %S b", unary_text, binary_text);
-    SyntaxNode* expression
-        = reinterpret_cast<SyntaxNode*>(syntax_tree_parse(text)->root);
+    for (auto& test : get_binary_operator_pairs())
+    {
+      int op1_precedence = binary_operator_precedence(test.first);
+      int op2_precedence = binary_operator_precedence(test.second);
+      sds op1_text = syntax_facts_get_text(test.first);
+      sds op2_text = syntax_facts_get_text(test.second);
+      sds text = sdscatfmt(sdsempty(), "a %S b %S c", op1_text, op2_text);
+      SyntaxNode* expression
+          = reinterpret_cast<SyntaxNode*>(syntax_tree_parse(text)->root);
 
-    if (unary_precedence >= binary_precedence)
-    {
-      AssertingEnumerator e{expression};
-      e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
-      e.assert_node(SYNTAX_KIND_UNARY_EXPRESSION);
-      e.assert_token(test.first, unary_text);
-      e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
-      e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "a");
-      e.assert_token(test.second, binary_text);
-      e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
-      e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
+      if (op1_precedence >= op2_precedence)
+      {
+        AssertingEnumerator e{expression};
+        e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
+        e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
+        e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
+        e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "a");
+        e.assert_token(test.first, op1_text);
+        e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
+        e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
+        e.assert_token(test.second, op2_text);
+        e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
+        e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "c");
+      }
+      else
+      {
+        AssertingEnumerator e{expression};
+        e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
+        e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
+        e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "a");
+        e.assert_token(test.first, op1_text);
+        e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
+        e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
+        e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
+        e.assert_token(test.second, op2_text);
+        e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
+        e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "c");
+      }
     }
-    else
+  }
+
+  TEST_CASE("unary expression honors precedences")
+  {
+    for (auto& test : get_unary_operator_pairs())
     {
-      AssertingEnumerator e{expression};
-      e.assert_node(SYNTAX_KIND_UNARY_EXPRESSION);
-      e.assert_token(test.first, unary_text);
-      e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
-      e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
-      e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "a");
-      e.assert_token(test.second, binary_text);
-      e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
-      e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
+      int unary_precedence = unary_operator_precedence(test.first);
+      int binary_precedence = binary_operator_precedence(test.second);
+      sds unary_text = syntax_facts_get_text(test.first);
+      sds binary_text = syntax_facts_get_text(test.second);
+      sds text = sdscatfmt(sdsempty(), "%S a %S b", unary_text, binary_text);
+      SyntaxNode* expression
+          = reinterpret_cast<SyntaxNode*>(syntax_tree_parse(text)->root);
+
+      if (unary_precedence >= binary_precedence)
+      {
+        AssertingEnumerator e{expression};
+        e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
+        e.assert_node(SYNTAX_KIND_UNARY_EXPRESSION);
+        e.assert_token(test.first, unary_text);
+        e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
+        e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "a");
+        e.assert_token(test.second, binary_text);
+        e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
+        e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
+      }
+      else
+      {
+        AssertingEnumerator e{expression};
+        e.assert_node(SYNTAX_KIND_UNARY_EXPRESSION);
+        e.assert_token(test.first, unary_text);
+        e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
+        e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
+        e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "a");
+        e.assert_token(test.second, binary_text);
+        e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
+        e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
+      }
     }
   }
 }
