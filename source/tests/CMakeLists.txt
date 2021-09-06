@@ -5,5 +5,6 @@ add_executable(
   CodeAnalysis/Syntax/LexerTests.cpp
   CodeAnalysis/Syntax/ParserTests.cpp
   CodeAnalysis/Syntax/SyntaxFactsTests.cpp
-  CodeAnalysis/Text/SourceTextTests.cpp)
+  CodeAnalysis/Text/SourceTextTests.cpp
+)
 target_link_libraries(MinskTests PUBLIC sds common minsk doctest)

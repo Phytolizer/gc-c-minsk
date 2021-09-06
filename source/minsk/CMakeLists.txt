@@ -33,5 +33,6 @@ add_library(
   CodeAnalysis/Syntax/UnaryExpressionSyntax.c
   CodeAnalysis/Text/SourceText.c
   CodeAnalysis/Text/TextLine.c
-  CodeAnalysis/Text/TextSpan.c)
+  CodeAnalysis/Text/TextSpan.c
+)
 target_link_libraries(minsk PUBLIC ${BDWGC} sds common)
