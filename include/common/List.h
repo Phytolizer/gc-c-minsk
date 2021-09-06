@@ -70,7 +70,9 @@ struct UnpackedList
         (L)->capacity = ((L)->capacity == 0) ? LIST_INITIAL_CAPACITY \
                                              : (L)->capacity * 2; \
       } \
-      (L)->data = mc_realloc((L)->data, (L)->capacity * sizeof(*(L)->data)); \
+      (L)->data = (typeof((L)->data))mc_realloc( \
+          (L)->data, \
+          (L)->capacity * sizeof(*(L)->data)); \
     } \
   } \
   while (false)
