@@ -8,24 +8,27 @@ extern "C" {
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
 }
 
-TEST_CASE("syntax_facts_get_text round trips")
+TEST_SUITE("SyntaxFacts")
 {
-  std::vector<SyntaxKind> syntax_kind_variants;
-  std::copy(
-      SYNTAX_KIND_VARIANTS,
-      &SYNTAX_KIND_VARIANTS[NUM_SYNTAX_KIND_VARIANTS],
-      std::back_inserter(syntax_kind_variants));
-  for (auto& value : syntax_kind_variants)
+  TEST_CASE("syntax_facts_get_text round trips")
   {
-    sds text = syntax_facts_get_text(value);
-    if (text == NULL)
+    std::vector<SyntaxKind> syntax_kind_variants;
+    std::copy(
+        SYNTAX_KIND_VARIANTS,
+        &SYNTAX_KIND_VARIANTS[NUM_SYNTAX_KIND_VARIANTS],
+        std::back_inserter(syntax_kind_variants));
+    for (auto& value : syntax_kind_variants)
     {
-      continue;
-    }
+      sds text = syntax_facts_get_text(value);
+      if (text == NULL)
+      {
+        continue;
+      }
 
-    SyntaxTokenList* tokens = syntax_tree_parse_tokens(text);
-    REQUIRE(tokens->length == 1);
-    CHECK(tokens->data[0]->kind == value);
-    CHECK(std::string{tokens->data[0]->text} == std::string{text});
+      SyntaxTokenList* tokens = syntax_tree_parse_tokens(text);
+      REQUIRE(tokens->length == 1);
+      CHECK(tokens->data[0]->kind == value);
+      CHECK(std::string{tokens->data[0]->text} == std::string{text});
+    }
   }
 }
