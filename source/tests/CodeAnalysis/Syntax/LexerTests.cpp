@@ -87,6 +87,57 @@ const std::array SEPARATORS = {
     BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew("\r\n")},
 };
 
+DECLARE_NAMED_LIST(SyntaxKindList, SyntaxKind);
+
+TEST_CASE("lexer: tests all token types")
+{
+  auto* token_kinds = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
+  LIST_INIT(token_kinds);
+  for (long i = 0; i < NUM_SYNTAX_KIND_VARIANTS; ++i)
+  {
+    std::string kind = SYNTAX_KINDS[i];
+    if (kind.ends_with("KEYWORD") || kind.ends_with("TOKEN"))
+    {
+      LIST_PUSH(token_kinds, SYNTAX_KIND_VARIANTS[i]);
+    }
+  }
+  auto* tested_token_kinds = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
+  for (long i = 0; i < TOKENS->length; ++i)
+  {
+    LIST_PUSH(tested_token_kinds, TOKENS->data[i].kind);
+  }
+  for (long i = 0; i < SEPARATORS.size(); ++i)
+  {
+    LIST_PUSH(tested_token_kinds, SEPARATORS[i].kind);
+  }
+  auto* untested_token_kinds
+      = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
+  for (long i = 0; i < token_kinds->length; ++i)
+  {
+    bool tested = false;
+    for (long j = 0; j < tested_token_kinds->length; ++j)
+    {
+      if (token_kinds->data[i] == tested_token_kinds->data[j])
+      {
+        tested = true;
+        break;
+      }
+    }
+    if (!tested && token_kinds->data[i] != SYNTAX_KIND_BAD_TOKEN
+        && token_kinds->data[i] != SYNTAX_KIND_END_OF_FILE_TOKEN)
+    {
+      LIST_PUSH(untested_token_kinds, token_kinds->data[i]);
+    }
+  }
+
+  CHECK(untested_token_kinds->length == 0);
+  for (long i = 0; i < untested_token_kinds->length; ++i)
+  {
+    std::cerr << "untested: " << SYNTAX_KINDS[untested_token_kinds->data[i]]
+              << std::endl;
+  }
+}
+
 TEST_CASE("lexer lexes token")
 {
   std::vector<BasicToken> tests;
