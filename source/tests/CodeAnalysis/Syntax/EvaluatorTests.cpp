@@ -40,32 +40,35 @@ const std::array EVALUATOR_TESTS = {
     EvaluatorTest{"(a = 10) + a", OBJECT_INTEGER(20)},
 };
 
-TEST_CASE("")
+TEST_SUITE("Evaluator")
 {
-  for (auto& test : EVALUATOR_TESTS)
+  TEST_CASE("sanity check")
   {
-    sds text = sdsnew(test.text.c_str());
-    auto* tree = syntax_tree_parse(text);
-    auto* compilation = compilation_new(tree);
-    auto* variables = variable_store_new();
-    variable_store_insert_or_assign(
-        variables,
-        variable_symbol_new(sdsnew("a"), OBJECT_KIND_INTEGER),
-        OBJECT_INTEGER(42));
-    auto* result = compilation_evaluate(compilation, variables);
+    for (auto& test : EVALUATOR_TESTS)
+    {
+      sds text = sdsnew(test.text.c_str());
+      auto* tree = syntax_tree_parse(text);
+      auto* compilation = compilation_new(tree);
+      auto* variables = variable_store_new();
+      variable_store_insert_or_assign(
+          variables,
+          variable_symbol_new(sdsnew("a"), OBJECT_KIND_INTEGER),
+          OBJECT_INTEGER(42));
+      auto* result = compilation_evaluate(compilation, variables);
 
-    CHECK(result->diagnostics->length == 0);
-    // std::cout << OBJECT_KINDS[result->value->kind] << " ";
-    // if (OBJECT_IS_INTEGER(result->value))
-    // {
-    //   std::cout << OBJECT_AS_INTEGER(result->value)->value << " ";
-    // }
-    // std::cout << "== " << OBJECT_KINDS[test.expected_value->kind] << " ";
-    // if (OBJECT_IS_INTEGER(test.expected_value))
-    // {
-    //   std::cout << OBJECT_AS_INTEGER(test.expected_value)->value;
-    // }
-    // std::cout << std::endl;
-    CHECK(objects_equal(test.expected_value, result->value));
+      CHECK(result->diagnostics->length == 0);
+      // std::cout << OBJECT_KINDS[result->value->kind] << " ";
+      // if (OBJECT_IS_INTEGER(result->value))
+      // {
+      //   std::cout << OBJECT_AS_INTEGER(result->value)->value << " ";
+      // }
+      // std::cout << "== " << OBJECT_KINDS[test.expected_value->kind] << " ";
+      // if (OBJECT_IS_INTEGER(test.expected_value))
+      // {
+      //   std::cout << OBJECT_AS_INTEGER(test.expected_value)->value;
+      // }
+      // std::cout << std::endl;
+      CHECK(objects_equal(test.expected_value, result->value));
+    }
   }
 }
