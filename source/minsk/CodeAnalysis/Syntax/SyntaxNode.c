@@ -64,13 +64,30 @@ static void pretty_print(
     sds indent,
     bool is_last)
 {
+  bool is_to_stdout = stream == stdout;
   sds marker = is_last ? sdsnew("└───") : sdsnew("├───");
-  fprintf(
-      stream,
-      "%s%s%s",
-      indent,
-      marker,
-      SYNTAX_KINDS[syntax_node_get_kind(node)]);
+  if (is_to_stdout)
+  {
+    fprintf(stream, "\x1b[2;37m");
+  }
+  fprintf(stream, "%s", indent);
+  if (is_to_stdout)
+  {
+    fprintf(stream, "%s", marker);
+    fprintf(stream, "\x1b[0m");
+  }
+  if (is_to_stdout)
+  {
+    fprintf(
+        stream,
+        "%s",
+        node->kind == SYNTAX_NODE_KIND_TOKEN ? "\x1b[34m" : "\x1b[36m");
+  }
+  fprintf(stream, "%s", SYNTAX_KINDS[syntax_node_get_kind(node)]);
+  if (is_to_stdout)
+  {
+    fprintf(stream, "\x1b[0m");
+  }
 
   if (node->kind == SYNTAX_NODE_KIND_TOKEN
       && ((struct SyntaxToken*)node)->value->kind != OBJECT_KIND_NULL)

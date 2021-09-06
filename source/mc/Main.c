@@ -37,14 +37,16 @@ int main(void)
   sds text = sdsempty();
   while (true)
   {
+    printf("\x1b[32m");
     if (sdslen(text) == 0)
     {
-      printf("> ");
+      printf("» ");
     }
     else
     {
-      printf("| ");
+      printf("· ");
     }
+    printf("\x1b[0m");
     sds input = input_line("");
     bool is_blank = !input || sdslen(input) == 0;
 
@@ -126,7 +128,7 @@ int main(void)
     }
     else
     {
-      printf("%s\n", object_to_string(result->value));
+      printf("\x1b[35m%s\x1b[0m\n", object_to_string(result->value));
     }
     text = sdsempty();
   }
