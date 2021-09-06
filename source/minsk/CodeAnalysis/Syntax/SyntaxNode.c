@@ -71,9 +71,9 @@ static void pretty_print(
     fprintf(stream, "\x1b[2;37m");
   }
   fprintf(stream, "%s", indent);
+  fprintf(stream, "%s", marker);
   if (is_to_stdout)
   {
-    fprintf(stream, "%s", marker);
     fprintf(stream, "\x1b[0m");
   }
   if (is_to_stdout)
