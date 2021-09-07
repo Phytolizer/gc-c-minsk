@@ -90,13 +90,17 @@ void diagnostic_bag_report_undefined_name(
   report(bag, span, message);
 }
 
-void diagnostic_bag_report_variable_already_declared(
+void diagnostic_bag_report_cannot_convert(
     struct DiagnosticBag* bag,
     struct TextSpan* span,
-    sds name)
+    enum ObjectKind from_type,
+    enum ObjectKind to_type)
 {
-  sds message
-      = sdscatfmt(sdsempty(), "Variable '%S' is already declared.", name);
+  sds message = sdscatfmt(
+      sdsempty(),
+      "Cannot convert type '%s' to '%s'.",
+      OBJECT_KINDS[from_type],
+      OBJECT_KINDS[to_type]);
   report(bag, span, message);
 }
 

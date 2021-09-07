@@ -221,15 +221,27 @@ static struct BoundExpression* bind_assignment_expression(
   sds name = syntax->identifier_token->text;
   struct BoundExpression* bound_expression
       = bind_expression(binder, syntax->expression);
-  struct VariableSymbol* variable
-      = variable_symbol_new(name, bound_expression_get_type(bound_expression));
-
-  if (!bound_scope_try_declare(binder->scope, variable))
+  struct VariableSymbol** pvar = bound_scope_try_lookup(binder->scope, name);
+  struct VariableSymbol* variable = NULL;
+  if (!pvar)
   {
-    diagnostic_bag_report_variable_already_declared(
+    variable = variable_symbol_new(
+        name,
+        bound_expression_get_type(bound_expression));
+    bound_scope_try_declare(binder->scope, variable);
+  }
+  else
+  {
+    variable = *pvar;
+  }
+
+  if (bound_expression_get_type(bound_expression) != variable->type)
+  {
+    diagnostic_bag_report_cannot_convert(
         binder->diagnostics,
-        syntax_token_get_span(syntax->identifier_token),
-        name);
+        syntax_node_get_span((struct SyntaxNode*)syntax->expression),
+        bound_expression_get_type(bound_expression),
+        variable->type);
   }
 
   return (struct BoundExpression*)bound_assignment_expression_new(
