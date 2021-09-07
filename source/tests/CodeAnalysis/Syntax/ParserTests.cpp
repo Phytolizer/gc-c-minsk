@@ -3,6 +3,8 @@
 #include <utility>
 #include <vector>
 extern "C" {
+#include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/ExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxFacts.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxKind.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
@@ -73,6 +75,13 @@ static std::vector<std::pair<SyntaxKind, SyntaxKind>> get_unary_operator_pairs()
   return binary_operator_pairs;
 }
 
+static ExpressionSyntax* parse_expression(sds text)
+{
+  auto syntax_tree = syntax_tree_parse(text);
+  auto root = syntax_tree->root;
+  return root->expression;
+}
+
 TEST_SUITE("Parser")
 {
   TEST_CASE("binary expression honors precedences")
@@ -84,13 +93,11 @@ TEST_SUITE("Parser")
       sds op1_text = syntax_facts_get_text(test.first);
       sds op2_text = syntax_facts_get_text(test.second);
       sds text = sdscatfmt(sdsempty(), "a %S b %S c", op1_text, op2_text);
-      SyntaxNode* expression
-          = reinterpret_cast<SyntaxNode*>(syntax_tree_parse(text)->root);
+      SyntaxNode* expression = (SyntaxNode*)parse_expression(text);
 
       if (op1_precedence >= op2_precedence)
       {
         AssertingEnumerator e{expression};
-        e.assert_node(SYNTAX_KIND_COMPILATION_UNIT);
         e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
         e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
@@ -101,12 +108,10 @@ TEST_SUITE("Parser")
         e.assert_token(test.second, op2_text);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
         e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "c");
-        e.assert_token(SYNTAX_KIND_END_OF_FILE_TOKEN, "");
       }
       else
       {
         AssertingEnumerator e{expression};
-        e.assert_node(SYNTAX_KIND_COMPILATION_UNIT);
         e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
         e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "a");
@@ -117,7 +122,6 @@ TEST_SUITE("Parser")
         e.assert_token(test.second, op2_text);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
         e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "c");
-        e.assert_token(SYNTAX_KIND_END_OF_FILE_TOKEN, "");
       }
     }
   }
@@ -132,12 +136,11 @@ TEST_SUITE("Parser")
       sds binary_text = syntax_facts_get_text(test.second);
       sds text = sdscatfmt(sdsempty(), "%S a %S b", unary_text, binary_text);
       SyntaxNode* expression
-          = reinterpret_cast<SyntaxNode*>(syntax_tree_parse(text)->root);
+          = reinterpret_cast<SyntaxNode*>(parse_expression(text));
 
       if (unary_precedence >= binary_precedence)
       {
         AssertingEnumerator e{expression};
-        e.assert_node(SYNTAX_KIND_COMPILATION_UNIT);
         e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
         e.assert_node(SYNTAX_KIND_UNARY_EXPRESSION);
         e.assert_token(test.first, unary_text);
@@ -146,12 +149,10 @@ TEST_SUITE("Parser")
         e.assert_token(test.second, binary_text);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
         e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
-        e.assert_token(SYNTAX_KIND_END_OF_FILE_TOKEN, "");
       }
       else
       {
         AssertingEnumerator e{expression};
-        e.assert_node(SYNTAX_KIND_COMPILATION_UNIT);
         e.assert_node(SYNTAX_KIND_UNARY_EXPRESSION);
         e.assert_token(test.first, unary_text);
         e.assert_node(SYNTAX_KIND_BINARY_EXPRESSION);
@@ -160,7 +161,6 @@ TEST_SUITE("Parser")
         e.assert_token(test.second, binary_text);
         e.assert_node(SYNTAX_KIND_NAME_EXPRESSION);
         e.assert_token(SYNTAX_KIND_IDENTIFIER_TOKEN, "b");
-        e.assert_token(SYNTAX_KIND_END_OF_FILE_TOKEN, "");
       }
     }
   }
