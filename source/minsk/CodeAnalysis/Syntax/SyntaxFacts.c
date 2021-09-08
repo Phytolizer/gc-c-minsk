@@ -67,6 +67,10 @@ enum SyntaxKind keyword_kind(sds text)
   {
     return SYNTAX_KIND_VAR_KEYWORD;
   }
+  if (strcmp(text, "while") == 0)
+  {
+    return SYNTAX_KIND_WHILE_KEYWORD;
+  }
   return SYNTAX_KIND_IDENTIFIER_TOKEN;
 }
 
@@ -122,6 +126,8 @@ sds syntax_facts_get_text(enum SyntaxKind kind)
       return sdsnew("true");
     case SYNTAX_KIND_VAR_KEYWORD:
       return sdsnew("var");
+    case SYNTAX_KIND_WHILE_KEYWORD:
+      return sdsnew("while");
     default:
       return NULL;
   }

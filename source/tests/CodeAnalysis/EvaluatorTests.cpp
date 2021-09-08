@@ -65,7 +65,10 @@ const std::array EVALUATOR_TESTS = {
         "{ var a = 0 if a == 5 a = 10 else a = 5 a }",
         OBJECT_INTEGER(5),
     },
-};
+    EvaluatorTest{
+        "{ var i = 10 var result = 0 while i > 0 { result = result + i i = i - 1 } result }",
+        OBJECT_INTEGER(55),
+    }};
 
 TEST_SUITE("Evaluator")
 {
@@ -184,18 +187,21 @@ static void assert_value(const std::string& text_in, Object* expected_value)
   auto* result = compilation_evaluate(compilation, variables);
 
   CHECK(result->diagnostics->length == 0);
-  // std::cout << OBJECT_KINDS[result->value->kind] << " ";
-  // if (OBJECT_IS_INTEGER(result->value))
-  // {
-  //   std::cout << OBJECT_AS_INTEGER(result->value)->value << " ";
-  // }
-  // std::cout << "== " << OBJECT_KINDS[test.expected_value->kind] << " ";
-  // if (OBJECT_IS_INTEGER(test.expected_value))
-  // {
-  //   std::cout << OBJECT_AS_INTEGER(test.expected_value)->value;
-  // }
-  // std::cout << std::endl;
-  CHECK(objects_equal(expected_value, result->value));
+  if (!objects_equal(expected_value, result->value))
+  {
+    std::cout << OBJECT_KINDS[result->value->kind] << " ";
+    if (OBJECT_IS_INTEGER(result->value))
+    {
+      std::cout << OBJECT_AS_INTEGER(result->value)->value << " ";
+    }
+    std::cout << "!= " << OBJECT_KINDS[expected_value->kind] << " ";
+    if (OBJECT_IS_INTEGER(expected_value))
+    {
+      std::cout << OBJECT_AS_INTEGER(expected_value)->value;
+    }
+    std::cout << std::endl;
+    FAIL_CHECK("evaluation results not equal");
+  }
 }
 
 static void assert_diagnostics(

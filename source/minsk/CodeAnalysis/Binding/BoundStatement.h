@@ -8,7 +8,8 @@
   X(BLOCK) \
   X(EXPRESSION) \
   X(IF) \
-  X(VARIABLE_DECLARATION)
+  X(VARIABLE_DECLARATION) \
+  X(WHILE)
 
 enum BoundStatementKind
 {

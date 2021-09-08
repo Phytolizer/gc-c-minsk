@@ -22,6 +22,7 @@
 #include "Binding/BoundUnaryOperatorKind.h"
 #include "Binding/BoundVariableDeclaration.h"
 #include "Binding/BoundVariableExpression.h"
+#include "Binding/BoundWhileStatement.h"
 
 static void evaluate_statement(
     struct Evaluator* evaluator,
@@ -39,6 +40,9 @@ static void evaluate_if_statement(
 static void evaluate_variable_declaration(
     struct Evaluator* evaluator,
     struct BoundVariableDeclaration* stmt);
+static void evaluate_while_statement(
+    struct Evaluator* evaluator,
+    struct BoundWhileStatement* stmt);
 
 static struct Object* evaluate_expression(
     struct Evaluator* evaluator,
@@ -99,6 +103,9 @@ static void evaluate_statement(
           evaluator,
           (struct BoundVariableDeclaration*)stmt);
       break;
+    case BOUND_NODE_KIND_WHILE_STATEMENT:
+      evaluate_while_statement(evaluator, (struct BoundWhileStatement*)stmt);
+      break;
     default:
       fprintf(
           stderr,
@@ -147,6 +154,17 @@ static void evaluate_variable_declaration(
   struct Object* value = evaluate_expression(evaluator, stmt->initializer);
   variable_store_insert_or_assign(evaluator->variables, stmt->variable, value);
   evaluator->last_value = value;
+}
+
+static void evaluate_while_statement(
+    struct Evaluator* evaluator,
+    struct BoundWhileStatement* stmt)
+{
+  while (
+      OBJECT_AS_BOOLEAN(evaluate_expression(evaluator, stmt->condition))->value)
+  {
+    evaluate_statement(evaluator, stmt->body);
+  }
 }
 
 static struct Object* evaluate_expression(

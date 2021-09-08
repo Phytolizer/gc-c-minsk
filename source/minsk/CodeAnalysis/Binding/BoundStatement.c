@@ -4,6 +4,7 @@
 #include "BoundExpressionStatement.h"
 #include "BoundIfStatement.h"
 #include "BoundVariableDeclaration.h"
+#include "BoundWhileStatement.h"
 
 void bound_statement_init(
     struct BoundStatement* stmt,
@@ -27,5 +28,7 @@ enum BoundNodeKind bound_statement_get_kind(struct BoundStatement* stmt)
     case BOUND_STATEMENT_KIND_VARIABLE_DECLARATION:
       return bound_variable_declaration_get_kind(
           (struct BoundVariableDeclaration*)stmt);
+    case BOUND_STATEMENT_KIND_WHILE:
+      return bound_while_statement_get_kind((struct BoundWhileStatement*)stmt);
   }
 }

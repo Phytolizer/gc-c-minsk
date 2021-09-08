@@ -24,6 +24,7 @@ add_library(
   CodeAnalysis/Binding/BoundUnaryOperator.c
   CodeAnalysis/Binding/BoundVariableDeclaration.c
   CodeAnalysis/Binding/BoundVariableExpression.c
+  CodeAnalysis/Binding/BoundWhileStatement.c
   CodeAnalysis/Syntax/AssignmentExpressionSyntax.c
   CodeAnalysis/Syntax/BinaryExpressionSyntax.c
   CodeAnalysis/Syntax/BlockStatementSyntax.c
@@ -45,6 +46,7 @@ add_library(
   CodeAnalysis/Syntax/SyntaxTree.c
   CodeAnalysis/Syntax/UnaryExpressionSyntax.c
   CodeAnalysis/Syntax/VariableDeclarationSyntax.c
+  CodeAnalysis/Syntax/WhileStatementSyntax.c
   CodeAnalysis/Text/SourceText.c
   CodeAnalysis/Text/TextLine.c
   CodeAnalysis/Text/TextSpan.c

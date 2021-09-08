@@ -4,6 +4,7 @@
 #include <minsk/CodeAnalysis/Syntax/ExpressionStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/IfStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/VariableDeclarationSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/WhileStatementSyntax.h>
 
 void statement_syntax_init(
     struct StatementSyntax* syntax,
@@ -28,6 +29,9 @@ enum SyntaxKind statement_syntax_get_kind(struct StatementSyntax* syntax)
     case STATEMENT_SYNTAX_KIND_VARIABLE_DECLARATION_SYNTAX:
       return variable_declaration_syntax_get_kind(
           (struct VariableDeclarationSyntax*)syntax);
+    case STATEMENT_SYNTAX_KIND_WHILE_STATEMENT_SYNTAX:
+      return while_statement_syntax_get_kind(
+          (struct WhileStatementSyntax*)syntax);
   }
 }
 
@@ -48,5 +52,8 @@ struct SyntaxNodeList* statement_syntax_get_children(
     case STATEMENT_SYNTAX_KIND_VARIABLE_DECLARATION_SYNTAX:
       return variable_declaration_syntax_get_children(
           (struct VariableDeclarationSyntax*)syntax);
+    case STATEMENT_SYNTAX_KIND_WHILE_STATEMENT_SYNTAX:
+      return while_statement_syntax_get_children(
+          (struct WhileStatementSyntax*)syntax);
   }
 }

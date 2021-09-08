@@ -19,6 +19,7 @@
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/VariableDeclarationSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/WhileStatementSyntax.h>
 #include <sds.h>
 
 #include "Lexer.h"
@@ -40,6 +41,7 @@ static struct StatementSyntax* parse_expression_statement(
 static struct StatementSyntax* parse_if_statement(struct Parser* parser);
 static struct StatementSyntax* parse_variable_declaration(
     struct Parser* parser);
+static struct StatementSyntax* parse_while_statement(struct Parser* parser);
 
 static struct ExpressionSyntax* parse_expression(struct Parser* parser);
 static struct ExpressionSyntax* parse_assignment_expression(
@@ -150,6 +152,8 @@ static struct StatementSyntax* parse_statement(struct Parser* parser)
       return parse_variable_declaration(parser);
     case SYNTAX_KIND_IF_KEYWORD:
       return parse_if_statement(parser);
+    case SYNTAX_KIND_WHILE_KEYWORD:
+      return parse_while_statement(parser);
     default:
       return parse_expression_statement(parser);
   }
@@ -219,6 +223,15 @@ static struct StatementSyntax* parse_variable_declaration(struct Parser* parser)
       identifier_token,
       equals_token,
       initializer);
+}
+
+static struct StatementSyntax* parse_while_statement(struct Parser* parser)
+{
+  struct SyntaxToken* keyword = match_token(parser, SYNTAX_KIND_WHILE_KEYWORD);
+  struct ExpressionSyntax* condition = parse_expression(parser);
+  struct StatementSyntax* body = parse_statement(parser);
+  return (struct StatementSyntax*)
+      while_statement_syntax_new(keyword, condition, body);
 }
 
 static struct ExpressionSyntax* parse_expression(struct Parser* parser)

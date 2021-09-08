@@ -18,6 +18,7 @@
 #include <minsk/CodeAnalysis/Syntax/SyntaxKind.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/VariableDeclarationSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/WhileStatementSyntax.h>
 #include <minsk/CodeAnalysis/VariableStore.h>
 
 #include "BoundAssignmentExpression.h"
@@ -35,6 +36,7 @@
 #include "BoundUnaryOperator.h"
 #include "BoundVariableDeclaration.h"
 #include "BoundVariableExpression.h"
+#include "BoundWhileStatement.h"
 
 static struct BoundStatement* bind_statement(
     struct Binder* binder,
@@ -51,6 +53,9 @@ static struct BoundStatement* bind_if_statement(
 static struct BoundStatement* bind_variable_declaration(
     struct Binder* binder,
     struct VariableDeclarationSyntax* syntax);
+static struct BoundStatement* bind_while_statement(
+    struct Binder* binder,
+    struct WhileStatementSyntax* syntax);
 
 static struct BoundExpression* bind_expression(
     struct Binder* binder,
@@ -131,6 +136,8 @@ static struct BoundStatement* bind_statement(
       return bind_variable_declaration(
           binder,
           (struct VariableDeclarationSyntax*)syntax);
+    case STATEMENT_SYNTAX_KIND_WHILE_STATEMENT_SYNTAX:
+      return bind_while_statement(binder, (struct WhileStatementSyntax*)syntax);
   }
 }
 
@@ -200,6 +207,18 @@ static struct BoundStatement* bind_variable_declaration(
   return (struct BoundStatement*)bound_variable_declaration_new(
       variable,
       initializer);
+}
+
+static struct BoundStatement* bind_while_statement(
+    struct Binder* binder,
+    struct WhileStatementSyntax* syntax)
+{
+  struct BoundExpression* condition = bind_expression_with_type(
+      binder,
+      syntax->condition,
+      OBJECT_KIND_BOOLEAN);
+  struct BoundStatement* body = bind_statement(binder, syntax->body);
+  return (struct BoundStatement*)bound_while_statement_new(condition, body);
 }
 
 static struct BoundExpression* bind_expression(
