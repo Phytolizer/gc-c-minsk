@@ -103,60 +103,6 @@ TEST_SUITE("Evaluator")
         assert_diagnostics(text, diagnostics);
     }
 
-    TEST_CASE("name reports undefined")
-    {
-        std::string text = R"(
-            [x] * 10
-        )";
-        std::string diagnostics = R"(
-            Variable 'x' doesn't exist.
-        )";
-
-        assert_diagnostics(text, diagnostics);
-    }
-
-    TEST_CASE("assignment reports undefined")
-    {
-        std::string text = R"(
-            [x] = 10
-        )";
-        std::string diagnostics = R"(
-            Variable 'x' doesn't exist.
-        )";
-
-        assert_diagnostics(text, diagnostics);
-    }
-
-    TEST_CASE("assignment reports cannot assign")
-    {
-        std::string text = R"(
-            {
-                let x = 10
-                x [=] 11
-            }
-        )";
-        std::string diagnostics = R"(
-            Variable 'x' is read-only and cannot be assigned to.
-        )";
-
-        assert_diagnostics(text, diagnostics);
-    }
-
-    TEST_CASE("assignment reports cannot convert")
-    {
-        std::string text = R"(
-            {
-                var x = 10
-                x = [true]
-            }
-        )";
-        std::string diagnostics = R"(
-            Cannot convert type 'BOOLEAN' to 'INTEGER'.
-        )";
-
-        assert_diagnostics(text, diagnostics);
-    }
-
     TEST_CASE("if statement reports cannot convert")
     {
         std::string text = R"(
@@ -221,6 +167,60 @@ TEST_SUITE("Evaluator")
         )";
         std::string diagnostics = R"(
             The binary operator * is not defined for types 'INTEGER' and 'BOOLEAN'.
+        )";
+
+        assert_diagnostics(text, diagnostics);
+    }
+
+    TEST_CASE("name expression reports undefined")
+    {
+        std::string text = R"(
+            [x] * 10
+        )";
+        std::string diagnostics = R"(
+            Variable 'x' doesn't exist.
+        )";
+
+        assert_diagnostics(text, diagnostics);
+    }
+
+    TEST_CASE("assignment expression reports undefined")
+    {
+        std::string text = R"(
+            [x] = 10
+        )";
+        std::string diagnostics = R"(
+            Variable 'x' doesn't exist.
+        )";
+
+        assert_diagnostics(text, diagnostics);
+    }
+
+    TEST_CASE("assignment expression reports cannot assign")
+    {
+        std::string text = R"(
+            {
+                let x = 10
+                x [=] 11
+            }
+        )";
+        std::string diagnostics = R"(
+            Variable 'x' is read-only and cannot be assigned to.
+        )";
+
+        assert_diagnostics(text, diagnostics);
+    }
+
+    TEST_CASE("assignment expression reports cannot convert")
+    {
+        std::string text = R"(
+            {
+                var x = 10
+                x = [true]
+            }
+        )";
+        std::string diagnostics = R"(
+            Cannot convert type 'BOOLEAN' to 'INTEGER'.
         )";
 
         assert_diagnostics(text, diagnostics);
