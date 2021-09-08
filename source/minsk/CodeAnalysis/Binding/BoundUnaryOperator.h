@@ -7,12 +7,10 @@
 
 struct BoundUnaryOperator
 {
-  enum SyntaxKind syntax_kind;
-  enum BoundUnaryOperatorKind kind;
-  enum ObjectKind operand_type;
-  enum ObjectKind result_type;
+    enum SyntaxKind syntax_kind;
+    enum BoundUnaryOperatorKind kind;
+    enum ObjectKind operand_type;
+    enum ObjectKind result_type;
 };
 
-struct BoundUnaryOperator* bind_unary_operator(
-    enum SyntaxKind syntax_kind,
-    enum ObjectKind operand_type);
+struct BoundUnaryOperator *bind_unary_operator(enum SyntaxKind syntax_kind, enum ObjectKind operand_type);

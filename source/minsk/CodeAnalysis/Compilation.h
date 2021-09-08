@@ -4,5 +4,4 @@
 
 #include "Binding/BoundGlobalScope.h"
 
-struct BoundGlobalScope* compilation_get_global_scope(
-    struct Compilation* compilation);
+struct BoundGlobalScope *compilation_get_global_scope(struct Compilation *compilation);

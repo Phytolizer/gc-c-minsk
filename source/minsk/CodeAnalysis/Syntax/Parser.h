@@ -8,13 +8,12 @@
 
 struct Parser
 {
-  struct SourceText* source_text;
-  struct SyntaxTokenList* tokens;
-  int position;
-  struct DiagnosticBag* diagnostics;
+    struct SourceText *source_text;
+    struct SyntaxTokenList *tokens;
+    int position;
+    struct DiagnosticBag *diagnostics;
 };
 
-struct Parser* parser_new(struct SourceText* source_text);
-void parser_free(struct Parser* parser);
-struct CompilationUnitSyntax* parser_parse_compilation_unit(
-    struct Parser* parser);
+struct Parser *parser_new(struct SourceText *source_text);
+void parser_free(struct Parser *parser);
+struct CompilationUnitSyntax *parser_parse_compilation_unit(struct Parser *parser);

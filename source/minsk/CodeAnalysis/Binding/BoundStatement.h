@@ -4,29 +4,27 @@
 
 #include "BoundNode.h"
 
-#define BOUND_STATEMENT_KINDS_ \
-  X(BLOCK) \
-  X(EXPRESSION) \
-  X(IF) \
-  X(VARIABLE_DECLARATION) \
-  X(WHILE)
+#define BOUND_STATEMENT_KINDS_                                                                                         \
+    X(BLOCK)                                                                                                           \
+    X(EXPRESSION)                                                                                                      \
+    X(IF)                                                                                                              \
+    X(VARIABLE_DECLARATION)                                                                                            \
+    X(WHILE)
 
 enum BoundStatementKind
 {
 #define X(x) BOUND_STATEMENT_KIND_##x,
-  BOUND_STATEMENT_KINDS_
+    BOUND_STATEMENT_KINDS_
 #undef X
 };
 
 struct BoundStatement
 {
-  struct BoundNode base;
-  enum BoundStatementKind kind;
+    struct BoundNode base;
+    enum BoundStatementKind kind;
 };
 
-DECLARE_NAMED_LIST(BoundStatementList, struct BoundStatement*);
+DECLARE_NAMED_LIST(BoundStatementList, struct BoundStatement *);
 
-void bound_statement_init(
-    struct BoundStatement* stmt,
-    enum BoundStatementKind kind);
-enum BoundNodeKind bound_statement_get_kind(struct BoundStatement* stmt);
+void bound_statement_init(struct BoundStatement *stmt, enum BoundStatementKind kind);
+enum BoundNodeKind bound_statement_get_kind(struct BoundStatement *stmt);

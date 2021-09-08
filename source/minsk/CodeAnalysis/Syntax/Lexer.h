@@ -10,13 +10,13 @@
 
 struct Lexer
 {
-  struct SourceText* text;
-  size_t position;
-  size_t start;
-  enum SyntaxKind kind;
-  struct Object* value;
-  struct DiagnosticBag* diagnostics;
+    struct SourceText *text;
+    size_t position;
+    size_t start;
+    enum SyntaxKind kind;
+    struct Object *value;
+    struct DiagnosticBag *diagnostics;
 };
 
-struct Lexer* lexer_new(struct SourceText* source_text);
-struct SyntaxToken* lexer_next_token(struct Lexer* lexer);
+struct Lexer *lexer_new(struct SourceText *source_text);
+struct SyntaxToken *lexer_next_token(struct Lexer *lexer);

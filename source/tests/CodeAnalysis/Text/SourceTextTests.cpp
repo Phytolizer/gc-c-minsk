@@ -1,14 +1,15 @@
 #include <array>
 #include <doctest/doctest.h>
 #include <string>
-extern "C" {
+extern "C"
+{
 #include <minsk/CodeAnalysis/Text/SourceText.h>
 }
 
 struct SourceTextIncludesLastLineTest
 {
-  std::string text;
-  int expected_line_count;
+    std::string text;
+    int expected_line_count;
 };
 
 const std::array SOURCE_TEXT_INCLUDES_LAST_LINE_TESTS = {
@@ -19,12 +20,12 @@ const std::array SOURCE_TEXT_INCLUDES_LAST_LINE_TESTS = {
 
 TEST_SUITE("SourceText")
 {
-  TEST_CASE("includes last line")
-  {
-    for (auto& test : SOURCE_TEXT_INCLUDES_LAST_LINE_TESTS)
+    TEST_CASE("includes last line")
     {
-      auto* source_text = source_text_from(sdsnew(test.text.c_str()));
-      CHECK(source_text->lines->length == test.expected_line_count);
+        for (auto &test : SOURCE_TEXT_INCLUDES_LAST_LINE_TESTS)
+        {
+            auto *source_text = source_text_from(sdsnew(test.text.c_str()));
+            CHECK(source_text->lines->length == test.expected_line_count);
+        }
     }
-  }
 }

@@ -7,10 +7,10 @@
 
 struct Diagnostic
 {
-  struct TextSpan* span;
-  sds message;
+    struct TextSpan *span;
+    sds message;
 };
 
-DECLARE_NAMED_LIST(DiagnosticList, struct Diagnostic*);
+DECLARE_NAMED_LIST(DiagnosticList, struct Diagnostic *);
 
-struct Diagnostic* diagnostic_new(struct TextSpan* span, sds message);
+struct Diagnostic *diagnostic_new(struct TextSpan *span, sds message);
