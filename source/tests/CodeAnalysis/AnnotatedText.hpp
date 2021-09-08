@@ -142,6 +142,10 @@ class AnnotatedText
         {
             lines.erase(lines.begin());
         }
+        while (lines.size() > 0 && lines.back().empty())
+        {
+            lines.pop_back();
+        }
 
         std::stringstream out;
         for (int i = 0; i < lines.size(); ++i)

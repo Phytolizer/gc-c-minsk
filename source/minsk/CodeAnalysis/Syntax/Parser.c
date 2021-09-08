@@ -146,10 +146,17 @@ static struct StatementSyntax* parse_block_statement(struct Parser* parser)
     struct SyntaxToken* open_brace_token = match_token(parser, SYNTAX_KIND_OPEN_BRACE_TOKEN);
     struct StatementSyntaxList* statements = mc_malloc(sizeof(struct StatementSyntaxList));
     LIST_INIT(statements);
+    struct SyntaxToken* start_token = current(parser);
     while (current(parser)->kind != SYNTAX_KIND_CLOSE_BRACE_TOKEN &&
            current(parser)->kind != SYNTAX_KIND_END_OF_FILE_TOKEN)
     {
         LIST_PUSH(statements, parse_statement(parser));
+
+        if (current(parser) == start_token)
+        {
+            next_token(parser);
+        }
+        start_token = current(parser);
     }
     struct SyntaxToken* close_brace_token = match_token(parser, SYNTAX_KIND_CLOSE_BRACE_TOKEN);
     return (struct StatementSyntax*)block_statement_syntax_new(open_brace_token, statements, close_brace_token);

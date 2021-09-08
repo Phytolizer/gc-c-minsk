@@ -103,6 +103,19 @@ TEST_SUITE("Evaluator")
         assert_diagnostics(text, diagnostics);
     }
 
+    TEST_CASE("block statement: no infinite loop" * doctest::timeout(1))
+    {
+        std::string text = R"(
+            {
+            [)][]
+        )";
+        std::string diagnostics = R"(
+            Unexpected token <CLOSE_PARENTHESIS_TOKEN>, expected <IDENTIFIER_TOKEN>.
+            Unexpected token <END_OF_FILE_TOKEN>, expected <CLOSE_BRACE_TOKEN>.
+        )";
+        assert_diagnostics(text, diagnostics);
+    }
+
     TEST_CASE("if statement reports cannot convert")
     {
         std::string text = R"(
