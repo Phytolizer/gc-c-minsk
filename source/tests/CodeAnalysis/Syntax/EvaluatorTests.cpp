@@ -37,7 +37,7 @@ const std::array EVALUATOR_TESTS = {
     EvaluatorTest{"false", OBJECT_BOOLEAN(false)},
     EvaluatorTest{"!true", OBJECT_BOOLEAN(false)},
     EvaluatorTest{"!false", OBJECT_BOOLEAN(true)},
-    EvaluatorTest{"(a = 10) + a", OBJECT_INTEGER(20)},
+    EvaluatorTest{"{ var a = 0 (a = 10) + a }", OBJECT_INTEGER(20)},
 };
 
 TEST_SUITE("Evaluator")
@@ -50,10 +50,6 @@ TEST_SUITE("Evaluator")
       auto* tree = syntax_tree_parse(text);
       auto* compilation = compilation_new(tree);
       auto* variables = variable_store_new();
-      variable_store_insert_or_assign(
-          variables,
-          variable_symbol_new(sdsnew("a"), OBJECT_KIND_INTEGER),
-          OBJECT_INTEGER(42));
       auto* result = compilation_evaluate(compilation, variables);
 
       CHECK(result->diagnostics->length == 0);
