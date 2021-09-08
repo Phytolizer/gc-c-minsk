@@ -14,8 +14,10 @@ TEST_SUITE("SyntaxFacts")
     TEST_CASE("syntax_facts_get_text round trips")
     {
         std::vector<SyntaxKind> syntax_kind_variants;
-        std::copy(SYNTAX_KIND_VARIANTS, &SYNTAX_KIND_VARIANTS[NUM_SYNTAX_KIND_VARIANTS],
-                  std::back_inserter(syntax_kind_variants));
+        std::copy(
+            SYNTAX_KIND_VARIANTS,
+            &SYNTAX_KIND_VARIANTS[NUM_SYNTAX_KIND_VARIANTS],
+            std::back_inserter(syntax_kind_variants));
         for (auto& value : syntax_kind_variants)
         {
             sds text = syntax_facts_get_text(value);

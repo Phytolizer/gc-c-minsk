@@ -1,7 +1,7 @@
 #pragma once
 
-#define BOUND_NODE_TYPES_                                                                                              \
-    X(EXPRESSION)                                                                                                      \
+#define BOUND_NODE_TYPES_ \
+    X(EXPRESSION) \
     X(STATEMENT)
 
 enum BoundNodeType
@@ -11,16 +11,17 @@ enum BoundNodeType
 #undef X
 };
 
-#define BOUND_NODE_KINDS_                                                                                              \
-    X(BINARY_EXPRESSION)                                                                                               \
-    X(LITERAL_EXPRESSION)                                                                                              \
-    X(UNARY_EXPRESSION)                                                                                                \
-    X(VARIABLE_EXPRESSION)                                                                                             \
-    X(ASSIGNMENT_EXPRESSION)                                                                                           \
-    X(BLOCK_STATEMENT)                                                                                                 \
-    X(EXPRESSION_STATEMENT)                                                                                            \
-    X(IF_STATEMENT)                                                                                                    \
-    X(VARIABLE_DECLARATION)                                                                                            \
+#define BOUND_NODE_KINDS_ \
+    X(BINARY_EXPRESSION) \
+    X(LITERAL_EXPRESSION) \
+    X(UNARY_EXPRESSION) \
+    X(VARIABLE_EXPRESSION) \
+    X(ASSIGNMENT_EXPRESSION) \
+    X(BLOCK_STATEMENT) \
+    X(EXPRESSION_STATEMENT) \
+    X(FOR_STATEMENT) \
+    X(IF_STATEMENT) \
+    X(VARIABLE_DECLARATION) \
     X(WHILE_STATEMENT)
 
 enum BoundNodeKind

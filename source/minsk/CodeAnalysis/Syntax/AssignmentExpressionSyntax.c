@@ -2,9 +2,8 @@
 
 #include "minsk/CodeAnalysis/Syntax/ExpressionSyntax.h"
 
-struct AssignmentExpressionSyntax* assignment_expression_new(struct SyntaxToken* identifier_token,
-                                                             struct SyntaxToken* equals_token,
-                                                             struct ExpressionSyntax* expression)
+struct AssignmentExpressionSyntax* assignment_expression_new(
+    struct SyntaxToken* identifier_token, struct SyntaxToken* equals_token, struct ExpressionSyntax* expression)
 {
     struct AssignmentExpressionSyntax* syntax = mc_malloc(sizeof(struct AssignmentExpressionSyntax));
     expression_syntax_init((struct ExpressionSyntax*)syntax, EXPRESSION_SYNTAX_KIND_ASSIGNMENT_EXPRESSION_SYNTAX);

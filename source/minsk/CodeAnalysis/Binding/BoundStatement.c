@@ -2,6 +2,7 @@
 
 #include "BoundBlockStatement.h"
 #include "BoundExpressionStatement.h"
+#include "BoundForStatement.h"
 #include "BoundIfStatement.h"
 #include "BoundVariableDeclaration.h"
 #include "BoundWhileStatement.h"
@@ -20,6 +21,8 @@ enum BoundNodeKind bound_statement_get_kind(struct BoundStatement* stmt)
         return bound_block_statement_get_kind((struct BoundBlockStatement*)stmt);
     case BOUND_STATEMENT_KIND_EXPRESSION:
         return bound_expression_statement_get_kind((struct BoundExpressionStatement*)stmt);
+    case BOUND_STATEMENT_KIND_FOR:
+        return bound_for_statement_get_kind((struct BoundForStatement*)stmt);
     case BOUND_STATEMENT_KIND_IF:
         return bound_if_statement_get_kind((struct BoundIfStatement*)stmt);
     case BOUND_STATEMENT_KIND_VARIABLE_DECLARATION:

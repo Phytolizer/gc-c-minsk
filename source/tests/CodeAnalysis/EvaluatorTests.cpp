@@ -67,7 +67,12 @@ const std::array EVALUATOR_TESTS = {
     EvaluatorTest{
         "{ var i = 10 var result = 0 while i > 0 { result = result + i i = i - 1 } result }",
         OBJECT_INTEGER(55),
-    }};
+    },
+    EvaluatorTest{
+        "{ var result = 0 for i = 1 to 10 { result = result + i } result }",
+        OBJECT_INTEGER(55),
+    },
+};
 
 TEST_SUITE("Evaluator")
 {

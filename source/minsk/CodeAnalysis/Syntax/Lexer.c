@@ -44,8 +44,8 @@ static void read_number(struct Lexer* lexer)
     long value = strtol(text, NULL, 10);
     if (errno == ERANGE || value < INT_MIN || value > INT_MAX)
     {
-        diagnostic_bag_report_invalid_number(lexer->diagnostics, text_span_new(lexer->start, length), text,
-                                             OBJECT_KIND_INTEGER);
+        diagnostic_bag_report_invalid_number(
+            lexer->diagnostics, text_span_new(lexer->start, length), text, OBJECT_KIND_INTEGER);
     }
     lexer->value = OBJECT_INTEGER(value);
     lexer->kind = SYNTAX_KIND_NUMBER_TOKEN;

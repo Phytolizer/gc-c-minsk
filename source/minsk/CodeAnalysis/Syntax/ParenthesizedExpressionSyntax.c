@@ -1,8 +1,9 @@
 #include "minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h"
 
-struct ParenthesizedExpressionSyntax* parenthesized_expression_syntax_new(struct SyntaxToken* open_parenthesis_token,
-                                                                          struct ExpressionSyntax* expression,
-                                                                          struct SyntaxToken* close_parenthesis_token)
+struct ParenthesizedExpressionSyntax* parenthesized_expression_syntax_new(
+    struct SyntaxToken* open_parenthesis_token,
+    struct ExpressionSyntax* expression,
+    struct SyntaxToken* close_parenthesis_token)
 {
     struct ParenthesizedExpressionSyntax* syntax = mc_malloc(sizeof(struct ParenthesizedExpressionSyntax));
     expression_syntax_init((struct ExpressionSyntax*)syntax, EXPRESSION_SYNTAX_KIND_PARENTHESIZED_EXPRESSION_SYNTAX);

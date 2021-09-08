@@ -15,6 +15,7 @@
 #include "Binding/BoundBlockStatement.h"
 #include "Binding/BoundExpression.h"
 #include "Binding/BoundExpressionStatement.h"
+#include "Binding/BoundForStatement.h"
 #include "Binding/BoundIfStatement.h"
 #include "Binding/BoundLiteralExpression.h"
 #include "Binding/BoundStatement.h"
@@ -28,6 +29,7 @@ static void evaluate_statement(struct Evaluator* evaluator, struct BoundStatemen
 
 static void evaluate_block_statement(struct Evaluator* evaluator, struct BoundBlockStatement* stmt);
 static void evaluate_expression_statement(struct Evaluator* evaluator, struct BoundExpressionStatement* stmt);
+static void evaluate_for_statement(struct Evaluator* evaluator, struct BoundForStatement* stmt);
 static void evaluate_if_statement(struct Evaluator* evaluator, struct BoundIfStatement* stmt);
 static void evaluate_variable_declaration(struct Evaluator* evaluator, struct BoundVariableDeclaration* stmt);
 static void evaluate_while_statement(struct Evaluator* evaluator, struct BoundWhileStatement* stmt);
@@ -38,8 +40,8 @@ static struct Object* evaluate_literal_expression(struct Evaluator* evaluator, s
 static struct Object* evaluate_unary_expression(struct Evaluator* evaluator, struct BoundUnaryExpression* expr);
 static struct Object* evaluate_binary_expression(struct Evaluator* evaluator, struct BoundBinaryExpression* expr);
 static struct Object* evaluate_variable_expression(struct Evaluator* evaluator, struct BoundVariableExpression* expr);
-static struct Object* evaluate_assignment_expression(struct Evaluator* evaluator,
-                                                     struct BoundAssignmentExpression* expr);
+static struct Object* evaluate_assignment_expression(
+    struct Evaluator* evaluator, struct BoundAssignmentExpression* expr);
 
 struct Evaluator* evaluator_new(struct BoundStatement* root, struct VariableStore* variables)
 {
@@ -65,6 +67,9 @@ static void evaluate_statement(struct Evaluator* evaluator, struct BoundStatemen
         break;
     case BOUND_NODE_KIND_EXPRESSION_STATEMENT:
         evaluate_expression_statement(evaluator, (struct BoundExpressionStatement*)stmt);
+        break;
+    case BOUND_NODE_KIND_FOR_STATEMENT:
+        evaluate_for_statement(evaluator, (struct BoundForStatement*)stmt);
         break;
     case BOUND_NODE_KIND_IF_STATEMENT:
         evaluate_if_statement(evaluator, (struct BoundIfStatement*)stmt);
@@ -92,6 +97,18 @@ static void evaluate_block_statement(struct Evaluator* evaluator, struct BoundBl
 static void evaluate_expression_statement(struct Evaluator* evaluator, struct BoundExpressionStatement* stmt)
 {
     evaluator->last_value = evaluate_expression(evaluator, stmt->expression);
+}
+
+static void evaluate_for_statement(struct Evaluator* evaluator, struct BoundForStatement* stmt)
+{
+    int lower_bound = OBJECT_AS_INTEGER(evaluate_expression(evaluator, stmt->lower_bound))->value;
+    int upper_bound = OBJECT_AS_INTEGER(evaluate_expression(evaluator, stmt->upper_bound))->value;
+
+    for (int i = lower_bound; i <= upper_bound; ++i)
+    {
+        variable_store_insert_or_assign(evaluator->variables, stmt->variable, OBJECT_INTEGER(i));
+        evaluate_statement(evaluator, stmt->body);
+    }
 }
 
 static void evaluate_if_statement(struct Evaluator* evaluator, struct BoundIfStatement* stmt)
@@ -201,8 +218,8 @@ static struct Object* evaluate_variable_expression(struct Evaluator* evaluator, 
     return *variable_store_lookup(evaluator->variables, expr->variable);
 }
 
-static struct Object* evaluate_assignment_expression(struct Evaluator* evaluator,
-                                                     struct BoundAssignmentExpression* expr)
+static struct Object* evaluate_assignment_expression(
+    struct Evaluator* evaluator, struct BoundAssignmentExpression* expr)
 {
     struct Object* value = evaluate_expression(evaluator, expr->expression);
     variable_store_insert_or_assign(evaluator->variables, expr->variable, value);

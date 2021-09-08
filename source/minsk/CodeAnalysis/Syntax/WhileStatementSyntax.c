@@ -1,8 +1,7 @@
 #include "minsk/CodeAnalysis/Syntax/WhileStatementSyntax.h"
 
-struct WhileStatementSyntax* while_statement_syntax_new(struct SyntaxToken* while_keyword,
-                                                        struct ExpressionSyntax* condition,
-                                                        struct StatementSyntax* body)
+struct WhileStatementSyntax* while_statement_syntax_new(
+    struct SyntaxToken* while_keyword, struct ExpressionSyntax* condition, struct StatementSyntax* body)
 {
     struct WhileStatementSyntax* syntax = mc_malloc(sizeof(struct WhileStatementSyntax));
     statement_syntax_init(&syntax->base, STATEMENT_SYNTAX_KIND_WHILE_STATEMENT_SYNTAX);

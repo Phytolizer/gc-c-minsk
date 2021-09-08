@@ -6,8 +6,8 @@
 #define INITIAL_SCOPE_SIZE 8
 
 static struct BoundScopeVariables* bound_scope_variables_new(void);
-static struct BoundScopeVariableEntry* bound_scope_variables_find_entry(struct BoundScopeVariableEntry* entries,
-                                                                        long num_entries, sds name);
+static struct BoundScopeVariableEntry* bound_scope_variables_find_entry(
+    struct BoundScopeVariableEntry* entries, long num_entries, sds name);
 
 struct BoundScope* bound_scope_new(struct BoundScope* parent)
 {
@@ -89,8 +89,8 @@ static struct BoundScopeVariables* bound_scope_variables_new(void)
     return variables;
 }
 
-static struct BoundScopeVariableEntry* bound_scope_variables_find_entry(struct BoundScopeVariableEntry* entries,
-                                                                        long num_entries, sds name)
+static struct BoundScopeVariableEntry* bound_scope_variables_find_entry(
+    struct BoundScopeVariableEntry* entries, long num_entries, sds name)
 {
     if (num_entries == 0)
     {

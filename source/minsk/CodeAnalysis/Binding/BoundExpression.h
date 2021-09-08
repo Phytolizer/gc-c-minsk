@@ -4,11 +4,11 @@
 
 #include "BoundNode.h"
 
-#define BOUND_EXPRESSIONS_                                                                                             \
-    X(BOUND_BINARY_EXPRESSION)                                                                                         \
-    X(BOUND_LITERAL_EXPRESSION)                                                                                        \
-    X(BOUND_UNARY_EXPRESSION)                                                                                          \
-    X(BOUND_VARIABLE_EXPRESSION)                                                                                       \
+#define BOUND_EXPRESSIONS_ \
+    X(BOUND_BINARY_EXPRESSION) \
+    X(BOUND_LITERAL_EXPRESSION) \
+    X(BOUND_UNARY_EXPRESSION) \
+    X(BOUND_VARIABLE_EXPRESSION) \
     X(BOUND_ASSIGNMENT_EXPRESSION)
 
 enum BoundExpressionKind

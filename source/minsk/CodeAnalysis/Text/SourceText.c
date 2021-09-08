@@ -5,8 +5,8 @@
 static struct SourceText* source_text_new(sds text);
 static struct TextLineList* parse_lines(struct SourceText* source_text, sds text);
 static int get_line_break_width(sds text, int i);
-static void add_line(struct TextLineList* lines, struct SourceText* source_text, int position, int line_start,
-                     int line_break_width);
+static void add_line(
+    struct TextLineList* lines, struct SourceText* source_text, int position, int line_start, int line_break_width);
 
 struct SourceText* source_text_from(sds text)
 {
@@ -118,8 +118,8 @@ static int get_line_break_width(sds text, int i)
     return 0;
 }
 
-static void add_line(struct TextLineList* lines, struct SourceText* source_text, int position, int line_start,
-                     int line_break_width)
+static void add_line(
+    struct TextLineList* lines, struct SourceText* source_text, int position, int line_start, int line_break_width)
 {
     int line_length = position - line_start;
     LIST_PUSH(lines, text_line_new(source_text, line_start, line_length, line_length + line_break_width));

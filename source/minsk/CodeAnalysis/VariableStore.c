@@ -7,8 +7,8 @@
 
 #define INITIAL_NUM_ENTRIES 8
 
-static struct VariableStoreEntry* find_entry_for(struct VariableStoreEntry* entries, long num_entries,
-                                                 struct VariableSymbol* name);
+static struct VariableStoreEntry* find_entry_for(
+    struct VariableStoreEntry* entries, long num_entries, struct VariableSymbol* name);
 
 struct VariableStore* variable_store_new(void)
 {
@@ -73,8 +73,8 @@ void variable_store_dump(const struct VariableStore* store)
     }
 }
 
-static struct VariableStoreEntry* find_entry_for(struct VariableStoreEntry* entries, long num_entries,
-                                                 struct VariableSymbol* symbol)
+static struct VariableStoreEntry* find_entry_for(
+    struct VariableStoreEntry* entries, long num_entries, struct VariableSymbol* symbol)
 {
     uint64_t hash = variable_symbol_hash(symbol);
     hash %= num_entries;

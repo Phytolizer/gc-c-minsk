@@ -1,8 +1,7 @@
 #include "minsk/CodeAnalysis/Syntax/BlockStatementSyntax.h"
 
-struct BlockStatementSyntax* block_statement_syntax_new(struct SyntaxToken* open_brace_token,
-                                                        struct StatementSyntaxList* statements,
-                                                        struct SyntaxToken* close_brace_token)
+struct BlockStatementSyntax* block_statement_syntax_new(
+    struct SyntaxToken* open_brace_token, struct StatementSyntaxList* statements, struct SyntaxToken* close_brace_token)
 {
     struct BlockStatementSyntax* syntax = mc_malloc(sizeof(struct BlockStatementSyntax));
     statement_syntax_init((struct StatementSyntax*)syntax, STATEMENT_SYNTAX_KIND_BLOCK_STATEMENT_SYNTAX);

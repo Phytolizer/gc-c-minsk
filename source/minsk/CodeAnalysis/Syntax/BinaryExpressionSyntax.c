@@ -2,9 +2,8 @@
 
 #include <IncludeMe.h>
 
-struct BinaryExpressionSyntax* binary_expression_syntax_new(struct ExpressionSyntax* left,
-                                                            struct SyntaxToken* operator_token,
-                                                            struct ExpressionSyntax* right)
+struct BinaryExpressionSyntax* binary_expression_syntax_new(
+    struct ExpressionSyntax* left, struct SyntaxToken* operator_token, struct ExpressionSyntax* right)
 {
     struct BinaryExpressionSyntax* syntax = mc_malloc(sizeof(struct BinaryExpressionSyntax));
     expression_syntax_init((struct ExpressionSyntax*)syntax, EXPRESSION_SYNTAX_KIND_BINARY_EXPRESSION_SYNTAX);

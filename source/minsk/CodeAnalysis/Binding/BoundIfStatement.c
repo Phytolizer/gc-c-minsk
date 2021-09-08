@@ -1,8 +1,7 @@
 #include "BoundIfStatement.h"
 
-struct BoundIfStatement* bound_if_statement_new(struct BoundExpression* condition,
-                                                struct BoundStatement* then_statement,
-                                                struct BoundStatement* else_statement)
+struct BoundIfStatement* bound_if_statement_new(
+    struct BoundExpression* condition, struct BoundStatement* then_statement, struct BoundStatement* else_statement)
 {
     struct BoundIfStatement* stmt = mc_malloc(sizeof(struct BoundIfStatement));
     bound_statement_init(&stmt->base, BOUND_STATEMENT_KIND_IF);

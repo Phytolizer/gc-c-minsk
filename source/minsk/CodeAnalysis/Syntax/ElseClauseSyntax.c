@@ -1,7 +1,7 @@
 #include "minsk/CodeAnalysis/Syntax/ElseClauseSyntax.h"
 
-struct ElseClauseSyntax* else_clause_syntax_new(struct SyntaxToken* else_keyword,
-                                                struct StatementSyntax* else_statement)
+struct ElseClauseSyntax* else_clause_syntax_new(
+    struct SyntaxToken* else_keyword, struct StatementSyntax* else_statement)
 {
     struct ElseClauseSyntax* syntax = mc_malloc(sizeof(struct ElseClauseSyntax));
     syntax->base.kind = SYNTAX_NODE_KIND_ELSE_CLAUSE;

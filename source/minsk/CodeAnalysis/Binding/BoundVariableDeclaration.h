@@ -11,6 +11,6 @@ struct BoundVariableDeclaration
     struct BoundExpression* initializer;
 };
 
-struct BoundVariableDeclaration* bound_variable_declaration_new(struct VariableSymbol* variable,
-                                                                struct BoundExpression* initializer);
+struct BoundVariableDeclaration* bound_variable_declaration_new(
+    struct VariableSymbol* variable, struct BoundExpression* initializer);
 enum BoundNodeKind bound_variable_declaration_get_kind(struct BoundVariableDeclaration* decl);

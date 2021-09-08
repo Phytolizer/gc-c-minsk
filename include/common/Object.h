@@ -1,9 +1,9 @@
 #pragma once
 
 #include <stdbool.h>
-#define OBJECT_KINDS_                                                                                                  \
-    X(INTEGER)                                                                                                         \
-    X(BOOLEAN)                                                                                                         \
+#define OBJECT_KINDS_ \
+    X(INTEGER) \
+    X(BOOLEAN) \
     X(NULL)
 
 enum ObjectKind

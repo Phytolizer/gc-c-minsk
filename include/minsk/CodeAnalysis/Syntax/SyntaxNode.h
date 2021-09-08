@@ -7,11 +7,11 @@
 
 #include "SyntaxKind.h"
 
-#define SYNTAX_NODE_KINDS_                                                                                             \
-    X(TOKEN)                                                                                                           \
-    X(EXPRESSION)                                                                                                      \
-    X(STATEMENT)                                                                                                       \
-    X(COMPILATION_UNIT)                                                                                                \
+#define SYNTAX_NODE_KINDS_ \
+    X(TOKEN) \
+    X(EXPRESSION) \
+    X(STATEMENT) \
+    X(COMPILATION_UNIT) \
     X(ELSE_CLAUSE)
 
 enum SyntaxNodeKind

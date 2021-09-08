@@ -14,6 +14,7 @@ add_library(
   CodeAnalysis/Binding/BoundBlockStatement.c
   CodeAnalysis/Binding/BoundExpression.c
   CodeAnalysis/Binding/BoundExpressionStatement.c
+  CodeAnalysis/Binding/BoundForStatement.c
   CodeAnalysis/Binding/BoundGlobalScope.c
   CodeAnalysis/Binding/BoundIfStatement.c
   CodeAnalysis/Binding/BoundLiteralExpression.c
@@ -32,6 +33,7 @@ add_library(
   CodeAnalysis/Syntax/ElseClauseSyntax.c
   CodeAnalysis/Syntax/ExpressionStatementSyntax.c
   CodeAnalysis/Syntax/ExpressionSyntax.c
+  CodeAnalysis/Syntax/ForStatementSyntax.c
   CodeAnalysis/Syntax/IfStatementSyntax.c
   CodeAnalysis/Syntax/Lexer.c
   CodeAnalysis/Syntax/LiteralExpressionSyntax.c

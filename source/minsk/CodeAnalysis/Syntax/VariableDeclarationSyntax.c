@@ -2,10 +2,11 @@
 
 #include "minsk/CodeAnalysis/Syntax/StatementSyntax.h"
 
-struct VariableDeclarationSyntax* variable_declaration_syntax_new(struct SyntaxToken* keyword_token,
-                                                                  struct SyntaxToken* identifier_token,
-                                                                  struct SyntaxToken* equals_token,
-                                                                  struct ExpressionSyntax* initializer)
+struct VariableDeclarationSyntax* variable_declaration_syntax_new(
+    struct SyntaxToken* keyword_token,
+    struct SyntaxToken* identifier_token,
+    struct SyntaxToken* equals_token,
+    struct ExpressionSyntax* initializer)
 {
     struct VariableDeclarationSyntax* syntax = mc_malloc(sizeof(struct VariableDeclarationSyntax));
     statement_syntax_init(&syntax->base, STATEMENT_SYNTAX_KIND_VARIABLE_DECLARATION_SYNTAX);

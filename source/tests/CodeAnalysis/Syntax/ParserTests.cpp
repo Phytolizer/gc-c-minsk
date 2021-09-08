@@ -19,8 +19,10 @@ extern "C"
 static std::vector<SyntaxKind> syntax_kind_variants()
 {
     std::vector<SyntaxKind> syntax_kind_variants;
-    std::copy(SYNTAX_KIND_VARIANTS, &SYNTAX_KIND_VARIANTS[NUM_SYNTAX_KIND_VARIANTS],
-              std::back_inserter(syntax_kind_variants));
+    std::copy(
+        SYNTAX_KIND_VARIANTS,
+        &SYNTAX_KIND_VARIANTS[NUM_SYNTAX_KIND_VARIANTS],
+        std::back_inserter(syntax_kind_variants));
     return syntax_kind_variants;
 }
 

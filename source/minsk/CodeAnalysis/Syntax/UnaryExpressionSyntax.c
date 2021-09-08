@@ -1,7 +1,7 @@
 #include "minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h"
 
-struct UnaryExpressionSyntax* unary_expression_syntax_new(struct SyntaxToken* operator_token,
-                                                          struct ExpressionSyntax* operand)
+struct UnaryExpressionSyntax* unary_expression_syntax_new(
+    struct SyntaxToken* operator_token, struct ExpressionSyntax* operand)
 {
     struct UnaryExpressionSyntax* syntax = mc_malloc(sizeof(struct UnaryExpressionSyntax));
     expression_syntax_init((struct ExpressionSyntax*)syntax, EXPRESSION_SYNTAX_KIND_UNARY_EXPRESSION_SYNTAX);

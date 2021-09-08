@@ -10,8 +10,8 @@ struct DiagnosticBag* diagnostic_bag_new(void)
     return bag;
 }
 
-void diagnostic_bag_report_invalid_number(struct DiagnosticBag* bag, struct TextSpan* span, sds text,
-                                          enum ObjectKind kind)
+void diagnostic_bag_report_invalid_number(
+    struct DiagnosticBag* bag, struct TextSpan* span, sds text, enum ObjectKind kind)
 {
     sds message = sdscatfmt(sdsempty(), "The number %S isn't valid %s.", text, OBJECT_KINDS[kind]);
     report(bag, span, message);
@@ -23,28 +23,35 @@ void diagnostic_bag_report_bad_character(struct DiagnosticBag* bag, int position
     report(bag, text_span_new(position, 1), message);
 }
 
-void diagnostic_bag_report_unexpected_token(struct DiagnosticBag* bag, struct TextSpan* span,
-                                            enum SyntaxKind actual_kind, enum SyntaxKind expected_kind)
+void diagnostic_bag_report_unexpected_token(
+    struct DiagnosticBag* bag, struct TextSpan* span, enum SyntaxKind actual_kind, enum SyntaxKind expected_kind)
 {
-    sds message = sdscatprintf(sdsempty(), "Unexpected token <%s>, expected <%s>.", SYNTAX_KINDS[actual_kind],
-                               SYNTAX_KINDS[expected_kind]);
+    sds message = sdscatprintf(
+        sdsempty(), "Unexpected token <%s>, expected <%s>.", SYNTAX_KINDS[actual_kind], SYNTAX_KINDS[expected_kind]);
     report(bag, span, message);
 }
 
-void diagnostic_bag_report_undefined_binary_operator(struct DiagnosticBag* bag, struct TextSpan* span,
-                                                     sds operator_text, enum ObjectKind left_type,
-                                                     enum ObjectKind right_type)
+void diagnostic_bag_report_undefined_binary_operator(
+    struct DiagnosticBag* bag,
+    struct TextSpan* span,
+    sds operator_text,
+    enum ObjectKind left_type,
+    enum ObjectKind right_type)
 {
-    sds message = sdscatfmt(sdsempty(), "The binary operator %S is not defined for types '%s' and '%s'.", operator_text,
-                            OBJECT_KINDS[left_type], OBJECT_KINDS[right_type]);
+    sds message = sdscatfmt(
+        sdsempty(),
+        "The binary operator %S is not defined for types '%s' and '%s'.",
+        operator_text,
+        OBJECT_KINDS[left_type],
+        OBJECT_KINDS[right_type]);
     report(bag, span, message);
 }
 
-void diagnostic_bag_report_undefined_unary_operator(struct DiagnosticBag* bag, struct TextSpan* span, sds operator_text,
-                                                    enum ObjectKind operand_type)
+void diagnostic_bag_report_undefined_unary_operator(
+    struct DiagnosticBag* bag, struct TextSpan* span, sds operator_text, enum ObjectKind operand_type)
 {
-    sds message = sdscatfmt(sdsempty(), "The unary operator %S is not defined for type '%s'.", operator_text,
-                            OBJECT_KINDS[operand_type]);
+    sds message = sdscatfmt(
+        sdsempty(), "The unary operator %S is not defined for type '%s'.", operator_text, OBJECT_KINDS[operand_type]);
     report(bag, span, message);
 }
 
@@ -54,8 +61,8 @@ void diagnostic_bag_report_undefined_name(struct DiagnosticBag* bag, struct Text
     report(bag, span, message);
 }
 
-void diagnostic_bag_report_cannot_convert(struct DiagnosticBag* bag, struct TextSpan* span, enum ObjectKind from_type,
-                                          enum ObjectKind to_type)
+void diagnostic_bag_report_cannot_convert(
+    struct DiagnosticBag* bag, struct TextSpan* span, enum ObjectKind from_type, enum ObjectKind to_type)
 {
     sds message =
         sdscatfmt(sdsempty(), "Cannot convert type '%s' to '%s'.", OBJECT_KINDS[from_type], OBJECT_KINDS[to_type]);

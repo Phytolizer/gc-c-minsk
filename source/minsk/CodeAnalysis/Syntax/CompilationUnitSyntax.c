@@ -1,7 +1,7 @@
 #include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
 
-struct CompilationUnitSyntax* compilation_unit_syntax_new(struct StatementSyntax* statement,
-                                                          struct SyntaxToken* end_of_file_token)
+struct CompilationUnitSyntax* compilation_unit_syntax_new(
+    struct StatementSyntax* statement, struct SyntaxToken* end_of_file_token)
 {
     struct CompilationUnitSyntax* unit = mc_malloc(sizeof(struct CompilationUnitSyntax));
     unit->base.kind = SYNTAX_NODE_KIND_COMPILATION_UNIT;

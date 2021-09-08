@@ -1,8 +1,10 @@
 #include "minsk/CodeAnalysis/Syntax/IfStatementSyntax.h"
 
-struct IfStatementSyntax* if_statement_syntax_new(struct SyntaxToken* if_keyword, struct ExpressionSyntax* condition,
-                                                  struct StatementSyntax* then_statement,
-                                                  struct ElseClauseSyntax* else_clause)
+struct IfStatementSyntax* if_statement_syntax_new(
+    struct SyntaxToken* if_keyword,
+    struct ExpressionSyntax* condition,
+    struct StatementSyntax* then_statement,
+    struct ElseClauseSyntax* else_clause)
 {
     struct IfStatementSyntax* syntax = mc_malloc(sizeof(struct IfStatementSyntax));
     statement_syntax_init(&syntax->base, STATEMENT_SYNTAX_KIND_IF_STATEMENT_SYNTAX);

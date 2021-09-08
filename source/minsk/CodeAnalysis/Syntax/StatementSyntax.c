@@ -1,4 +1,5 @@
 #include "minsk/CodeAnalysis/Syntax/StatementSyntax.h"
+#include "minsk/CodeAnalysis/Syntax/ForStatementSyntax.h"
 
 #include <minsk/CodeAnalysis/Syntax/BlockStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionStatementSyntax.h>
@@ -20,6 +21,8 @@ enum SyntaxKind statement_syntax_get_kind(struct StatementSyntax* syntax)
         return block_statement_syntax_get_kind((struct BlockStatementSyntax*)syntax);
     case STATEMENT_SYNTAX_KIND_EXPRESSION_STATEMENT_SYNTAX:
         return expression_statement_syntax_get_kind((struct ExpressionStatementSyntax*)syntax);
+    case STATEMENT_SYNTAX_KIND_FOR_STATEMENT_SYNTAX:
+        return for_statement_syntax_get_kind((struct ForStatementSyntax*)syntax);
     case STATEMENT_SYNTAX_KIND_IF_STATEMENT_SYNTAX:
         return if_statement_syntax_get_kind((struct IfStatementSyntax*)syntax);
     case STATEMENT_SYNTAX_KIND_VARIABLE_DECLARATION_SYNTAX:
@@ -37,6 +40,8 @@ struct SyntaxNodeList* statement_syntax_get_children(struct StatementSyntax* syn
         return block_statement_syntax_get_children((struct BlockStatementSyntax*)syntax);
     case STATEMENT_SYNTAX_KIND_EXPRESSION_STATEMENT_SYNTAX:
         return expression_statement_syntax_get_children((struct ExpressionStatementSyntax*)syntax);
+    case STATEMENT_SYNTAX_KIND_FOR_STATEMENT_SYNTAX:
+        return for_statement_syntax_get_children((struct ForStatementSyntax*)syntax);
     case STATEMENT_SYNTAX_KIND_IF_STATEMENT_SYNTAX:
         return if_statement_syntax_get_children((struct IfStatementSyntax*)syntax);
     case STATEMENT_SYNTAX_KIND_VARIABLE_DECLARATION_SYNTAX:

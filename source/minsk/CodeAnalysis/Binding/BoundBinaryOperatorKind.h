@@ -1,17 +1,17 @@
 #pragma once
 
-#define BOUND_BINARY_OPERATOR_KINDS_                                                                                   \
-    X(ADDITION)                                                                                                        \
-    X(SUBTRACTION)                                                                                                     \
-    X(MULTIPLICATION)                                                                                                  \
-    X(DIVISION)                                                                                                        \
-    X(LOGICAL_AND)                                                                                                     \
-    X(LOGICAL_OR)                                                                                                      \
-    X(EQUALITY)                                                                                                        \
-    X(INEQUALITY)                                                                                                      \
-    X(LESS)                                                                                                            \
-    X(LESS_OR_EQUALS)                                                                                                  \
-    X(GREATER)                                                                                                         \
+#define BOUND_BINARY_OPERATOR_KINDS_ \
+    X(ADDITION) \
+    X(SUBTRACTION) \
+    X(MULTIPLICATION) \
+    X(DIVISION) \
+    X(LOGICAL_AND) \
+    X(LOGICAL_OR) \
+    X(EQUALITY) \
+    X(INEQUALITY) \
+    X(LESS) \
+    X(LESS_OR_EQUALS) \
+    X(GREATER) \
     X(GREATER_OR_EQUALS)
 
 enum BoundBinaryOperatorKind

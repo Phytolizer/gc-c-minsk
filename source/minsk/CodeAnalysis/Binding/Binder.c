@@ -10,6 +10,7 @@
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BlockStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionStatementSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/ForStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/IfStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/NameExpressionSyntax.h>
@@ -27,6 +28,7 @@
 #include "BoundBlockStatement.h"
 #include "BoundExpression.h"
 #include "BoundExpressionStatement.h"
+#include "BoundForStatement.h"
 #include "BoundGlobalScope.h"
 #include "BoundIfStatement.h"
 #include "BoundLiteralExpression.h"
@@ -40,24 +42,25 @@
 
 static struct BoundStatement* bind_statement(struct Binder* binder, struct StatementSyntax* syntax);
 static struct BoundStatement* bind_block_statement(struct Binder* binder, struct BlockStatementSyntax* syntax);
-static struct BoundStatement* bind_expression_statement(struct Binder* binder,
-                                                        struct ExpressionStatementSyntax* syntax);
+static struct BoundStatement* bind_expression_statement(
+    struct Binder* binder, struct ExpressionStatementSyntax* syntax);
+static struct BoundStatement* bind_for_statement(struct Binder* binder, struct ForStatementSyntax* syntax);
 static struct BoundStatement* bind_if_statement(struct Binder* binder, struct IfStatementSyntax* syntax);
-static struct BoundStatement* bind_variable_declaration(struct Binder* binder,
-                                                        struct VariableDeclarationSyntax* syntax);
+static struct BoundStatement* bind_variable_declaration(
+    struct Binder* binder, struct VariableDeclarationSyntax* syntax);
 static struct BoundStatement* bind_while_statement(struct Binder* binder, struct WhileStatementSyntax* syntax);
 
 static struct BoundExpression* bind_expression(struct Binder* binder, struct ExpressionSyntax* syntax);
-static struct BoundExpression* bind_expression_with_type(struct Binder* binder, struct ExpressionSyntax* syntax,
-                                                         enum ObjectKind target_type);
+static struct BoundExpression* bind_expression_with_type(
+    struct Binder* binder, struct ExpressionSyntax* syntax, enum ObjectKind target_type);
 static struct BoundExpression* bind_literal_expression(struct Binder* binder, struct LiteralExpressionSyntax* syntax);
 static struct BoundExpression* bind_binary_expression(struct Binder* binder, struct BinaryExpressionSyntax* syntax);
-static struct BoundExpression* bind_parenthesized_expression(struct Binder* binder,
-                                                             struct ParenthesizedExpressionSyntax* syntax);
+static struct BoundExpression* bind_parenthesized_expression(
+    struct Binder* binder, struct ParenthesizedExpressionSyntax* syntax);
 static struct BoundExpression* bind_unary_expression(struct Binder* binder, struct UnaryExpressionSyntax* syntax);
 static struct BoundExpression* bind_name_expression(struct Binder* binder, struct NameExpressionSyntax* syntax);
-static struct BoundExpression* bind_assignment_expression(struct Binder* binder,
-                                                          struct AssignmentExpressionSyntax* syntax);
+static struct BoundExpression* bind_assignment_expression(
+    struct Binder* binder, struct AssignmentExpressionSyntax* syntax);
 
 static struct BoundScope* create_parent_scopes(struct BoundGlobalScope* previous);
 
@@ -98,6 +101,8 @@ static struct BoundStatement* bind_statement(struct Binder* binder, struct State
         return bind_block_statement(binder, (struct BlockStatementSyntax*)syntax);
     case STATEMENT_SYNTAX_KIND_EXPRESSION_STATEMENT_SYNTAX:
         return bind_expression_statement(binder, (struct ExpressionStatementSyntax*)syntax);
+    case STATEMENT_SYNTAX_KIND_FOR_STATEMENT_SYNTAX:
+        return bind_for_statement(binder, (struct ForStatementSyntax*)syntax);
     case STATEMENT_SYNTAX_KIND_IF_STATEMENT_SYNTAX:
         return bind_if_statement(binder, (struct IfStatementSyntax*)syntax);
     case STATEMENT_SYNTAX_KIND_VARIABLE_DECLARATION_SYNTAX:
@@ -127,6 +132,27 @@ static struct BoundStatement* bind_expression_statement(struct Binder* binder, s
     return (struct BoundStatement*)bound_expression_statement_new(expression);
 }
 
+static struct BoundStatement* bind_for_statement(struct Binder* binder, struct ForStatementSyntax* syntax)
+{
+    struct BoundExpression* lower_bound = bind_expression_with_type(binder, syntax->lower_bound, OBJECT_KIND_INTEGER);
+    struct BoundExpression* upper_bound = bind_expression_with_type(binder, syntax->upper_bound, OBJECT_KIND_INTEGER);
+
+    binder->scope = bound_scope_new(binder->scope);
+
+    sds name = syntax->identifier_token->text;
+    struct VariableSymbol* variable = variable_symbol_new(name, true, OBJECT_KIND_INTEGER);
+    if (!bound_scope_try_declare(binder->scope, variable))
+    {
+        diagnostic_bag_report_variable_already_declared(
+            binder->diagnostics, syntax_token_get_span(syntax->identifier_token), name);
+    }
+
+    struct BoundStatement* body = bind_statement(binder, syntax->body);
+
+    binder->scope = binder->scope->parent;
+    return (struct BoundStatement*)bound_for_statement_new(variable, lower_bound, upper_bound, body);
+}
+
 static struct BoundStatement* bind_if_statement(struct Binder* binder, struct IfStatementSyntax* syntax)
 {
     struct BoundExpression* condition = bind_expression_with_type(binder, syntax->condition, OBJECT_KIND_BOOLEAN);
@@ -144,8 +170,8 @@ static struct BoundStatement* bind_variable_declaration(struct Binder* binder, s
     struct VariableSymbol* variable = variable_symbol_new(name, is_read_only, bound_expression_get_type(initializer));
     if (!bound_scope_try_declare(binder->scope, variable))
     {
-        diagnostic_bag_report_variable_already_declared(binder->diagnostics,
-                                                        syntax_token_get_span(syntax->identifier_token), name);
+        diagnostic_bag_report_variable_already_declared(
+            binder->diagnostics, syntax_token_get_span(syntax->identifier_token), name);
     }
 
     return (struct BoundStatement*)bound_variable_declaration_new(variable, initializer);
@@ -177,14 +203,17 @@ static struct BoundExpression* bind_expression(struct Binder* binder, struct Exp
     }
 }
 
-static struct BoundExpression* bind_expression_with_type(struct Binder* binder, struct ExpressionSyntax* syntax,
-                                                         enum ObjectKind target_type)
+static struct BoundExpression* bind_expression_with_type(
+    struct Binder* binder, struct ExpressionSyntax* syntax, enum ObjectKind target_type)
 {
     struct BoundExpression* result = bind_expression(binder, syntax);
     if (bound_expression_get_type(result) != target_type)
     {
-        diagnostic_bag_report_cannot_convert(binder->diagnostics, syntax_node_get_span((struct SyntaxNode*)syntax),
-                                             bound_expression_get_type(result), target_type);
+        diagnostic_bag_report_cannot_convert(
+            binder->diagnostics,
+            syntax_node_get_span((struct SyntaxNode*)syntax),
+            bound_expression_get_type(result),
+            target_type);
     }
     return result;
 }
@@ -214,15 +243,18 @@ static struct BoundExpression* bind_binary_expression(struct Binder* binder, str
     if (!bound_operator)
     {
         diagnostic_bag_report_undefined_binary_operator(
-            binder->diagnostics, syntax_token_get_span(syntax->operator_token), syntax->operator_token->text,
-            bound_expression_get_type(bound_left), bound_expression_get_type(bound_right));
+            binder->diagnostics,
+            syntax_token_get_span(syntax->operator_token),
+            syntax->operator_token->text,
+            bound_expression_get_type(bound_left),
+            bound_expression_get_type(bound_right));
         return bound_left;
     }
     return (struct BoundExpression*)bound_binary_expression_new(bound_left, bound_operator, bound_right);
 }
 
-static struct BoundExpression* bind_parenthesized_expression(struct Binder* binder,
-                                                             struct ParenthesizedExpressionSyntax* syntax)
+static struct BoundExpression* bind_parenthesized_expression(
+    struct Binder* binder, struct ParenthesizedExpressionSyntax* syntax)
 {
     return bind_expression(binder, syntax->expression);
 }
@@ -235,7 +267,9 @@ static struct BoundExpression* bind_unary_expression(struct Binder* binder, stru
     if (!bound_operator)
     {
         diagnostic_bag_report_undefined_unary_operator(
-            binder->diagnostics, syntax_token_get_span(syntax->operator_token), syntax->operator_token->text,
+            binder->diagnostics,
+            syntax_token_get_span(syntax->operator_token),
+            syntax->operator_token->text,
             bound_expression_get_type(bound_operand));
         return bound_operand;
     }
@@ -250,16 +284,16 @@ static struct BoundExpression* bind_name_expression(struct Binder* binder, struc
 
     if (!variable)
     {
-        diagnostic_bag_report_undefined_name(binder->diagnostics, syntax_token_get_span(syntax->identifier_token),
-                                             name);
+        diagnostic_bag_report_undefined_name(
+            binder->diagnostics, syntax_token_get_span(syntax->identifier_token), name);
         return (struct BoundExpression*)bound_literal_expression_new(OBJECT_INTEGER(0));
     }
 
     return (struct BoundExpression*)bound_variable_expression_new(*variable);
 }
 
-static struct BoundExpression* bind_assignment_expression(struct Binder* binder,
-                                                          struct AssignmentExpressionSyntax* syntax)
+static struct BoundExpression* bind_assignment_expression(
+    struct Binder* binder, struct AssignmentExpressionSyntax* syntax)
 {
     sds name = syntax->identifier_token->text;
     struct BoundExpression* bound_expression = bind_expression(binder, syntax->expression);
@@ -267,8 +301,8 @@ static struct BoundExpression* bind_assignment_expression(struct Binder* binder,
     struct VariableSymbol* variable = NULL;
     if (!pvar)
     {
-        diagnostic_bag_report_undefined_name(binder->diagnostics, syntax_token_get_span(syntax->identifier_token),
-                                             name);
+        diagnostic_bag_report_undefined_name(
+            binder->diagnostics, syntax_token_get_span(syntax->identifier_token), name);
         return bound_expression;
     }
     else
@@ -283,9 +317,11 @@ static struct BoundExpression* bind_assignment_expression(struct Binder* binder,
 
     if (bound_expression_get_type(bound_expression) != variable->type)
     {
-        diagnostic_bag_report_cannot_convert(binder->diagnostics,
-                                             syntax_node_get_span((struct SyntaxNode*)syntax->expression),
-                                             bound_expression_get_type(bound_expression), variable->type);
+        diagnostic_bag_report_cannot_convert(
+            binder->diagnostics,
+            syntax_node_get_span((struct SyntaxNode*)syntax->expression),
+            bound_expression_get_type(bound_expression),
+            variable->type);
     }
 
     return (struct BoundExpression*)bound_assignment_expression_new(variable, bound_expression);

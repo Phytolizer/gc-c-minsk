@@ -42,16 +42,18 @@ BasicTokenList* get_tokens()
     BasicTokenList* fixed_tokens = static_cast<BasicTokenList*>(mc_malloc(sizeof(BasicTokenList)));
     LIST_INIT(fixed_tokens);
     LIST_RESERVE(fixed_tokens, NUM_SYNTAX_KIND_VARIANTS);
-    std::transform(SYNTAX_KIND_VARIANTS, &SYNTAX_KIND_VARIANTS[NUM_SYNTAX_KIND_VARIANTS], fixed_tokens->data,
-                   [](SyntaxKind kind) {
-                       return BasicToken{kind, syntax_facts_get_text(kind)};
-                   });
+    std::transform(
+        SYNTAX_KIND_VARIANTS, &SYNTAX_KIND_VARIANTS[NUM_SYNTAX_KIND_VARIANTS], fixed_tokens->data, [](SyntaxKind kind) {
+            return BasicToken{kind, syntax_facts_get_text(kind)};
+        });
     fixed_tokens->length = NUM_SYNTAX_KIND_VARIANTS;
     BasicTokenList* tokens = static_cast<BasicTokenList*>(mc_malloc(sizeof(BasicTokenList)));
     LIST_INIT(tokens);
     LIST_RESERVE(tokens, NUM_SYNTAX_KIND_VARIANTS + DYNAMIC_TOKENS->length);
-    auto* ep = std::copy_if(fixed_tokens->data, &fixed_tokens->data[fixed_tokens->length], tokens->data,
-                            [](const auto& t) { return t.text != nullptr; });
+    auto* ep =
+        std::copy_if(fixed_tokens->data, &fixed_tokens->data[fixed_tokens->length], tokens->data, [](const auto& t) {
+            return t.text != nullptr;
+        });
     tokens->length = ep - tokens->data;
     ep = std::copy(DYNAMIC_TOKENS->data, &DYNAMIC_TOKENS->data[DYNAMIC_TOKENS->length], &tokens->data[tokens->length]);
     tokens->length = ep - tokens->data;
@@ -61,8 +63,10 @@ BasicTokenList* get_tokens()
 BasicTokenList* TOKENS = get_tokens();
 
 const std::array SEPARATORS = {
-    BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew(" ")},    BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew("  ")},
-    BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew("\r")},   BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew("\n")},
+    BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew(" ")},
+    BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew("  ")},
+    BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew("\r")},
+    BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew("\n")},
     BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew("\r\n")},
 };
 

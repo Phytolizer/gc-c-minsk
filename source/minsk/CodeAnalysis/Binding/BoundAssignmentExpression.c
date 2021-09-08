@@ -2,8 +2,8 @@
 
 #include <IncludeMe.h>
 
-struct BoundAssignmentExpression* bound_assignment_expression_new(struct VariableSymbol* name,
-                                                                  struct BoundExpression* expression)
+struct BoundAssignmentExpression* bound_assignment_expression_new(
+    struct VariableSymbol* name, struct BoundExpression* expression)
 {
     struct BoundAssignmentExpression* expr = mc_malloc(sizeof(struct BoundAssignmentExpression));
     bound_expression_init((struct BoundExpression*)expr, BOUND_EXPRESSION_KIND_BOUND_ASSIGNMENT_EXPRESSION);

@@ -10,6 +10,7 @@
 #include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ElseClauseSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionStatementSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/ForStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/IfStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/NameExpressionSyntax.h>
@@ -33,6 +34,7 @@ static struct StatementSyntax* parse_statement(struct Parser* parser);
 static struct StatementSyntax* parse_block_statement(struct Parser* parser);
 static struct ElseClauseSyntax* parse_else_clause(struct Parser* parser);
 static struct StatementSyntax* parse_expression_statement(struct Parser* parser);
+static struct StatementSyntax* parse_for_statement(struct Parser* parser);
 static struct StatementSyntax* parse_if_statement(struct Parser* parser);
 static struct StatementSyntax* parse_variable_declaration(struct Parser* parser);
 static struct StatementSyntax* parse_while_statement(struct Parser* parser);
@@ -114,8 +116,8 @@ static struct SyntaxToken* match_token(struct Parser* parser, enum SyntaxKind ki
         return next_token(parser);
     }
 
-    diagnostic_bag_report_unexpected_token(parser->diagnostics, syntax_token_get_span(current(parser)),
-                                           current(parser)->kind, kind);
+    diagnostic_bag_report_unexpected_token(
+        parser->diagnostics, syntax_token_get_span(current(parser)), current(parser)->kind, kind);
     return syntax_token_new(kind, current(parser)->position, sdsempty(), OBJECT_NULL());
 }
 
@@ -128,6 +130,8 @@ static struct StatementSyntax* parse_statement(struct Parser* parser)
     case SYNTAX_KIND_LET_KEYWORD:
     case SYNTAX_KIND_VAR_KEYWORD:
         return parse_variable_declaration(parser);
+    case SYNTAX_KIND_FOR_KEYWORD:
+        return parse_for_statement(parser);
     case SYNTAX_KIND_IF_KEYWORD:
         return parse_if_statement(parser);
     case SYNTAX_KIND_WHILE_KEYWORD:
@@ -169,6 +173,19 @@ static struct StatementSyntax* parse_expression_statement(struct Parser* parser)
     return (struct StatementSyntax*)expression_statement_syntax_new(expression);
 }
 
+static struct StatementSyntax* parse_for_statement(struct Parser* parser)
+{
+    struct SyntaxToken* keyword = match_token(parser, SYNTAX_KIND_FOR_KEYWORD);
+    struct SyntaxToken* identifier = match_token(parser, SYNTAX_KIND_IDENTIFIER_TOKEN);
+    struct SyntaxToken* equals_token = match_token(parser, SYNTAX_KIND_EQUALS_TOKEN);
+    struct ExpressionSyntax* lower_bound = parse_expression(parser);
+    struct SyntaxToken* to_keyword = match_token(parser, SYNTAX_KIND_TO_KEYWORD);
+    struct ExpressionSyntax* upper_bound = parse_expression(parser);
+    struct StatementSyntax* body = parse_statement(parser);
+    return (struct StatementSyntax*)for_statement_syntax_new(
+        keyword, identifier, equals_token, lower_bound, to_keyword, upper_bound, body);
+}
+
 static struct StatementSyntax* parse_if_statement(struct Parser* parser)
 {
     struct SyntaxToken* keyword = match_token(parser, SYNTAX_KIND_IF_KEYWORD);
@@ -186,8 +203,8 @@ static struct StatementSyntax* parse_variable_declaration(struct Parser* parser)
     struct SyntaxToken* identifier_token = match_token(parser, SYNTAX_KIND_IDENTIFIER_TOKEN);
     struct SyntaxToken* equals_token = match_token(parser, SYNTAX_KIND_EQUALS_TOKEN);
     struct ExpressionSyntax* initializer = parse_expression(parser);
-    return (struct StatementSyntax*)variable_declaration_syntax_new(keyword_token, identifier_token, equals_token,
-                                                                    initializer);
+    return (struct StatementSyntax*)variable_declaration_syntax_new(
+        keyword_token, identifier_token, equals_token, initializer);
 }
 
 static struct StatementSyntax* parse_while_statement(struct Parser* parser)
@@ -268,8 +285,8 @@ static struct ExpressionSyntax* parse_parenthesized_expression(struct Parser* pa
     struct SyntaxToken* open_parenthesis_token = match_token(parser, SYNTAX_KIND_OPEN_PARENTHESIS_TOKEN);
     struct ExpressionSyntax* expression = parse_expression(parser);
     struct SyntaxToken* close_parenthesis_token = match_token(parser, SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN);
-    return (struct ExpressionSyntax*)parenthesized_expression_syntax_new(open_parenthesis_token, expression,
-                                                                         close_parenthesis_token);
+    return (struct ExpressionSyntax*)parenthesized_expression_syntax_new(
+        open_parenthesis_token, expression, close_parenthesis_token);
 }
 
 static struct ExpressionSyntax* parse_boolean_literal(struct Parser* parser)

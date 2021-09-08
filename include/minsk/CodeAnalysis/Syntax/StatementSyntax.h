@@ -4,11 +4,12 @@
 
 #include "SyntaxNode.h"
 
-#define STATEMENT_SYNTAX_KINDS_                                                                                        \
-    X(BLOCK_STATEMENT_SYNTAX)                                                                                          \
-    X(EXPRESSION_STATEMENT_SYNTAX)                                                                                     \
-    X(IF_STATEMENT_SYNTAX)                                                                                             \
-    X(VARIABLE_DECLARATION_SYNTAX)                                                                                     \
+#define STATEMENT_SYNTAX_KINDS_ \
+    X(BLOCK_STATEMENT_SYNTAX) \
+    X(EXPRESSION_STATEMENT_SYNTAX) \
+    X(FOR_STATEMENT_SYNTAX) \
+    X(IF_STATEMENT_SYNTAX) \
+    X(VARIABLE_DECLARATION_SYNTAX) \
     X(WHILE_STATEMENT_SYNTAX)
 
 enum StatementSyntaxKind

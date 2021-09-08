@@ -389,8 +389,8 @@ void sdsIncrLen(sds s, ssize_t incr)
     }
     case SDS_TYPE_32: {
         SDS_HDR_VAR(32, s);
-        assert((incr >= 0 && sh->alloc - sh->len >= (unsigned int)incr) ||
-               (incr < 0 && sh->len >= (unsigned int)(-incr)));
+        assert(
+            (incr >= 0 && sh->alloc - sh->len >= (unsigned int)incr) || (incr < 0 && sh->len >= (unsigned int)(-incr)));
         len = (sh->len += incr);
         break;
     }
@@ -1356,8 +1356,9 @@ int sdsTest(void)
         test_cond("sdscpy() against an originally longer string", sdslen(x) == 1 && memcmp(x, "a\0", 2) == 0)
 
             x = sdscpy(x, "xyzxxxxxxxxxxyyyyyyyyyykkkkkkkkkk");
-        test_cond("sdscpy() against an originally shorter string",
-                  sdslen(x) == 33 && memcmp(x, "xyzxxxxxxxxxxyyyyyyyyyykkkkkkkkkk\0", 33) == 0)
+        test_cond(
+            "sdscpy() against an originally shorter string",
+            sdslen(x) == 33 && memcmp(x, "xyzxxxxxxxxxxyyyyyyyyyykkkkkkkkkk\0", 33) == 0)
 
             sdsfree(x);
         x = sdscatprintf(sdsempty(), "%d", 123);
@@ -1366,17 +1367,21 @@ int sdsTest(void)
             sdsfree(x);
         x = sdsnew("--");
         x = sdscatfmt(x, "Hello %s World %I,%I--", "Hi!", LLONG_MIN, LLONG_MAX);
-        test_cond("sdscatfmt() seems working in the base case",
-                  sdslen(x) == 60 && memcmp(x,
-                                            "--Hello Hi! World -9223372036854775808,"
-                                            "9223372036854775807--",
-                                            60) == 0) printf("[%s]\n", x);
+        test_cond(
+            "sdscatfmt() seems working in the base case",
+            sdslen(x) == 60 &&
+                memcmp(
+                    x,
+                    "--Hello Hi! World -9223372036854775808,"
+                    "9223372036854775807--",
+                    60) == 0) printf("[%s]\n", x);
 
         sdsfree(x);
         x = sdsnew("--");
         x = sdscatfmt(x, "%u,%U--", UINT_MAX, ULLONG_MAX);
-        test_cond("sdscatfmt() seems working with unsigned numbers",
-                  sdslen(x) == 35 && memcmp(x, "--4294967295,18446744073709551615--", 35) == 0)
+        test_cond(
+            "sdscatfmt() seems working with unsigned numbers",
+            sdslen(x) == 35 && memcmp(x, "--4294967295,18446744073709551615--", 35) == 0)
 
             sdsfree(x);
         x = sdsnew(" x ");
@@ -1477,9 +1482,13 @@ int sdsTest(void)
                 }
                 sdsIncrLen(x, step);
             }
-            test_cond("sdsMakeRoomFor() content", memcmp("0ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJ"
-                                                         "ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJ",
-                                                         x, 101) == 0);
+            test_cond(
+                "sdsMakeRoomFor() content",
+                memcmp(
+                    "0ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJ"
+                    "ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJ",
+                    x,
+                    101) == 0);
             test_cond("sdsMakeRoomFor() final length", sdslen(x) == 101);
 
             sdsfree(x);

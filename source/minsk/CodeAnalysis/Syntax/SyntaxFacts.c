@@ -51,6 +51,10 @@ enum SyntaxKind keyword_kind(sds text)
     {
         return SYNTAX_KIND_FALSE_KEYWORD;
     }
+    if (strcmp(text, "for") == 0)
+    {
+        return SYNTAX_KIND_FOR_KEYWORD;
+    }
     if (strcmp(text, "if") == 0)
     {
         return SYNTAX_KIND_IF_KEYWORD;
@@ -58,6 +62,10 @@ enum SyntaxKind keyword_kind(sds text)
     if (strcmp(text, "let") == 0)
     {
         return SYNTAX_KIND_LET_KEYWORD;
+    }
+    if (strcmp(text, "to") == 0)
+    {
+        return SYNTAX_KIND_TO_KEYWORD;
     }
     if (strcmp(text, "true") == 0)
     {
@@ -118,10 +126,14 @@ sds syntax_facts_get_text(enum SyntaxKind kind)
         return sdsnew("else");
     case SYNTAX_KIND_FALSE_KEYWORD:
         return sdsnew("false");
+    case SYNTAX_KIND_FOR_KEYWORD:
+        return sdsnew("for");
     case SYNTAX_KIND_IF_KEYWORD:
         return sdsnew("if");
     case SYNTAX_KIND_LET_KEYWORD:
         return sdsnew("let");
+    case SYNTAX_KIND_TO_KEYWORD:
+        return sdsnew("to");
     case SYNTAX_KIND_TRUE_KEYWORD:
         return sdsnew("true");
     case SYNTAX_KIND_VAR_KEYWORD:

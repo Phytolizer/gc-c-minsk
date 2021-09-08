@@ -2,8 +2,8 @@
 
 #include <IncludeMe.h>
 
-struct BoundBinaryExpression* bound_binary_expression_new(struct BoundExpression* left, struct BoundBinaryOperator* op,
-                                                          struct BoundExpression* right)
+struct BoundBinaryExpression* bound_binary_expression_new(
+    struct BoundExpression* left, struct BoundBinaryOperator* op, struct BoundExpression* right)
 {
     struct BoundBinaryExpression* expr = mc_malloc(sizeof(struct BoundBinaryExpression));
     bound_expression_init((struct BoundExpression*)expr, BOUND_EXPRESSION_KIND_BOUND_BINARY_EXPRESSION);

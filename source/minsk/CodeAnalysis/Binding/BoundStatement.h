@@ -4,11 +4,12 @@
 
 #include "BoundNode.h"
 
-#define BOUND_STATEMENT_KINDS_                                                                                         \
-    X(BLOCK)                                                                                                           \
-    X(EXPRESSION)                                                                                                      \
-    X(IF)                                                                                                              \
-    X(VARIABLE_DECLARATION)                                                                                            \
+#define BOUND_STATEMENT_KINDS_ \
+    X(BLOCK) \
+    X(EXPRESSION) \
+    X(FOR) \
+    X(IF) \
+    X(VARIABLE_DECLARATION) \
     X(WHILE)
 
 enum BoundStatementKind

@@ -2,12 +2,12 @@
 
 #include "SyntaxNode.h"
 
-#define EXPRESSION_SYNTAX_KINDS_                                                                                       \
-    X(LITERAL_EXPRESSION_SYNTAX)                                                                                       \
-    X(BINARY_EXPRESSION_SYNTAX)                                                                                        \
-    X(PARENTHESIZED_EXPRESSION_SYNTAX)                                                                                 \
-    X(UNARY_EXPRESSION_SYNTAX)                                                                                         \
-    X(NAME_EXPRESSION_SYNTAX)                                                                                          \
+#define EXPRESSION_SYNTAX_KINDS_ \
+    X(LITERAL_EXPRESSION_SYNTAX) \
+    X(BINARY_EXPRESSION_SYNTAX) \
+    X(PARENTHESIZED_EXPRESSION_SYNTAX) \
+    X(UNARY_EXPRESSION_SYNTAX) \
+    X(NAME_EXPRESSION_SYNTAX) \
     X(ASSIGNMENT_EXPRESSION_SYNTAX)
 
 enum ExpressionSyntaxKind

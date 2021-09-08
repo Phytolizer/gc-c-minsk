@@ -14,5 +14,5 @@ struct BoundBinaryOperator
     enum ObjectKind result_type;
 };
 
-extern struct BoundBinaryOperator* bind_binary_operator(enum SyntaxKind syntax_kind, enum ObjectKind left_type,
-                                                        enum ObjectKind right_type);
+extern struct BoundBinaryOperator* bind_binary_operator(
+    enum SyntaxKind syntax_kind, enum ObjectKind left_type, enum ObjectKind right_type);

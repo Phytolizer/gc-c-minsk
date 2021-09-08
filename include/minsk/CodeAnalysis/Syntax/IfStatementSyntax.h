@@ -13,8 +13,10 @@ struct IfStatementSyntax
     struct ElseClauseSyntax* else_clause;
 };
 
-struct IfStatementSyntax* if_statement_syntax_new(struct SyntaxToken* if_keyword, struct ExpressionSyntax* condition,
-                                                  struct StatementSyntax* then_statement,
-                                                  struct ElseClauseSyntax* else_clause);
+struct IfStatementSyntax* if_statement_syntax_new(
+    struct SyntaxToken* if_keyword,
+    struct ExpressionSyntax* condition,
+    struct StatementSyntax* then_statement,
+    struct ElseClauseSyntax* else_clause);
 enum SyntaxKind if_statement_syntax_get_kind(struct IfStatementSyntax* syntax);
 struct SyntaxNodeList* if_statement_syntax_get_children(struct IfStatementSyntax* syntax);
