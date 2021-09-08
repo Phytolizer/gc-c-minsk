@@ -126,6 +126,12 @@ static inline bool requires_separator(SyntaxKind t1kind, SyntaxKind t2kind)
   {
     return true;
   }
+  if ((t1kind == SYNTAX_KIND_LESS_TOKEN || t1kind == SYNTAX_KIND_GREATER_TOKEN)
+      && (t2kind == SYNTAX_KIND_EQUALS_TOKEN
+          || t2kind == SYNTAX_KIND_EQUALS_EQUALS_TOKEN))
+  {
+    return true;
+  }
   return false;
 }
 

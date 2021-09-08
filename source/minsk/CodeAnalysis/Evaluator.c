@@ -217,6 +217,18 @@ static struct Object* evaluate_binary_expression(
       return OBJECT_BOOLEAN(objects_equal(left, right));
     case BOUND_BINARY_OPERATOR_KIND_INEQUALITY:
       return OBJECT_BOOLEAN(!objects_equal(left, right));
+    case BOUND_BINARY_OPERATOR_KIND_LESS:
+      return OBJECT_BOOLEAN(
+          OBJECT_AS_INTEGER(left)->value < OBJECT_AS_INTEGER(right)->value);
+    case BOUND_BINARY_OPERATOR_KIND_LESS_OR_EQUALS:
+      return OBJECT_BOOLEAN(
+          OBJECT_AS_INTEGER(left)->value <= OBJECT_AS_INTEGER(right)->value);
+    case BOUND_BINARY_OPERATOR_KIND_GREATER:
+      return OBJECT_BOOLEAN(
+          OBJECT_AS_INTEGER(left)->value > OBJECT_AS_INTEGER(right)->value);
+    case BOUND_BINARY_OPERATOR_KIND_GREATER_OR_EQUALS:
+      return OBJECT_BOOLEAN(
+          OBJECT_AS_INTEGER(left)->value >= OBJECT_AS_INTEGER(right)->value);
   }
 }
 

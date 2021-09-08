@@ -104,6 +104,42 @@ extern struct BoundBinaryOperator* bind_binary_operator(
             .right_type = OBJECT_KIND_BOOLEAN,
             .result_type = OBJECT_KIND_BOOLEAN,
         }));
+    LIST_PUSH(
+        list,
+        ((struct BoundBinaryOperator){
+            .syntax_kind = SYNTAX_KIND_LESS_TOKEN,
+            .kind = BOUND_BINARY_OPERATOR_KIND_LESS,
+            .left_type = OBJECT_KIND_INTEGER,
+            .right_type = OBJECT_KIND_INTEGER,
+            .result_type = OBJECT_KIND_BOOLEAN,
+        }));
+    LIST_PUSH(
+        list,
+        ((struct BoundBinaryOperator){
+            .syntax_kind = SYNTAX_KIND_LESS_OR_EQUALS_TOKEN,
+            .kind = BOUND_BINARY_OPERATOR_KIND_LESS_OR_EQUALS,
+            .left_type = OBJECT_KIND_INTEGER,
+            .right_type = OBJECT_KIND_INTEGER,
+            .result_type = OBJECT_KIND_BOOLEAN,
+        }));
+    LIST_PUSH(
+        list,
+        ((struct BoundBinaryOperator){
+            .syntax_kind = SYNTAX_KIND_GREATER_TOKEN,
+            .kind = BOUND_BINARY_OPERATOR_KIND_GREATER,
+            .left_type = OBJECT_KIND_INTEGER,
+            .right_type = OBJECT_KIND_INTEGER,
+            .result_type = OBJECT_KIND_BOOLEAN,
+        }));
+    LIST_PUSH(
+        list,
+        ((struct BoundBinaryOperator){
+            .syntax_kind = SYNTAX_KIND_GREATER_OR_EQUALS_TOKEN,
+            .kind = BOUND_BINARY_OPERATOR_KIND_GREATER_OR_EQUALS,
+            .left_type = OBJECT_KIND_INTEGER,
+            .right_type = OBJECT_KIND_INTEGER,
+            .result_type = OBJECT_KIND_BOOLEAN,
+        }));
   }
 
   for (long i = 0; i < list->length; ++i)

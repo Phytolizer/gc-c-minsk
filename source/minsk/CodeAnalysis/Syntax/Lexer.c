@@ -165,6 +165,30 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
         lexer->kind = SYNTAX_KIND_EQUALS_TOKEN;
       }
       break;
+    case '<':
+      if (lookahead(lexer) == '=')
+      {
+        lexer->position += 2;
+        lexer->kind = SYNTAX_KIND_LESS_OR_EQUALS_TOKEN;
+      }
+      else
+      {
+        lexer->position++;
+        lexer->kind = SYNTAX_KIND_LESS_TOKEN;
+      }
+      break;
+    case '>':
+      if (lookahead(lexer) == '=')
+      {
+        lexer->position += 2;
+        lexer->kind = SYNTAX_KIND_GREATER_OR_EQUALS_TOKEN;
+      }
+      else
+      {
+        lexer->position++;
+        lexer->kind = SYNTAX_KIND_GREATER_TOKEN;
+      }
+      break;
     case '\0':
       lexer->kind = SYNTAX_KIND_END_OF_FILE_TOKEN;
       break;

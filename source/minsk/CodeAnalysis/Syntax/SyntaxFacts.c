@@ -27,6 +27,10 @@ int binary_operator_precedence(enum SyntaxKind kind)
       return 4;
     case SYNTAX_KIND_EQUALS_EQUALS_TOKEN:
     case SYNTAX_KIND_BANG_EQUALS_TOKEN:
+    case SYNTAX_KIND_LESS_TOKEN:
+    case SYNTAX_KIND_LESS_OR_EQUALS_TOKEN:
+    case SYNTAX_KIND_GREATER_TOKEN:
+    case SYNTAX_KIND_GREATER_OR_EQUALS_TOKEN:
       return 3;
     case SYNTAX_KIND_AMPERSAND_AMPERSAND_TOKEN:
       return 2;
@@ -82,6 +86,14 @@ sds syntax_facts_get_text(enum SyntaxKind kind)
       return sdsnew("==");
     case SYNTAX_KIND_BANG_EQUALS_TOKEN:
       return sdsnew("!=");
+    case SYNTAX_KIND_LESS_TOKEN:
+      return sdsnew("<");
+    case SYNTAX_KIND_LESS_OR_EQUALS_TOKEN:
+      return sdsnew("<=");
+    case SYNTAX_KIND_GREATER_TOKEN:
+      return sdsnew(">");
+    case SYNTAX_KIND_GREATER_OR_EQUALS_TOKEN:
+      return sdsnew(">=");
     case SYNTAX_KIND_OPEN_PARENTHESIS_TOKEN:
       return sdsnew("(");
     case SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN:

@@ -8,7 +8,11 @@
   X(LOGICAL_AND) \
   X(LOGICAL_OR) \
   X(EQUALITY) \
-  X(INEQUALITY)
+  X(INEQUALITY) \
+  X(LESS) \
+  X(LESS_OR_EQUALS) \
+  X(GREATER) \
+  X(GREATER_OR_EQUALS)
 
 enum BoundBinaryOperatorKind
 {
