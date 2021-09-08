@@ -184,6 +184,16 @@ TEST_SUITE("Evaluator")
         assert_diagnostics(text, diagnostics);
     }
 
+    TEST_CASE("name expression reports no error for inserted token")
+    {
+        std::string text = "[]";
+        std::string diagnostics = R"(
+            Unexpected token <END_OF_FILE_TOKEN>, expected <IDENTIFIER_TOKEN>.
+        )";
+
+        assert_diagnostics(text, diagnostics);
+    }
+
     TEST_CASE("assignment expression reports undefined")
     {
         std::string text = R"(

@@ -144,9 +144,13 @@ class AnnotatedText
         }
 
         std::stringstream out;
-        for (auto& line : lines)
+        for (int i = 0; i < lines.size(); ++i)
         {
-            out << line << '\n';
+            out << lines[i];
+            if (i < lines.size() - 1)
+            {
+                out << '\n';
+            }
         }
         return out.str();
     }

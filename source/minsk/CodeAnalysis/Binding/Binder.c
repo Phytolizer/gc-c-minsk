@@ -279,6 +279,10 @@ static struct BoundExpression* bind_unary_expression(struct Binder* binder, stru
 static struct BoundExpression* bind_name_expression(struct Binder* binder, struct NameExpressionSyntax* syntax)
 {
     sds name = syntax->identifier_token->text;
+    if (sdslen(name) == 0)
+    {
+        return (struct BoundExpression*)bound_literal_expression_new(OBJECT_INTEGER(0));
+    }
 
     struct VariableSymbol** variable = bound_scope_try_lookup(binder->scope, name);
 
