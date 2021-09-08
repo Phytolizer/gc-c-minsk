@@ -87,18 +87,18 @@ TEST_SUITE("Evaluator")
     TEST_CASE("variable declaration reports redeclaration")
     {
         std::string text = R"(
-      {
-        var x = 10
-        var y = 100
-        {
-          var x = 10
-        }
-        var [x] = 5
-      }
-    )";
+            {
+                var x = 10
+                var y = 100
+                {
+                    var x = 10
+                }
+                var [x] = 5
+            }
+        )";
         std::string diagnostics = R"(
-      Variable 'x' is already declared.
-    )";
+            Variable 'x' is already declared.
+        )";
 
         assert_diagnostics(text, diagnostics);
     }
@@ -106,11 +106,11 @@ TEST_SUITE("Evaluator")
     TEST_CASE("name reports undefined")
     {
         std::string text = R"(
-      [x] * 10
-    )";
+            [x] * 10
+        )";
         std::string diagnostics = R"(
-      Variable 'x' doesn't exist.
-    )";
+            Variable 'x' doesn't exist.
+        )";
 
         assert_diagnostics(text, diagnostics);
     }
@@ -118,11 +118,11 @@ TEST_SUITE("Evaluator")
     TEST_CASE("assignment reports undefined")
     {
         std::string text = R"(
-      [x] = 10
-    )";
+            [x] = 10
+        )";
         std::string diagnostics = R"(
-      Variable 'x' doesn't exist.
-    )";
+            Variable 'x' doesn't exist.
+        )";
 
         assert_diagnostics(text, diagnostics);
     }
@@ -130,14 +130,14 @@ TEST_SUITE("Evaluator")
     TEST_CASE("assignment reports cannot assign")
     {
         std::string text = R"(
-      {
-        let x = 10
-        x [=] 11
-      }
-    )";
+            {
+                let x = 10
+                x [=] 11
+            }
+        )";
         std::string diagnostics = R"(
-      Variable 'x' is read-only and cannot be assigned to.
-    )";
+            Variable 'x' is read-only and cannot be assigned to.
+        )";
 
         assert_diagnostics(text, diagnostics);
     }
@@ -145,26 +145,71 @@ TEST_SUITE("Evaluator")
     TEST_CASE("assignment reports cannot convert")
     {
         std::string text = R"(
-      {
-        var x = 10
-        x = [true]
-      }
-    )";
+            {
+                var x = 10
+                x = [true]
+            }
+        )";
         std::string diagnostics = R"(
-      Cannot convert type 'BOOLEAN' to 'INTEGER'.
-    )";
+            Cannot convert type 'BOOLEAN' to 'INTEGER'.
+        )";
 
+        assert_diagnostics(text, diagnostics);
+    }
+
+    TEST_CASE("if statement reports cannot convert")
+    {
+        std::string text = R"(
+            {
+                var x = 0
+                if [10]
+                    x = 10
+            }
+        )";
+        std::string diagnostics = R"(
+            Cannot convert type 'INTEGER' to 'BOOLEAN'.
+        )";
+        assert_diagnostics(text, diagnostics);
+    }
+
+    TEST_CASE("for statement reports cannot convert lower bound")
+    {
+        std::string text = R"(
+            {
+                var result = 0
+                for i = [false] to 10
+                    result = result + i
+            }
+        )";
+        std::string diagnostics = R"(
+            Cannot convert type 'BOOLEAN' to 'INTEGER'.
+        )";
+        assert_diagnostics(text, diagnostics);
+    }
+
+    TEST_CASE("for statement reports cannot convert lower bound")
+    {
+        std::string text = R"(
+            {
+                var result = 0
+                for i = 0 to [true]
+                    result = result + i
+            }
+        )";
+        std::string diagnostics = R"(
+            Cannot convert type 'BOOLEAN' to 'INTEGER'.
+        )";
         assert_diagnostics(text, diagnostics);
     }
 
     TEST_CASE("unary operator reports undefined")
     {
         std::string text = R"(
-      [+]true
-    )";
+            [+]true
+        )";
         std::string diagnostics = R"(
-      The unary operator + is not defined for type 'BOOLEAN'.
-    )";
+            The unary operator + is not defined for type 'BOOLEAN'.
+        )";
 
         assert_diagnostics(text, diagnostics);
     }
@@ -172,11 +217,11 @@ TEST_SUITE("Evaluator")
     TEST_CASE("binary operator reports undefined")
     {
         std::string text = R"(
-      8 [*] true
-    )";
+            8 [*] true
+        )";
         std::string diagnostics = R"(
-      The binary operator * is not defined for types 'INTEGER' and 'BOOLEAN'.
-    )";
+            The binary operator * is not defined for types 'INTEGER' and 'BOOLEAN'.
+        )";
 
         assert_diagnostics(text, diagnostics);
     }
