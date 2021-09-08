@@ -6,17 +6,19 @@
 #include <common/List.h>
 #include <minsk/CodeAnalysis/Syntax/AssignmentExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/BlockStatementSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/ExpressionStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/NameExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxFacts.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxKind.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
 #include <sds.h>
 
 #include "Lexer.h"
-#include "minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h"
-#include "minsk/CodeAnalysis/Syntax/SyntaxKind.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset)
     __attribute__((const));
@@ -26,6 +28,11 @@ static struct SyntaxToken* next_token(struct Parser* parser);
 static struct SyntaxToken* match_token(
     struct Parser* parser,
     enum SyntaxKind kind);
+
+static struct StatementSyntax* parse_statement(struct Parser* parser);
+static struct StatementSyntax* parse_block_statement(struct Parser* parser);
+static struct StatementSyntax* parse_expression_statement(
+    struct Parser* parser);
 
 static struct ExpressionSyntax* parse_expression(struct Parser* parser);
 static struct ExpressionSyntax* parse_assignment_expression(
@@ -76,10 +83,10 @@ void parser_free(struct Parser* parser)
 struct CompilationUnitSyntax* parser_parse_compilation_unit(
     struct Parser* parser)
 {
-  struct ExpressionSyntax* expression = parse_expression(parser);
+  struct StatementSyntax* statement = parse_statement(parser);
   struct SyntaxToken* end_of_file_token
       = match_token(parser, SYNTAX_KIND_END_OF_FILE_TOKEN);
-  return compilation_unit_syntax_new(expression, end_of_file_token);
+  return compilation_unit_syntax_new(statement, end_of_file_token);
 }
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset)
@@ -123,6 +130,41 @@ static struct SyntaxToken* match_token(
       current(parser)->position,
       sdsempty(),
       OBJECT_NULL());
+}
+
+static struct StatementSyntax* parse_statement(struct Parser* parser)
+{
+  if (current(parser)->kind == SYNTAX_KIND_OPEN_BRACE_TOKEN)
+  {
+    return parse_block_statement(parser);
+  }
+  return parse_expression_statement(parser);
+}
+
+static struct StatementSyntax* parse_block_statement(struct Parser* parser)
+{
+  struct SyntaxToken* open_brace_token
+      = match_token(parser, SYNTAX_KIND_OPEN_BRACE_TOKEN);
+  struct StatementSyntaxList* statements
+      = mc_malloc(sizeof(struct StatementSyntaxList));
+  LIST_INIT(statements);
+  while (current(parser)->kind != SYNTAX_KIND_CLOSE_BRACE_TOKEN
+         && current(parser)->kind != SYNTAX_KIND_END_OF_FILE_TOKEN)
+  {
+    LIST_PUSH(statements, parse_statement(parser));
+  }
+  struct SyntaxToken* close_brace_token
+      = match_token(parser, SYNTAX_KIND_CLOSE_BRACE_TOKEN);
+  return (struct StatementSyntax*)block_statement_syntax_new(
+      open_brace_token,
+      statements,
+      close_brace_token);
+}
+
+static struct StatementSyntax* parse_expression_statement(struct Parser* parser)
+{
+  struct ExpressionSyntax* expression = parse_expression(parser);
+  return (struct StatementSyntax*)expression_statement_syntax_new(expression);
 }
 
 static struct ExpressionSyntax* parse_expression(struct Parser* parser)

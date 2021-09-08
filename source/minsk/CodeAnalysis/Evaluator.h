@@ -2,15 +2,16 @@
 
 #include <minsk/CodeAnalysis/VariableStore.h>
 
-#include "Binding/BoundExpression.h"
+#include "Binding/BoundStatement.h"
 
 struct Evaluator
 {
-  struct BoundExpression* root;
+  struct BoundStatement* root;
   struct VariableStore* variables;
+  struct Object* last_value;
 };
 
 struct Evaluator* evaluator_new(
-    struct BoundExpression* root,
+    struct BoundStatement* root,
     struct VariableStore* variables);
 struct Object* evaluator_evaluate(struct Evaluator* evaluator);

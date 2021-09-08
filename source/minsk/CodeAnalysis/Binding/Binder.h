@@ -4,6 +4,7 @@
 #include <minsk/CodeAnalysis/DiagnosticBag.h>
 #include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/StatementSyntax.h>
 #include <minsk/CodeAnalysis/VariableStore.h>
 
 #include "BoundExpression.h"
@@ -20,6 +21,3 @@ struct BoundGlobalScope* bind_global_scope(
     struct BoundGlobalScope* previous,
     struct CompilationUnitSyntax* syntax);
 struct Binder* binder_new(struct BoundScope* parent);
-struct BoundExpression* binder_bind(
-    struct Binder* binder,
-    struct ExpressionSyntax* syntax);

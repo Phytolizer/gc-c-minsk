@@ -1,12 +1,12 @@
 #include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
 
 struct CompilationUnitSyntax* compilation_unit_syntax_new(
-    struct ExpressionSyntax* expression,
+    struct StatementSyntax* statement,
     struct SyntaxToken* end_of_file_token)
 {
   struct CompilationUnitSyntax* unit = mc_malloc(sizeof(struct CompilationUnitSyntax));
   unit->base.kind = SYNTAX_NODE_KIND_COMPILATION_UNIT;
-  unit->expression = expression;
+  unit->statement = statement;
   unit->end_of_file_token = end_of_file_token;
   return unit;
 }
@@ -22,7 +22,7 @@ struct SyntaxNodeList* compilation_unit_syntax_get_children(
 {
   struct SyntaxNodeList* children = mc_malloc(sizeof(struct SyntaxNodeList));
   LIST_INIT(children);
-  LIST_PUSH(children, (struct SyntaxNode*)unit->expression);
+  LIST_PUSH(children, (struct SyntaxNode*)unit->statement);
   LIST_PUSH(children, (struct SyntaxNode*)unit->end_of_file_token);
   return children;
 }

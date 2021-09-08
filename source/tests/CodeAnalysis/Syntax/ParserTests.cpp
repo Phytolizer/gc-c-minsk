@@ -2,9 +2,12 @@
 #include <doctest/doctest.h>
 #include <utility>
 #include <vector>
+
 extern "C" {
 #include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/ExpressionStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/StatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxFacts.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxKind.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
@@ -79,7 +82,9 @@ static ExpressionSyntax* parse_expression(sds text)
 {
   auto syntax_tree = syntax_tree_parse(text);
   auto root = syntax_tree->root;
-  return root->expression;
+  auto statement = root->statement;
+  REQUIRE(statement->kind == STATEMENT_SYNTAX_KIND_EXPRESSION_STATEMENT_SYNTAX);
+  return ((ExpressionStatementSyntax*)statement)->expression;
 }
 
 TEST_SUITE("Parser")
@@ -93,7 +98,8 @@ TEST_SUITE("Parser")
       sds op1_text = syntax_facts_get_text(test.first);
       sds op2_text = syntax_facts_get_text(test.second);
       sds text = sdscatfmt(sdsempty(), "a %S b %S c", op1_text, op2_text);
-      SyntaxNode* expression = (SyntaxNode*)parse_expression(text);
+      SyntaxNode* expression
+          = reinterpret_cast<SyntaxNode*>(parse_expression(text));
 
       if (op1_precedence >= op2_precedence)
       {

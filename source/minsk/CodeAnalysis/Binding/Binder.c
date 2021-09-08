@@ -4,26 +4,42 @@
 #include <stdio.h>
 
 #include <IncludeMe.h>
-#include <common/Nullable.h>
 #include <common/Object.h>
 #include <minsk/CodeAnalysis/Syntax/AssignmentExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/BlockStatementSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/ExpressionStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/NameExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/StatementSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxKind.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
+#include <minsk/CodeAnalysis/VariableStore.h>
 
 #include "BoundAssignmentExpression.h"
 #include "BoundBinaryExpression.h"
 #include "BoundBinaryOperator.h"
+#include "BoundBlockStatement.h"
 #include "BoundExpression.h"
+#include "BoundExpressionStatement.h"
 #include "BoundGlobalScope.h"
 #include "BoundLiteralExpression.h"
 #include "BoundScope.h"
+#include "BoundStatement.h"
 #include "BoundUnaryExpression.h"
 #include "BoundUnaryOperator.h"
 #include "BoundVariableExpression.h"
-#include "minsk/CodeAnalysis/VariableStore.h"
+
+static struct BoundStatement* bind_statement(
+    struct Binder* binder,
+    struct StatementSyntax* syntax);
+static struct BoundStatement* bind_block_statement(
+    struct Binder* binder,
+    struct BlockStatementSyntax* syntax);
+static struct BoundStatement* bind_expression_statement(
+    struct Binder* binder,
+    struct ExpressionStatementSyntax* syntax);
 
 static struct BoundExpression* bind_expression(
     struct Binder* binder,
@@ -56,7 +72,7 @@ struct BoundGlobalScope* bind_global_scope(
 {
   struct BoundScope* parent_scope = create_parent_scopes(previous);
   struct Binder* binder = binder_new(parent_scope);
-  struct BoundExpression* expression = binder_bind(binder, syntax->expression);
+  struct BoundStatement* statement = bind_statement(binder, syntax->statement);
   struct VariableSymbolList* variables
       = bound_scope_get_declared_variables(binder->scope);
   struct DiagnosticList* diagnostics = mc_malloc(sizeof(struct DiagnosticList));
@@ -71,7 +87,7 @@ struct BoundGlobalScope* bind_global_scope(
   {
     LIST_PUSH(diagnostics, binder->diagnostics->diagnostics->data[i]);
   }
-  return bound_global_scope_new(NULL, diagnostics, variables, expression);
+  return bound_global_scope_new(NULL, diagnostics, variables, statement);
 }
 
 struct Binder* binder_new(struct BoundScope* parent)
@@ -82,11 +98,43 @@ struct Binder* binder_new(struct BoundScope* parent)
   return binder;
 }
 
-struct BoundExpression* binder_bind(
+static struct BoundStatement* bind_statement(
     struct Binder* binder,
-    struct ExpressionSyntax* syntax)
+    struct StatementSyntax* syntax)
 {
-  return bind_expression(binder, syntax);
+  switch (syntax->kind)
+  {
+    case STATEMENT_SYNTAX_KIND_BLOCK_STATEMENT_SYNTAX:
+      return bind_block_statement(binder, (struct BlockStatementSyntax*)syntax);
+    case STATEMENT_SYNTAX_KIND_EXPRESSION_STATEMENT_SYNTAX:
+      return bind_expression_statement(
+          binder,
+          (struct ExpressionStatementSyntax*)syntax);
+  }
+}
+
+static struct BoundStatement* bind_block_statement(
+    struct Binder* binder,
+    struct BlockStatementSyntax* syntax)
+{
+  struct BoundStatementList* statements
+      = mc_malloc(sizeof(struct BoundStatementList));
+  LIST_INIT(statements);
+  for (long i = 0; i < syntax->statements->length; ++i)
+  {
+    struct StatementSyntax* statement = syntax->statements->data[i];
+    LIST_PUSH(statements, bind_statement(binder, statement));
+  }
+  return (struct BoundStatement*)bound_block_statement_new(statements);
+}
+
+static struct BoundStatement* bind_expression_statement(
+    struct Binder* binder,
+    struct ExpressionStatementSyntax* syntax)
+{
+  struct BoundExpression* expression
+      = bind_expression(binder, syntax->expression);
+  return (struct BoundStatement*)bound_expression_statement_new(expression);
 }
 
 static struct BoundExpression* bind_expression(

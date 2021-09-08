@@ -11,23 +11,29 @@ add_library(
   CodeAnalysis/Binding/BoundAssignmentExpression.c
   CodeAnalysis/Binding/BoundBinaryExpression.c
   CodeAnalysis/Binding/BoundBinaryOperator.c
+  CodeAnalysis/Binding/BoundBlockStatement.c
   CodeAnalysis/Binding/BoundExpression.c
+  CodeAnalysis/Binding/BoundExpressionStatement.c
   CodeAnalysis/Binding/BoundGlobalScope.c
   CodeAnalysis/Binding/BoundLiteralExpression.c
   CodeAnalysis/Binding/BoundNode.c
   CodeAnalysis/Binding/BoundScope.c
+  CodeAnalysis/Binding/BoundStatement.c
   CodeAnalysis/Binding/BoundUnaryExpression.c
   CodeAnalysis/Binding/BoundUnaryOperator.c
   CodeAnalysis/Binding/BoundVariableExpression.c
   CodeAnalysis/Syntax/AssignmentExpressionSyntax.c
   CodeAnalysis/Syntax/BinaryExpressionSyntax.c
+  CodeAnalysis/Syntax/BlockStatementSyntax.c
   CodeAnalysis/Syntax/CompilationUnitSyntax.c
+  CodeAnalysis/Syntax/ExpressionStatementSyntax.c
   CodeAnalysis/Syntax/ExpressionSyntax.c
   CodeAnalysis/Syntax/Lexer.c
   CodeAnalysis/Syntax/LiteralExpressionSyntax.c
   CodeAnalysis/Syntax/NameExpressionSyntax.c
   CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.c
   CodeAnalysis/Syntax/Parser.c
+  CodeAnalysis/Syntax/StatementSyntax.c
   CodeAnalysis/Syntax/SyntaxFacts.c
   CodeAnalysis/Syntax/SyntaxKind.c
   CodeAnalysis/Syntax/SyntaxNode.c

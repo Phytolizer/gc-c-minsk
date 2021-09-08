@@ -119,6 +119,14 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
       lexer->position++;
       lexer->kind = SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN;
       break;
+    case '{':
+      lexer->position++;
+      lexer->kind = SYNTAX_KIND_OPEN_BRACE_TOKEN;
+      break;
+    case '}':
+      lexer->position++;
+      lexer->kind = SYNTAX_KIND_CLOSE_BRACE_TOKEN;
+      break;
     case '!':
       if (lookahead(lexer) == '=')
       {

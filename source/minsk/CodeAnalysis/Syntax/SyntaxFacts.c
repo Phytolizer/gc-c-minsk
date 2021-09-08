@@ -78,6 +78,10 @@ sds syntax_facts_get_text(enum SyntaxKind kind)
       return sdsnew("(");
     case SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN:
       return sdsnew(")");
+    case SYNTAX_KIND_OPEN_BRACE_TOKEN:
+      return sdsnew("{");
+    case SYNTAX_KIND_CLOSE_BRACE_TOKEN:
+      return sdsnew("}");
     case SYNTAX_KIND_FALSE_KEYWORD:
       return sdsnew("false");
     case SYNTAX_KIND_TRUE_KEYWORD:

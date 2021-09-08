@@ -11,11 +11,25 @@
 #include "Binding/BoundAssignmentExpression.h"
 #include "Binding/BoundBinaryExpression.h"
 #include "Binding/BoundBinaryOperatorKind.h"
+#include "Binding/BoundBlockStatement.h"
 #include "Binding/BoundExpression.h"
+#include "Binding/BoundExpressionStatement.h"
 #include "Binding/BoundLiteralExpression.h"
+#include "Binding/BoundStatement.h"
 #include "Binding/BoundUnaryExpression.h"
 #include "Binding/BoundUnaryOperatorKind.h"
 #include "Binding/BoundVariableExpression.h"
+
+static void evaluate_statement(
+    struct Evaluator* evaluator,
+    struct BoundStatement* statement);
+
+static void evaluate_block_statement(
+    struct Evaluator* evaluator,
+    struct BoundBlockStatement* stmt);
+static void evaluate_expression_statement(
+    struct Evaluator* evaluator,
+    struct BoundExpressionStatement* stmt);
 
 static struct Object* evaluate_expression(
     struct Evaluator* evaluator,
@@ -38,18 +52,60 @@ static struct Object* evaluate_assignment_expression(
     struct BoundAssignmentExpression* expr);
 
 struct Evaluator* evaluator_new(
-    struct BoundExpression* root,
+    struct BoundStatement* root,
     struct VariableStore* variables)
 {
   struct Evaluator* evaluator = mc_malloc(sizeof(struct Evaluator));
   evaluator->root = root;
   evaluator->variables = variables;
+  evaluator->last_value = OBJECT_NULL();
   return evaluator;
 }
 
 struct Object* evaluator_evaluate(struct Evaluator* evaluator)
 {
-  return evaluate_expression(evaluator, evaluator->root);
+  evaluate_statement(evaluator, evaluator->root);
+  return evaluator->last_value;
+}
+
+static void evaluate_statement(
+    struct Evaluator* evaluator,
+    struct BoundStatement* stmt)
+{
+  switch (bound_statement_get_kind(stmt))
+  {
+    case BOUND_NODE_KIND_BLOCK_STATEMENT:
+      evaluate_block_statement(evaluator, (struct BoundBlockStatement*)stmt);
+      break;
+    case BOUND_NODE_KIND_EXPRESSION_STATEMENT:
+      evaluate_expression_statement(
+          evaluator,
+          (struct BoundExpressionStatement*)stmt);
+      break;
+    default:
+      fprintf(
+          stderr,
+          "unhandled syntax node %s\n",
+          BOUND_NODE_KINDS[bound_statement_get_kind(stmt)]);
+      assert(false && "unhandled syntax node");
+  }
+}
+
+static void evaluate_block_statement(
+    struct Evaluator* evaluator,
+    struct BoundBlockStatement* stmt)
+{
+  for (long i = 0; i < stmt->statements->length; ++i)
+  {
+    evaluate_statement(evaluator, stmt->statements->data[i]);
+  }
+}
+
+static void evaluate_expression_statement(
+    struct Evaluator* evaluator,
+    struct BoundExpressionStatement* stmt)
+{
+  evaluator->last_value = evaluate_expression(evaluator, stmt->expression);
 }
 
 static struct Object* evaluate_expression(

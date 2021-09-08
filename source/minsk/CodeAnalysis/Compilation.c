@@ -32,7 +32,7 @@ struct EvaluationResult* compilation_evaluate(
 {
   struct BoundGlobalScope* global_scope
       = compilation_get_global_scope(compilation);
-  struct BoundExpression* bound_expression = global_scope->expression;
+  struct BoundStatement* bound_statement = global_scope->statement;
   struct DiagnosticList* diagnostics = mc_malloc(sizeof(struct DiagnosticList));
   LIST_INIT(diagnostics);
   for (long i = 0; i < compilation->syntax->diagnostics->diagnostics->length;
@@ -50,7 +50,7 @@ struct EvaluationResult* compilation_evaluate(
   {
     return evaluation_result_new(diagnostics, OBJECT_NULL());
   }
-  struct Evaluator* evaluator = evaluator_new(bound_expression, variables);
+  struct Evaluator* evaluator = evaluator_new(bound_statement, variables);
   struct Object* value = evaluator_evaluate(evaluator);
   return evaluation_result_new(diagnostics, value);
 }

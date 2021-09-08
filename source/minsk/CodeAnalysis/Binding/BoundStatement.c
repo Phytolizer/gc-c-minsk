@@ -1,0 +1,24 @@
+#include "BoundStatement.h"
+
+#include "BoundBlockStatement.h"
+#include "BoundExpressionStatement.h"
+
+void bound_statement_init(
+    struct BoundStatement* stmt,
+    enum BoundStatementKind kind)
+{
+  stmt->base.type = BOUND_NODE_TYPE_STATEMENT;
+  stmt->kind = kind;
+}
+
+enum BoundNodeKind bound_statement_get_kind(struct BoundStatement* stmt)
+{
+  switch (stmt->kind)
+  {
+    case BOUND_STATEMENT_KIND_BLOCK:
+      return bound_block_statement_get_kind((struct BoundBlockStatement*)stmt);
+    case BOUND_STATEMENT_KIND_EXPRESSION:
+      return bound_expression_statement_get_kind(
+          (struct BoundExpressionStatement*)stmt);
+  }
+}
