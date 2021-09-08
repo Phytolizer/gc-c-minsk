@@ -60,7 +60,7 @@ void diagnostic_bag_report_undefined_binary_operator(
 {
   sds message = sdscatfmt(
       sdsempty(),
-      "The binary operator %S is not defined for types %s and %s.",
+      "The binary operator %S is not defined for types '%s' and '%s'.",
       operator_text,
       OBJECT_KINDS[left_type],
       OBJECT_KINDS[right_type]);
@@ -75,7 +75,7 @@ void diagnostic_bag_report_undefined_unary_operator(
 {
   sds message = sdscatfmt(
       sdsempty(),
-      "The unary operator %S is not defined for type %s.",
+      "The unary operator %S is not defined for type '%s'.",
       operator_text,
       OBJECT_KINDS[operand_type]);
   report(bag, span, message);

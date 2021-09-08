@@ -3,12 +3,19 @@
 #include <iostream>
 #include <string>
 
+#include "AnnotatedText.hpp"
+
 extern "C" {
 #include <common/Object.h>
 #include <minsk/CodeAnalysis/Compilation.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
 #include <minsk/CodeAnalysis/VariableStore.h>
 }
+
+static void assert_value(const std::string& text, Object* expected_value);
+static void assert_diagnostics(
+    const std::string& text,
+    const std::string& diagnostic_text);
 
 struct EvaluatorTest
 {
@@ -42,29 +49,165 @@ const std::array EVALUATOR_TESTS = {
 
 TEST_SUITE("Evaluator")
 {
-  TEST_CASE("sanity check")
+  TEST_CASE("computes correct values")
   {
     for (auto& test : EVALUATOR_TESTS)
     {
-      sds text = sdsnew(test.text.c_str());
-      auto* tree = syntax_tree_parse(text);
-      auto* compilation = compilation_new(tree);
-      auto* variables = variable_store_new();
-      auto* result = compilation_evaluate(compilation, variables);
-
-      CHECK(result->diagnostics->length == 0);
-      // std::cout << OBJECT_KINDS[result->value->kind] << " ";
-      // if (OBJECT_IS_INTEGER(result->value))
-      // {
-      //   std::cout << OBJECT_AS_INTEGER(result->value)->value << " ";
-      // }
-      // std::cout << "== " << OBJECT_KINDS[test.expected_value->kind] << " ";
-      // if (OBJECT_IS_INTEGER(test.expected_value))
-      // {
-      //   std::cout << OBJECT_AS_INTEGER(test.expected_value)->value;
-      // }
-      // std::cout << std::endl;
-      CHECK(objects_equal(test.expected_value, result->value));
+      assert_value(test.text, test.expected_value);
     }
+  }
+
+  TEST_CASE("variable declaration reports redeclaration")
+  {
+    std::string text = R"(
+      {
+        var x = 10
+        var y = 100
+        {
+          var x = 10
+        }
+        var [x] = 5
+      }
+    )";
+    std::string diagnostics = R"(
+      Variable 'x' is already declared.
+    )";
+
+    assert_diagnostics(text, diagnostics);
+  }
+
+  TEST_CASE("name reports undefined")
+  {
+    std::string text = R"(
+      [x] * 10
+    )";
+    std::string diagnostics = R"(
+      Variable 'x' doesn't exist.
+    )";
+
+    assert_diagnostics(text, diagnostics);
+  }
+
+  TEST_CASE("assignment reports undefined")
+  {
+    std::string text = R"(
+      [x] = 10
+    )";
+    std::string diagnostics = R"(
+      Variable 'x' doesn't exist.
+    )";
+
+    assert_diagnostics(text, diagnostics);
+  }
+
+  TEST_CASE("assignment reports cannot assign")
+  {
+    std::string text = R"(
+      {
+        let x = 10
+        x [=] 11
+      }
+    )";
+    std::string diagnostics = R"(
+      Variable 'x' is read-only and cannot be assigned to.
+    )";
+
+    assert_diagnostics(text, diagnostics);
+  }
+
+  TEST_CASE("assignment reports cannot convert")
+  {
+    std::string text = R"(
+      {
+        var x = 10
+        x = [true]
+      }
+    )";
+    std::string diagnostics = R"(
+      Cannot convert type 'BOOLEAN' to 'INTEGER'.
+    )";
+
+    assert_diagnostics(text, diagnostics);
+  }
+
+  TEST_CASE("unary operator reports undefined")
+  {
+    std::string text = R"(
+      [+]true
+    )";
+    std::string diagnostics = R"(
+      The unary operator + is not defined for type 'BOOLEAN'.
+    )";
+
+    assert_diagnostics(text, diagnostics);
+  }
+
+  TEST_CASE("binary operator reports undefined")
+  {
+    std::string text = R"(
+      8 [*] true
+    )";
+    std::string diagnostics = R"(
+      The binary operator * is not defined for types 'INTEGER' and 'BOOLEAN'.
+    )";
+
+    assert_diagnostics(text, diagnostics);
+  }
+}
+
+static void assert_value(const std::string& text_in, Object* expected_value)
+{
+  sds text = sdsnew(text_in.c_str());
+  auto* tree = syntax_tree_parse(text);
+  auto* compilation = compilation_new(tree);
+  auto* variables = variable_store_new();
+  auto* result = compilation_evaluate(compilation, variables);
+
+  CHECK(result->diagnostics->length == 0);
+  // std::cout << OBJECT_KINDS[result->value->kind] << " ";
+  // if (OBJECT_IS_INTEGER(result->value))
+  // {
+  //   std::cout << OBJECT_AS_INTEGER(result->value)->value << " ";
+  // }
+  // std::cout << "== " << OBJECT_KINDS[test.expected_value->kind] << " ";
+  // if (OBJECT_IS_INTEGER(test.expected_value))
+  // {
+  //   std::cout << OBJECT_AS_INTEGER(test.expected_value)->value;
+  // }
+  // std::cout << std::endl;
+  CHECK(objects_equal(expected_value, result->value));
+}
+
+static void assert_diagnostics(
+    const std::string& text,
+    const std::string& diagnostic_text)
+{
+  auto annotated_text = AnnotatedText::parse(text);
+  auto syntax_tree = syntax_tree_parse(sdsnew(annotated_text.text.c_str()));
+  auto compilation = compilation_new(syntax_tree);
+  auto result = compilation_evaluate(compilation, variable_store_new());
+
+  auto diagnostics = AnnotatedText::unindent_lines(diagnostic_text);
+
+  if (annotated_text.spans.size() != diagnostics.size())
+  {
+    FAIL_CHECK(
+        "ERROR: Must mark as many spans as there are expected diagnostics");
+  }
+
+  CHECK(diagnostics.size() == result->diagnostics->length);
+
+  for (int i = 0; i < diagnostics.size(); ++i)
+  {
+    auto expected_message = diagnostics[i];
+    auto actual_message = result->diagnostics->data[i]->message;
+
+    CHECK(expected_message == std::string{actual_message});
+
+    auto expected_span = annotated_text.spans[i];
+    auto actual_span = result->diagnostics->data[i]->span;
+
+    CHECK(expected_span.start == actual_span->start);
+    CHECK(expected_span.length == actual_span->length);
   }
 }
