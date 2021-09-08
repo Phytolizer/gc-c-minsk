@@ -15,6 +15,7 @@
 #include "Binding/BoundBlockStatement.h"
 #include "Binding/BoundExpression.h"
 #include "Binding/BoundExpressionStatement.h"
+#include "Binding/BoundIfStatement.h"
 #include "Binding/BoundLiteralExpression.h"
 #include "Binding/BoundStatement.h"
 #include "Binding/BoundUnaryExpression.h"
@@ -32,6 +33,9 @@ static void evaluate_block_statement(
 static void evaluate_expression_statement(
     struct Evaluator* evaluator,
     struct BoundExpressionStatement* stmt);
+static void evaluate_if_statement(
+    struct Evaluator* evaluator,
+    struct BoundIfStatement* stmt);
 static void evaluate_variable_declaration(
     struct Evaluator* evaluator,
     struct BoundVariableDeclaration* stmt);
@@ -87,6 +91,9 @@ static void evaluate_statement(
           evaluator,
           (struct BoundExpressionStatement*)stmt);
       break;
+    case BOUND_NODE_KIND_IF_STATEMENT:
+      evaluate_if_statement(evaluator, (struct BoundIfStatement*)stmt);
+      break;
     case BOUND_NODE_KIND_VARIABLE_DECLARATION:
       evaluate_variable_declaration(
           evaluator,
@@ -116,6 +123,21 @@ static void evaluate_expression_statement(
     struct BoundExpressionStatement* stmt)
 {
   evaluator->last_value = evaluate_expression(evaluator, stmt->expression);
+}
+
+static void evaluate_if_statement(
+    struct Evaluator* evaluator,
+    struct BoundIfStatement* stmt)
+{
+  struct Object* condition = evaluate_expression(evaluator, stmt->condition);
+  if (OBJECT_AS_BOOLEAN(condition)->value)
+  {
+    evaluate_statement(evaluator, stmt->then_statement);
+  }
+  else if (stmt->else_statement)
+  {
+    evaluate_statement(evaluator, stmt->else_statement);
+  }
 }
 
 static void evaluate_variable_declaration(

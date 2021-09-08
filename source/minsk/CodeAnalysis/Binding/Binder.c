@@ -5,10 +5,12 @@
 
 #include <IncludeMe.h>
 #include <common/Object.h>
+#include <minsk/CodeAnalysis/DiagnosticBag.h>
 #include <minsk/CodeAnalysis/Syntax/AssignmentExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BlockStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionStatementSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/IfStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/NameExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
@@ -25,6 +27,7 @@
 #include "BoundExpression.h"
 #include "BoundExpressionStatement.h"
 #include "BoundGlobalScope.h"
+#include "BoundIfStatement.h"
 #include "BoundLiteralExpression.h"
 #include "BoundScope.h"
 #include "BoundStatement.h"
@@ -42,6 +45,9 @@ static struct BoundStatement* bind_block_statement(
 static struct BoundStatement* bind_expression_statement(
     struct Binder* binder,
     struct ExpressionStatementSyntax* syntax);
+static struct BoundStatement* bind_if_statement(
+    struct Binder* binder,
+    struct IfStatementSyntax* syntax);
 static struct BoundStatement* bind_variable_declaration(
     struct Binder* binder,
     struct VariableDeclarationSyntax* syntax);
@@ -49,6 +55,10 @@ static struct BoundStatement* bind_variable_declaration(
 static struct BoundExpression* bind_expression(
     struct Binder* binder,
     struct ExpressionSyntax* syntax);
+static struct BoundExpression* bind_expression_with_type(
+    struct Binder* binder,
+    struct ExpressionSyntax* syntax,
+    enum ObjectKind target_type);
 static struct BoundExpression* bind_literal_expression(
     struct Binder* binder,
     struct LiteralExpressionSyntax* syntax);
@@ -115,6 +125,8 @@ static struct BoundStatement* bind_statement(
       return bind_expression_statement(
           binder,
           (struct ExpressionStatementSyntax*)syntax);
+    case STATEMENT_SYNTAX_KIND_IF_STATEMENT_SYNTAX:
+      return bind_if_statement(binder, (struct IfStatementSyntax*)syntax);
     case STATEMENT_SYNTAX_KIND_VARIABLE_DECLARATION_SYNTAX:
       return bind_variable_declaration(
           binder,
@@ -146,6 +158,23 @@ static struct BoundStatement* bind_expression_statement(
   struct BoundExpression* expression
       = bind_expression(binder, syntax->expression);
   return (struct BoundStatement*)bound_expression_statement_new(expression);
+}
+
+static struct BoundStatement* bind_if_statement(
+    struct Binder* binder,
+    struct IfStatementSyntax* syntax)
+{
+  struct BoundExpression* condition = bind_expression_with_type(
+      binder,
+      syntax->condition,
+      OBJECT_KIND_BOOLEAN);
+  struct BoundStatement* then_statement
+      = bind_statement(binder, syntax->then_statement);
+  struct BoundStatement* else_statement = syntax->else_clause
+      ? bind_statement(binder, syntax->else_clause->else_statement)
+      : NULL;
+  return (struct BoundStatement*)
+      bound_if_statement_new(condition, then_statement, else_statement);
 }
 
 static struct BoundStatement* bind_variable_declaration(
@@ -202,6 +231,23 @@ static struct BoundExpression* bind_expression(
           binder,
           (struct AssignmentExpressionSyntax*)syntax);
   }
+}
+
+static struct BoundExpression* bind_expression_with_type(
+    struct Binder* binder,
+    struct ExpressionSyntax* syntax,
+    enum ObjectKind target_type)
+{
+  struct BoundExpression* result = bind_expression(binder, syntax);
+  if (bound_expression_get_type(result) != target_type)
+  {
+    diagnostic_bag_report_cannot_convert(
+        binder->diagnostics,
+        syntax_node_get_span((struct SyntaxNode*)syntax),
+        bound_expression_get_type(result),
+        target_type);
+  }
+  return result;
 }
 
 static struct BoundExpression* bind_literal_expression(

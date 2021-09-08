@@ -1,10 +1,10 @@
 #include "minsk/CodeAnalysis/Syntax/SyntaxNode.h"
 
 #include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/ElseClauseSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/StatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxToken.h>
-
-#include "minsk/CodeAnalysis/Syntax/StatementSyntax.h"
 
 const char* const SYNTAX_NODE_KINDS[] = {
 #define X(x) #x,
@@ -31,6 +31,8 @@ enum SyntaxKind syntax_node_get_kind(struct SyntaxNode* node)
     case SYNTAX_NODE_KIND_COMPILATION_UNIT:
       return compilation_unit_syntax_get_kind(
           (struct CompilationUnitSyntax*)node);
+    case SYNTAX_NODE_KIND_ELSE_CLAUSE:
+      return else_clause_syntax_get_kind((struct ElseClauseSyntax*)node);
   }
 }
 
@@ -47,6 +49,8 @@ struct SyntaxNodeList* syntax_node_get_children(struct SyntaxNode* node)
     case SYNTAX_NODE_KIND_COMPILATION_UNIT:
       return compilation_unit_syntax_get_children(
           (struct CompilationUnitSyntax*)node);
+    case SYNTAX_NODE_KIND_ELSE_CLAUSE:
+      return else_clause_syntax_get_children((struct ElseClauseSyntax*)node);
   }
 }
 
@@ -59,6 +63,7 @@ struct TextSpan* syntax_node_get_span(struct SyntaxNode* node)
     case SYNTAX_NODE_KIND_EXPRESSION:
     case SYNTAX_NODE_KIND_STATEMENT:
     case SYNTAX_NODE_KIND_COMPILATION_UNIT:
+    case SYNTAX_NODE_KIND_ELSE_CLAUSE:
       break;
   }
   struct SyntaxNodeList* children = syntax_node_get_children(node);

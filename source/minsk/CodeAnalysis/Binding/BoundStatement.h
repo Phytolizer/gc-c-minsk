@@ -7,6 +7,7 @@
 #define BOUND_STATEMENT_KINDS_ \
   X(BLOCK) \
   X(EXPRESSION) \
+  X(IF) \
   X(VARIABLE_DECLARATION)
 
 enum BoundStatementKind

@@ -43,9 +43,17 @@ int binary_operator_precedence(enum SyntaxKind kind)
 
 enum SyntaxKind keyword_kind(sds text)
 {
+  if (strcmp(text, "else") == 0)
+  {
+    return SYNTAX_KIND_ELSE_KEYWORD;
+  }
   if (strcmp(text, "false") == 0)
   {
     return SYNTAX_KIND_FALSE_KEYWORD;
+  }
+  if (strcmp(text, "if") == 0)
+  {
+    return SYNTAX_KIND_IF_KEYWORD;
   }
   if (strcmp(text, "let") == 0)
   {
@@ -102,8 +110,12 @@ sds syntax_facts_get_text(enum SyntaxKind kind)
       return sdsnew("{");
     case SYNTAX_KIND_CLOSE_BRACE_TOKEN:
       return sdsnew("}");
+    case SYNTAX_KIND_ELSE_KEYWORD:
+      return sdsnew("else");
     case SYNTAX_KIND_FALSE_KEYWORD:
       return sdsnew("false");
+    case SYNTAX_KIND_IF_KEYWORD:
+      return sdsnew("if");
     case SYNTAX_KIND_LET_KEYWORD:
       return sdsnew("let");
     case SYNTAX_KIND_TRUE_KEYWORD:

@@ -55,6 +55,16 @@ const std::array EVALUATOR_TESTS = {
     EvaluatorTest{"!true", OBJECT_BOOLEAN(false)},
     EvaluatorTest{"!false", OBJECT_BOOLEAN(true)},
     EvaluatorTest{"{ var a = 0 (a = 10) + a }", OBJECT_INTEGER(20)},
+    EvaluatorTest{"{ var a = 0 if a == 0 a = 10 a }", OBJECT_INTEGER(10)},
+    EvaluatorTest{"{ var a = 0 if a == 5 a = 10 a }", OBJECT_INTEGER(0)},
+    EvaluatorTest{
+        "{ var a = 0 if a == 0 a = 10 else a = 5 a }",
+        OBJECT_INTEGER(10),
+    },
+    EvaluatorTest{
+        "{ var a = 0 if a == 5 a = 10 else a = 5 a }",
+        OBJECT_INTEGER(5),
+    },
 };
 
 TEST_SUITE("Evaluator")

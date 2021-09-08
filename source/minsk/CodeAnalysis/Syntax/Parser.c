@@ -8,7 +8,9 @@
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BlockStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/ElseClauseSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionStatementSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/IfStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/NameExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
@@ -16,10 +18,10 @@
 #include <minsk/CodeAnalysis/Syntax/SyntaxKind.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/VariableDeclarationSyntax.h>
 #include <sds.h>
 
 #include "Lexer.h"
-#include "minsk/CodeAnalysis/Syntax/VariableDeclarationSyntax.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset)
     __attribute__((const));
@@ -32,8 +34,10 @@ static struct SyntaxToken* match_token(
 
 static struct StatementSyntax* parse_statement(struct Parser* parser);
 static struct StatementSyntax* parse_block_statement(struct Parser* parser);
+static struct ElseClauseSyntax* parse_else_clause(struct Parser* parser);
 static struct StatementSyntax* parse_expression_statement(
     struct Parser* parser);
+static struct StatementSyntax* parse_if_statement(struct Parser* parser);
 static struct StatementSyntax* parse_variable_declaration(
     struct Parser* parser);
 
@@ -144,6 +148,8 @@ static struct StatementSyntax* parse_statement(struct Parser* parser)
     case SYNTAX_KIND_LET_KEYWORD:
     case SYNTAX_KIND_VAR_KEYWORD:
       return parse_variable_declaration(parser);
+    case SYNTAX_KIND_IF_KEYWORD:
+      return parse_if_statement(parser);
     default:
       return parse_expression_statement(parser);
   }
@@ -169,10 +175,32 @@ static struct StatementSyntax* parse_block_statement(struct Parser* parser)
       close_brace_token);
 }
 
+static struct ElseClauseSyntax* parse_else_clause(struct Parser* parser)
+{
+  if (current(parser)->kind != SYNTAX_KIND_ELSE_KEYWORD)
+  {
+    return NULL;
+  }
+
+  struct SyntaxToken* keyword = next_token(parser);
+  struct StatementSyntax* statement = parse_statement(parser);
+  return else_clause_syntax_new(keyword, statement);
+}
+
 static struct StatementSyntax* parse_expression_statement(struct Parser* parser)
 {
   struct ExpressionSyntax* expression = parse_expression(parser);
   return (struct StatementSyntax*)expression_statement_syntax_new(expression);
+}
+
+static struct StatementSyntax* parse_if_statement(struct Parser* parser)
+{
+  struct SyntaxToken* keyword = match_token(parser, SYNTAX_KIND_IF_KEYWORD);
+  struct ExpressionSyntax* condition = parse_expression(parser);
+  struct StatementSyntax* statement = parse_statement(parser);
+  struct ElseClauseSyntax* else_clause = parse_else_clause(parser);
+  return (struct StatementSyntax*)
+      if_statement_syntax_new(keyword, condition, statement, else_clause);
 }
 
 static struct StatementSyntax* parse_variable_declaration(struct Parser* parser)
