@@ -6,10 +6,10 @@
 
 struct Evaluator
 {
-    struct BoundStatement *root;
-    struct VariableStore *variables;
-    struct Object *last_value;
+    struct BoundStatement* root;
+    struct VariableStore* variables;
+    struct Object* last_value;
 };
 
-struct Evaluator *evaluator_new(struct BoundStatement *root, struct VariableStore *variables);
-struct Object *evaluator_evaluate(struct Evaluator *evaluator);
+struct Evaluator* evaluator_new(struct BoundStatement* root, struct VariableStore* variables);
+struct Object* evaluator_evaluate(struct Evaluator* evaluator);

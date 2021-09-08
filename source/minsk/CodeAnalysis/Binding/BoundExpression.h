@@ -24,6 +24,6 @@ struct BoundExpression
     enum BoundExpressionKind kind;
 };
 
-void bound_expression_init(struct BoundExpression *expr, enum BoundExpressionKind kind);
-enum ObjectKind bound_expression_get_type(struct BoundExpression *expr);
-enum BoundNodeKind bound_expression_get_kind(struct BoundExpression *expr);
+void bound_expression_init(struct BoundExpression* expr, enum BoundExpressionKind kind);
+enum ObjectKind bound_expression_get_type(struct BoundExpression* expr);
+enum BoundNodeKind bound_expression_get_kind(struct BoundExpression* expr);

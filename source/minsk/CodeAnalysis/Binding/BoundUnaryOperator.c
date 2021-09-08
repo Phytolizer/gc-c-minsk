@@ -4,9 +4,9 @@
 
 DECLARE_NAMED_LIST(BoundUnaryOperatorList, struct BoundUnaryOperator);
 
-struct BoundUnaryOperator *bind_unary_operator(enum SyntaxKind syntax_kind, enum ObjectKind operand_type)
+struct BoundUnaryOperator* bind_unary_operator(enum SyntaxKind syntax_kind, enum ObjectKind operand_type)
 {
-    struct BoundUnaryOperatorList *list = NULL;
+    struct BoundUnaryOperatorList* list = NULL;
     if (!list)
     {
         list = mc_malloc(sizeof(struct BoundUnaryOperatorList));

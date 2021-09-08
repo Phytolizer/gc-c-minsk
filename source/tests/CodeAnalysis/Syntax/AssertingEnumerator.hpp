@@ -12,31 +12,31 @@ extern "C"
 
 class AssertingEnumerator
 {
-    static std::vector<SyntaxNode *> flatten(SyntaxNode *root);
-    std::vector<SyntaxNode *> flattened;
-    std::vector<SyntaxNode *>::iterator enumerator;
+    static std::vector<SyntaxNode*> flatten(SyntaxNode* root);
+    std::vector<SyntaxNode*> flattened;
+    std::vector<SyntaxNode*>::iterator enumerator;
 
   public:
-    AssertingEnumerator(SyntaxNode *root);
+    AssertingEnumerator(SyntaxNode* root);
     ~AssertingEnumerator();
 
     void assert_token(SyntaxKind kind, std::string text);
     void assert_node(SyntaxKind kind);
 };
 
-std::vector<SyntaxNode *> AssertingEnumerator::flatten(SyntaxNode *root)
+std::vector<SyntaxNode*> AssertingEnumerator::flatten(SyntaxNode* root)
 {
-    std::stack<SyntaxNode *> stack;
-    std::vector<SyntaxNode *> result;
+    std::stack<SyntaxNode*> stack;
+    std::vector<SyntaxNode*> result;
     stack.push(root);
 
     while (!stack.empty())
     {
-        SyntaxNode *n = stack.top();
+        SyntaxNode* n = stack.top();
         stack.pop();
         result.push_back(n);
 
-        SyntaxNodeList *children = syntax_node_get_children(n);
+        SyntaxNodeList* children = syntax_node_get_children(n);
         for (long i = children->length - 1; i >= 0; --i)
         {
             stack.push(children->data[i]);
@@ -45,7 +45,7 @@ std::vector<SyntaxNode *> AssertingEnumerator::flatten(SyntaxNode *root)
     return result;
 }
 
-AssertingEnumerator::AssertingEnumerator(SyntaxNode *root) : flattened(flatten(root)), enumerator(flattened.begin())
+AssertingEnumerator::AssertingEnumerator(SyntaxNode* root) : flattened(flatten(root)), enumerator(flattened.begin())
 {
 }
 
@@ -58,7 +58,7 @@ void AssertingEnumerator::assert_token(SyntaxKind kind, std::string text)
 {
     REQUIRE(enumerator != flattened.end());
     REQUIRE((*enumerator)->kind == SYNTAX_NODE_KIND_TOKEN);
-    SyntaxToken *token = reinterpret_cast<SyntaxToken *>(*enumerator);
+    SyntaxToken* token = reinterpret_cast<SyntaxToken*>(*enumerator);
     CHECK(token->kind == kind);
     CHECK(std::string{token->text} == text);
     ++enumerator;

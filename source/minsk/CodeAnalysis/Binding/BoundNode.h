@@ -30,11 +30,11 @@ enum BoundNodeKind
 #undef X
 };
 
-extern const char *const BOUND_NODE_KINDS[];
+extern const char* const BOUND_NODE_KINDS[];
 
 struct BoundNode
 {
     enum BoundNodeType type;
 };
 
-enum BoundNodeKind bound_node_get_kind(struct BoundNode *node);
+enum BoundNodeKind bound_node_get_kind(struct BoundNode* node);

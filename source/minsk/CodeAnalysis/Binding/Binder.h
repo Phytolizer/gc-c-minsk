@@ -13,9 +13,9 @@
 
 struct Binder
 {
-    struct DiagnosticBag *diagnostics;
-    struct BoundScope *scope;
+    struct DiagnosticBag* diagnostics;
+    struct BoundScope* scope;
 };
 
-struct BoundGlobalScope *bind_global_scope(struct BoundGlobalScope *previous, struct CompilationUnitSyntax *syntax);
-struct Binder *binder_new(struct BoundScope *parent);
+struct BoundGlobalScope* bind_global_scope(struct BoundGlobalScope* previous, struct CompilationUnitSyntax* syntax);
+struct Binder* binder_new(struct BoundScope* parent);

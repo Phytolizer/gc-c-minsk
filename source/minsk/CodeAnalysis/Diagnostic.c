@@ -2,9 +2,9 @@
 
 #include <IncludeMe.h>
 
-struct Diagnostic *diagnostic_new(struct TextSpan *span, sds message)
+struct Diagnostic* diagnostic_new(struct TextSpan* span, sds message)
 {
-    struct Diagnostic *diagnostic = mc_malloc(sizeof(struct Diagnostic));
+    struct Diagnostic* diagnostic = mc_malloc(sizeof(struct Diagnostic));
     diagnostic->span = span;
     diagnostic->message = message;
     return diagnostic;

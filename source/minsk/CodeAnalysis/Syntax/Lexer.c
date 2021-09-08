@@ -12,7 +12,7 @@
 #include <minsk/CodeAnalysis/Syntax/SyntaxToken.h>
 #include <minsk/CodeAnalysis/Text/SourceText.h>
 
-__attribute__((const)) static char peek(struct Lexer *lexer, int offset)
+__attribute__((const)) static char peek(struct Lexer* lexer, int offset)
 {
     int index = lexer->position + offset;
     if (index >= source_text_get_length(lexer->text))
@@ -22,17 +22,17 @@ __attribute__((const)) static char peek(struct Lexer *lexer, int offset)
     return source_text_at(lexer->text, index);
 }
 
-__attribute__((const)) static char current(struct Lexer *lexer)
+__attribute__((const)) static char current(struct Lexer* lexer)
 {
     return peek(lexer, 0);
 }
 
-__attribute__((const)) static char lookahead(struct Lexer *lexer)
+__attribute__((const)) static char lookahead(struct Lexer* lexer)
 {
     return peek(lexer, 1);
 }
 
-static void read_number(struct Lexer *lexer)
+static void read_number(struct Lexer* lexer)
 {
     while (isdigit(current(lexer)))
     {
@@ -51,7 +51,7 @@ static void read_number(struct Lexer *lexer)
     lexer->kind = SYNTAX_KIND_NUMBER_TOKEN;
 }
 
-static void read_whitespace(struct Lexer *lexer)
+static void read_whitespace(struct Lexer* lexer)
 {
     while (isspace(current(lexer)))
     {
@@ -60,7 +60,7 @@ static void read_whitespace(struct Lexer *lexer)
     lexer->kind = SYNTAX_KIND_WHITESPACE_TOKEN;
 }
 
-static void read_identifier_or_keyword(struct Lexer *lexer)
+static void read_identifier_or_keyword(struct Lexer* lexer)
 {
     while (isalpha(current(lexer)))
     {
@@ -72,9 +72,9 @@ static void read_identifier_or_keyword(struct Lexer *lexer)
     lexer->kind = keyword_kind(text);
 }
 
-struct Lexer *lexer_new(struct SourceText *source_text)
+struct Lexer* lexer_new(struct SourceText* source_text)
 {
-    struct Lexer *lexer = mc_malloc(sizeof(struct Lexer));
+    struct Lexer* lexer = mc_malloc(sizeof(struct Lexer));
     lexer->text = source_text;
     lexer->position = 0;
     lexer->start = 0;
@@ -84,7 +84,7 @@ struct Lexer *lexer_new(struct SourceText *source_text)
     return lexer;
 }
 
-struct SyntaxToken *lexer_next_token(struct Lexer *lexer)
+struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
 {
     lexer->start = lexer->position;
     lexer->kind = SYNTAX_KIND_BAD_TOKEN;

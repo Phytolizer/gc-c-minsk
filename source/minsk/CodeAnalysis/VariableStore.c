@@ -7,12 +7,12 @@
 
 #define INITIAL_NUM_ENTRIES 8
 
-static struct VariableStoreEntry *find_entry_for(struct VariableStoreEntry *entries, long num_entries,
-                                                 struct VariableSymbol *name);
+static struct VariableStoreEntry* find_entry_for(struct VariableStoreEntry* entries, long num_entries,
+                                                 struct VariableSymbol* name);
 
-struct VariableStore *variable_store_new(void)
+struct VariableStore* variable_store_new(void)
 {
-    struct VariableStore *store = mc_malloc(sizeof(struct VariableStore));
+    struct VariableStore* store = mc_malloc(sizeof(struct VariableStore));
     store->num_entries = INITIAL_NUM_ENTRIES;
     store->entries = mc_malloc(store->num_entries * sizeof(struct VariableStoreEntry));
     memset(store->entries, 0, store->num_entries * sizeof(struct VariableStoreEntry));
@@ -20,19 +20,19 @@ struct VariableStore *variable_store_new(void)
     return store;
 }
 
-void variable_store_insert_or_assign(struct VariableStore *store, struct VariableSymbol *symbol, struct Object *value)
+void variable_store_insert_or_assign(struct VariableStore* store, struct VariableSymbol* symbol, struct Object* value)
 {
     if ((double)store->count / (double)store->num_entries > 0.75)
     {
         long old_num_entries = store->num_entries;
         store->num_entries *= 2;
-        struct VariableStoreEntry *new_entries = mc_malloc(store->num_entries * sizeof(struct VariableStoreEntry));
+        struct VariableStoreEntry* new_entries = mc_malloc(store->num_entries * sizeof(struct VariableStoreEntry));
         memset(new_entries, 0, store->num_entries * sizeof(struct VariableStoreEntry));
         for (long i = 0; i < old_num_entries; ++i)
         {
             if (store->entries[i].symbol)
             {
-                struct VariableStoreEntry *entry =
+                struct VariableStoreEntry* entry =
                     find_entry_for(new_entries, store->num_entries, store->entries[i].symbol);
                 entry->symbol = store->entries[i].symbol;
                 entry->value = store->entries[i].value;
@@ -40,14 +40,14 @@ void variable_store_insert_or_assign(struct VariableStore *store, struct Variabl
         }
         store->entries = new_entries;
     }
-    struct VariableStoreEntry *entry = find_entry_for(store->entries, store->num_entries, symbol);
+    struct VariableStoreEntry* entry = find_entry_for(store->entries, store->num_entries, symbol);
     entry->symbol = symbol;
     entry->value = value;
 }
 
-struct Object **variable_store_lookup(struct VariableStore *store, struct VariableSymbol *symbol)
+struct Object** variable_store_lookup(struct VariableStore* store, struct VariableSymbol* symbol)
 {
-    struct VariableStoreEntry *entry = find_entry_for(store->entries, store->num_entries, symbol);
+    struct VariableStoreEntry* entry = find_entry_for(store->entries, store->num_entries, symbol);
     if (entry->symbol == NULL)
     {
         return NULL;
@@ -55,11 +55,11 @@ struct Object **variable_store_lookup(struct VariableStore *store, struct Variab
     return &entry->value;
 }
 
-void variable_store_dump(const struct VariableStore *store)
+void variable_store_dump(const struct VariableStore* store)
 {
     for (long i = 0; i < store->num_entries; ++i)
     {
-        struct VariableStoreEntry *entry = &store->entries[i];
+        struct VariableStoreEntry* entry = &store->entries[i];
         printf("[%2li] : ", i);
         if (entry->symbol)
         {
@@ -73,8 +73,8 @@ void variable_store_dump(const struct VariableStore *store)
     }
 }
 
-static struct VariableStoreEntry *find_entry_for(struct VariableStoreEntry *entries, long num_entries,
-                                                 struct VariableSymbol *symbol)
+static struct VariableStoreEntry* find_entry_for(struct VariableStoreEntry* entries, long num_entries,
+                                                 struct VariableSymbol* symbol)
 {
     uint64_t hash = variable_symbol_hash(symbol);
     hash %= num_entries;

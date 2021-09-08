@@ -22,9 +22,9 @@ TEST_SUITE("SourceText")
 {
     TEST_CASE("includes last line")
     {
-        for (auto &test : SOURCE_TEXT_INCLUDES_LAST_LINE_TESTS)
+        for (auto& test : SOURCE_TEXT_INCLUDES_LAST_LINE_TESTS)
         {
-            auto *source_text = source_text_from(sdsnew(test.text.c_str()));
+            auto* source_text = source_text_from(sdsnew(test.text.c_str()));
             CHECK(source_text->lines->length == test.expected_line_count);
         }
     }

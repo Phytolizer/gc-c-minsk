@@ -23,6 +23,6 @@ struct ExpressionSyntax
     enum ExpressionSyntaxKind kind;
 };
 
-void expression_syntax_init(struct ExpressionSyntax *syntax, enum ExpressionSyntaxKind kind);
-enum SyntaxKind expression_syntax_get_kind(struct ExpressionSyntax *syntax);
-struct SyntaxNodeList *expression_syntax_get_children(struct ExpressionSyntax *syntax);
+void expression_syntax_init(struct ExpressionSyntax* syntax, enum ExpressionSyntaxKind kind);
+enum SyntaxKind expression_syntax_get_kind(struct ExpressionSyntax* syntax);
+struct SyntaxNodeList* expression_syntax_get_children(struct ExpressionSyntax* syntax);

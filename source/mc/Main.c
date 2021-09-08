@@ -10,7 +10,7 @@
 #include <minsk/CodeAnalysis/Syntax/SyntaxTree.h>
 #include <sds.h>
 
-sds input_line(const char *prompt)
+sds input_line(const char* prompt)
 {
     printf("%s", prompt);
     sds line = sdsempty();
@@ -33,9 +33,9 @@ sds input_line(const char *prompt)
 int main(void)
 {
     bool show_tree = false;
-    struct VariableStore *variables = variable_store_new();
+    struct VariableStore* variables = variable_store_new();
     sds text = sdsempty();
-    struct Compilation *previous = NULL;
+    struct Compilation* previous = NULL;
     while (true)
     {
         printf("\x1b[32m");
@@ -82,38 +82,38 @@ int main(void)
             text = sdscatfmt(text, "%S\n", input);
         }
 
-        struct SyntaxTree *tree = syntax_tree_parse(text);
+        struct SyntaxTree* tree = syntax_tree_parse(text);
         if (!is_blank && tree->diagnostics->diagnostics->length > 0)
         {
             continue;
         }
-        struct Compilation *compilation =
+        struct Compilation* compilation =
             (previous == NULL) ? compilation_new(tree) : compilation_continue_with(previous, tree);
-        struct EvaluationResult *result = compilation_evaluate(compilation, variables);
-        struct DiagnosticList *diagnostics = result->diagnostics;
+        struct EvaluationResult* result = compilation_evaluate(compilation, variables);
+        struct DiagnosticList* diagnostics = result->diagnostics;
 
         if (show_tree)
         {
             printf("\x1b[2;37m");
-            syntax_node_pretty_print(stdout, (struct SyntaxNode *)tree->root);
+            syntax_node_pretty_print(stdout, (struct SyntaxNode*)tree->root);
             printf("\x1b[0m");
         }
         if (diagnostics->length > 0)
         {
-            struct SourceText *text = tree->source_text;
+            struct SourceText* text = tree->source_text;
 
             for (long i = 0; i < diagnostics->length; ++i)
             {
-                struct Diagnostic *diagnostic = diagnostics->data[i];
+                struct Diagnostic* diagnostic = diagnostics->data[i];
                 int line_index = source_text_get_line_index(text, diagnostic->span->start);
                 int line_number = line_index + 1;
-                struct TextLine *line = text->lines->data[line_index];
+                struct TextLine* line = text->lines->data[line_index];
                 int character = diagnostic->span->start - line->start + 1;
 
                 printf("\n\x1b[31m(%d, %d): %s\x1b[0m\n", line_number, character, diagnostic->message);
 
-                struct TextSpan *prefix_span = text_span_from_bounds(line->start, diagnostic->span->start);
-                struct TextSpan *suffix_span =
+                struct TextSpan* prefix_span = text_span_from_bounds(line->start, diagnostic->span->start);
+                struct TextSpan* suffix_span =
                     text_span_from_bounds(text_span_end(diagnostic->span), text_line_get_end(line));
 
                 sds prefix = source_text_to_string_spanned(text, prefix_span);

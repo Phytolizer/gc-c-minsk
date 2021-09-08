@@ -24,7 +24,7 @@ struct BoundStatement
     enum BoundStatementKind kind;
 };
 
-DECLARE_NAMED_LIST(BoundStatementList, struct BoundStatement *);
+DECLARE_NAMED_LIST(BoundStatementList, struct BoundStatement*);
 
-void bound_statement_init(struct BoundStatement *stmt, enum BoundStatementKind kind);
-enum BoundNodeKind bound_statement_get_kind(struct BoundStatement *stmt);
+void bound_statement_init(struct BoundStatement* stmt, enum BoundStatementKind kind);
+enum BoundNodeKind bound_statement_get_kind(struct BoundStatement* stmt);

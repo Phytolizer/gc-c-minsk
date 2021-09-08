@@ -16,7 +16,7 @@ TEST_SUITE("SyntaxFacts")
         std::vector<SyntaxKind> syntax_kind_variants;
         std::copy(SYNTAX_KIND_VARIANTS, &SYNTAX_KIND_VARIANTS[NUM_SYNTAX_KIND_VARIANTS],
                   std::back_inserter(syntax_kind_variants));
-        for (auto &value : syntax_kind_variants)
+        for (auto& value : syntax_kind_variants)
         {
             sds text = syntax_facts_get_text(value);
             if (text == NULL)
@@ -24,7 +24,7 @@ TEST_SUITE("SyntaxFacts")
                 continue;
             }
 
-            SyntaxTokenList *tokens = syntax_tree_parse_tokens(text);
+            SyntaxTokenList* tokens = syntax_tree_parse_tokens(text);
             REQUIRE(tokens->length == 1);
             CHECK(tokens->data[0]->kind == value);
             CHECK(std::string{tokens->data[0]->text} == std::string{text});

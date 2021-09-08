@@ -27,7 +27,7 @@ static std::vector<SyntaxKind> syntax_kind_variants()
 static std::vector<SyntaxKind> get_unary_operator_kinds()
 {
     std::vector<SyntaxKind> unary_operators;
-    for (auto &kind : syntax_kind_variants())
+    for (auto& kind : syntax_kind_variants())
     {
         if (unary_operator_precedence(kind) > 0)
         {
@@ -40,7 +40,7 @@ static std::vector<SyntaxKind> get_unary_operator_kinds()
 static std::vector<SyntaxKind> get_binary_operator_kinds()
 {
     std::vector<SyntaxKind> binary_operators;
-    for (auto &kind : syntax_kind_variants())
+    for (auto& kind : syntax_kind_variants())
     {
         if (binary_operator_precedence(kind) > 0)
         {
@@ -76,27 +76,27 @@ static std::vector<std::pair<SyntaxKind, SyntaxKind>> get_unary_operator_pairs()
     return binary_operator_pairs;
 }
 
-static ExpressionSyntax *parse_expression(sds text)
+static ExpressionSyntax* parse_expression(sds text)
 {
     auto syntax_tree = syntax_tree_parse(text);
     auto root = syntax_tree->root;
     auto statement = root->statement;
     REQUIRE(statement->kind == STATEMENT_SYNTAX_KIND_EXPRESSION_STATEMENT_SYNTAX);
-    return ((ExpressionStatementSyntax *)statement)->expression;
+    return ((ExpressionStatementSyntax*)statement)->expression;
 }
 
 TEST_SUITE("Parser")
 {
     TEST_CASE("binary expression honors precedences")
     {
-        for (auto &test : get_binary_operator_pairs())
+        for (auto& test : get_binary_operator_pairs())
         {
             int op1_precedence = binary_operator_precedence(test.first);
             int op2_precedence = binary_operator_precedence(test.second);
             sds op1_text = syntax_facts_get_text(test.first);
             sds op2_text = syntax_facts_get_text(test.second);
             sds text = sdscatfmt(sdsempty(), "a %S b %S c", op1_text, op2_text);
-            SyntaxNode *expression = reinterpret_cast<SyntaxNode *>(parse_expression(text));
+            SyntaxNode* expression = reinterpret_cast<SyntaxNode*>(parse_expression(text));
 
             if (op1_precedence >= op2_precedence)
             {
@@ -131,14 +131,14 @@ TEST_SUITE("Parser")
 
     TEST_CASE("unary expression honors precedences")
     {
-        for (auto &test : get_unary_operator_pairs())
+        for (auto& test : get_unary_operator_pairs())
         {
             int unary_precedence = unary_operator_precedence(test.first);
             int binary_precedence = binary_operator_precedence(test.second);
             sds unary_text = syntax_facts_get_text(test.first);
             sds binary_text = syntax_facts_get_text(test.second);
             sds text = sdscatfmt(sdsempty(), "%S a %S b", unary_text, binary_text);
-            SyntaxNode *expression = reinterpret_cast<SyntaxNode *>(parse_expression(text));
+            SyntaxNode* expression = reinterpret_cast<SyntaxNode*>(parse_expression(text));
 
             if (unary_precedence >= binary_precedence)
             {

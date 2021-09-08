@@ -17,7 +17,7 @@ class AnnotatedText
   public:
     std::string text;
     std::vector<TextSpan> spans;
-    AnnotatedText(const std::string &text, const std::vector<TextSpan> &spans) : text{text}, spans{spans}
+    AnnotatedText(const std::string& text, const std::vector<TextSpan>& spans) : text{text}, spans{spans}
     {
     }
 
@@ -64,7 +64,7 @@ class AnnotatedText
         return AnnotatedText{text_builder.str(), spans};
     }
 
-    static std::vector<std::string> unindent_lines(const std::string &text)
+    static std::vector<std::string> unindent_lines(const std::string& text)
     {
         std::vector<std::string> lines;
         std::stringstream string_reader{text};
@@ -74,7 +74,7 @@ class AnnotatedText
             lines.push_back(line);
         }
         int min_indentation = std::numeric_limits<int>::max();
-        for (auto &line : lines)
+        for (auto& line : lines)
         {
             int indentation = line.find_first_not_of(" \t");
             if (indentation == std::string::npos)
@@ -108,7 +108,7 @@ class AnnotatedText
     }
 
   private:
-    static std::string unindent(const std::string &text)
+    static std::string unindent(const std::string& text)
     {
         std::vector<std::string> lines;
         std::stringstream string_reader{text};
@@ -118,7 +118,7 @@ class AnnotatedText
             lines.push_back(line);
         }
         int min_indentation = std::numeric_limits<int>::max();
-        for (auto &line : lines)
+        for (auto& line : lines)
         {
             int indentation = line.find_first_not_of(" \t");
             if (indentation == std::string::npos)
@@ -144,7 +144,7 @@ class AnnotatedText
         }
 
         std::stringstream out;
-        for (auto &line : lines)
+        for (auto& line : lines)
         {
             out << line << '\n';
         }

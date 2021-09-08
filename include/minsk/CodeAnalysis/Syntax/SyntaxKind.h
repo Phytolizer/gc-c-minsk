@@ -47,7 +47,7 @@
     X(WHILE_STATEMENT)                                                                                                 \
     X(ELSE_CLAUSE)
 
-extern const char *const SYNTAX_KINDS[];
+extern const char* const SYNTAX_KINDS[];
 
 enum SyntaxKind
 {

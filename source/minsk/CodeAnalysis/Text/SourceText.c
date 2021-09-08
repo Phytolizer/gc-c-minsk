@@ -2,18 +2,18 @@
 
 #include <IncludeMe.h>
 
-static struct SourceText *source_text_new(sds text);
-static struct TextLineList *parse_lines(struct SourceText *source_text, sds text);
+static struct SourceText* source_text_new(sds text);
+static struct TextLineList* parse_lines(struct SourceText* source_text, sds text);
 static int get_line_break_width(sds text, int i);
-static void add_line(struct TextLineList *lines, struct SourceText *source_text, int position, int line_start,
+static void add_line(struct TextLineList* lines, struct SourceText* source_text, int position, int line_start,
                      int line_break_width);
 
-struct SourceText *source_text_from(sds text)
+struct SourceText* source_text_from(sds text)
 {
     return source_text_new(text);
 }
 
-int source_text_get_line_index(struct SourceText *self, int position)
+int source_text_get_line_index(struct SourceText* self, int position)
 {
     int lower = 0;
     int upper = self->lines->length - 1;
@@ -41,42 +41,42 @@ int source_text_get_line_index(struct SourceText *self, int position)
     return lower - 1;
 }
 
-sds source_text_to_string(struct SourceText *source_text)
+sds source_text_to_string(struct SourceText* source_text)
 {
     return sdsdup(source_text->text);
 }
 
-sds source_text_to_string_bounded(struct SourceText *source_text, int start, int length)
+sds source_text_to_string_bounded(struct SourceText* source_text, int start, int length)
 {
     return sdsnewlen(&source_text->text[start], length);
 }
 
-sds source_text_to_string_spanned(struct SourceText *source_text, struct TextSpan *span)
+sds source_text_to_string_spanned(struct SourceText* source_text, struct TextSpan* span)
 {
     return source_text_to_string_bounded(source_text, span->start, span->length);
 }
 
-char source_text_at(struct SourceText *source_text, int index)
+char source_text_at(struct SourceText* source_text, int index)
 {
     return source_text->text[index];
 }
 
-int source_text_get_length(struct SourceText *source_text)
+int source_text_get_length(struct SourceText* source_text)
 {
     return sdslen(source_text->text);
 }
 
-static struct SourceText *source_text_new(sds text)
+static struct SourceText* source_text_new(sds text)
 {
-    struct SourceText *source_text = mc_malloc(sizeof(struct SourceText));
+    struct SourceText* source_text = mc_malloc(sizeof(struct SourceText));
     source_text->text = text;
     source_text->lines = parse_lines(source_text, text);
     return source_text;
 }
 
-static struct TextLineList *parse_lines(struct SourceText *source_text, sds text)
+static struct TextLineList* parse_lines(struct SourceText* source_text, sds text)
 {
-    struct TextLineList *result = mc_malloc(sizeof(struct TextLineList));
+    struct TextLineList* result = mc_malloc(sizeof(struct TextLineList));
     LIST_INIT(result);
     int position = 0;
     int line_start = 0;
@@ -118,7 +118,7 @@ static int get_line_break_width(sds text, int i)
     return 0;
 }
 
-static void add_line(struct TextLineList *lines, struct SourceText *source_text, int position, int line_start,
+static void add_line(struct TextLineList* lines, struct SourceText* source_text, int position, int line_start,
                      int line_break_width)
 {
     int line_length = position - line_start;

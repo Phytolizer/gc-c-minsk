@@ -24,9 +24,9 @@ struct BasicToken
 
 DECLARE_NAMED_LIST(BasicTokenList, BasicToken);
 
-BasicTokenList *get_dynamic_tokens()
+BasicTokenList* get_dynamic_tokens()
 {
-    BasicTokenList *dynamic_tokens = static_cast<BasicTokenList *>(mc_malloc(sizeof(BasicTokenList)));
+    BasicTokenList* dynamic_tokens = static_cast<BasicTokenList*>(mc_malloc(sizeof(BasicTokenList)));
     LIST_INIT(dynamic_tokens);
     LIST_PUSH(dynamic_tokens, ((BasicToken){SYNTAX_KIND_NUMBER_TOKEN, sdsnew("1")}));
     LIST_PUSH(dynamic_tokens, ((BasicToken){SYNTAX_KIND_NUMBER_TOKEN, sdsnew("123")}));
@@ -35,11 +35,11 @@ BasicTokenList *get_dynamic_tokens()
     return dynamic_tokens;
 }
 
-const BasicTokenList *DYNAMIC_TOKENS = get_dynamic_tokens();
+const BasicTokenList* DYNAMIC_TOKENS = get_dynamic_tokens();
 
-BasicTokenList *get_tokens()
+BasicTokenList* get_tokens()
 {
-    BasicTokenList *fixed_tokens = static_cast<BasicTokenList *>(mc_malloc(sizeof(BasicTokenList)));
+    BasicTokenList* fixed_tokens = static_cast<BasicTokenList*>(mc_malloc(sizeof(BasicTokenList)));
     LIST_INIT(fixed_tokens);
     LIST_RESERVE(fixed_tokens, NUM_SYNTAX_KIND_VARIANTS);
     std::transform(SYNTAX_KIND_VARIANTS, &SYNTAX_KIND_VARIANTS[NUM_SYNTAX_KIND_VARIANTS], fixed_tokens->data,
@@ -47,18 +47,18 @@ BasicTokenList *get_tokens()
                        return BasicToken{kind, syntax_facts_get_text(kind)};
                    });
     fixed_tokens->length = NUM_SYNTAX_KIND_VARIANTS;
-    BasicTokenList *tokens = static_cast<BasicTokenList *>(mc_malloc(sizeof(BasicTokenList)));
+    BasicTokenList* tokens = static_cast<BasicTokenList*>(mc_malloc(sizeof(BasicTokenList)));
     LIST_INIT(tokens);
     LIST_RESERVE(tokens, NUM_SYNTAX_KIND_VARIANTS + DYNAMIC_TOKENS->length);
-    auto *ep = std::copy_if(fixed_tokens->data, &fixed_tokens->data[fixed_tokens->length], tokens->data,
-                            [](const auto &t) { return t.text != nullptr; });
+    auto* ep = std::copy_if(fixed_tokens->data, &fixed_tokens->data[fixed_tokens->length], tokens->data,
+                            [](const auto& t) { return t.text != nullptr; });
     tokens->length = ep - tokens->data;
     ep = std::copy(DYNAMIC_TOKENS->data, &DYNAMIC_TOKENS->data[DYNAMIC_TOKENS->length], &tokens->data[tokens->length]);
     tokens->length = ep - tokens->data;
     return tokens;
 }
 
-BasicTokenList *TOKENS = get_tokens();
+BasicTokenList* TOKENS = get_tokens();
 
 const std::array SEPARATORS = {
     BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew(" ")},    BasicToken{SYNTAX_KIND_WHITESPACE_TOKEN, sdsnew("  ")},
@@ -117,8 +117,8 @@ static std::vector<std::pair<BasicToken, BasicToken>> get_token_pairs()
     {
         for (long j = 0; j < TOKENS->length; ++j)
         {
-            auto &t1 = TOKENS->data[i];
-            auto &t2 = TOKENS->data[j];
+            auto& t1 = TOKENS->data[i];
+            auto& t2 = TOKENS->data[j];
             if (!requires_separator(t1.kind, t2.kind))
             {
                 tests.emplace_back(t1, t2);
@@ -137,20 +137,20 @@ struct TokenPairWithSeparator
 
 DECLARE_NAMED_LIST(TokenPairWithSeparatorList, TokenPairWithSeparator);
 
-static TokenPairWithSeparatorList *get_token_pairs_with_separator()
+static TokenPairWithSeparatorList* get_token_pairs_with_separator()
 {
-    TokenPairWithSeparatorList *tests =
-        static_cast<TokenPairWithSeparatorList *>(mc_malloc(sizeof(TokenPairWithSeparatorList)));
+    TokenPairWithSeparatorList* tests =
+        static_cast<TokenPairWithSeparatorList*>(mc_malloc(sizeof(TokenPairWithSeparatorList)));
     LIST_INIT(tests);
     for (long i = 0; i < TOKENS->length; ++i)
     {
         for (long j = 0; j < TOKENS->length; ++j)
         {
-            auto &t1 = TOKENS->data[i];
-            auto &t2 = TOKENS->data[j];
+            auto& t1 = TOKENS->data[i];
+            auto& t2 = TOKENS->data[j];
             if (requires_separator(t1.kind, t2.kind))
             {
-                for (auto &separator : SEPARATORS)
+                for (auto& separator : SEPARATORS)
                 {
                     LIST_PUSH(tests, ((TokenPairWithSeparator){t1, separator, t2}));
                 }
@@ -160,13 +160,13 @@ static TokenPairWithSeparatorList *get_token_pairs_with_separator()
     return tests;
 }
 
-const TokenPairWithSeparatorList *TOKEN_PAIRS_WITH_SEPARATOR = get_token_pairs_with_separator();
+const TokenPairWithSeparatorList* TOKEN_PAIRS_WITH_SEPARATOR = get_token_pairs_with_separator();
 
 TEST_SUITE("Lexer")
 {
     TEST_CASE("tests all token types")
     {
-        auto *token_kinds = (SyntaxKindList *)mc_malloc(sizeof(SyntaxKindList));
+        auto* token_kinds = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
         LIST_INIT(token_kinds);
         for (long i = 0; i < NUM_SYNTAX_KIND_VARIANTS; ++i)
         {
@@ -176,7 +176,7 @@ TEST_SUITE("Lexer")
                 LIST_PUSH(token_kinds, SYNTAX_KIND_VARIANTS[i]);
             }
         }
-        auto *tested_token_kinds = (SyntaxKindList *)mc_malloc(sizeof(SyntaxKindList));
+        auto* tested_token_kinds = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
         for (long i = 0; i < TOKENS->length; ++i)
         {
             LIST_PUSH(tested_token_kinds, TOKENS->data[i].kind);
@@ -185,7 +185,7 @@ TEST_SUITE("Lexer")
         {
             LIST_PUSH(tested_token_kinds, SEPARATORS[i].kind);
         }
-        auto *untested_token_kinds = (SyntaxKindList *)mc_malloc(sizeof(SyntaxKindList));
+        auto* untested_token_kinds = (SyntaxKindList*)mc_malloc(sizeof(SyntaxKindList));
         for (long i = 0; i < token_kinds->length; ++i)
         {
             bool tested = false;
@@ -217,11 +217,11 @@ TEST_SUITE("Lexer")
         std::copy(TOKENS->data, &TOKENS->data[TOKENS->length], std::back_inserter(tests));
         std::copy(SEPARATORS.begin(), SEPARATORS.end(), std::back_inserter(tests));
 
-        for (auto &test : tests)
+        for (auto& test : tests)
         {
-            SyntaxTokenList *tokens = syntax_tree_parse_tokens(test.text);
+            SyntaxTokenList* tokens = syntax_tree_parse_tokens(test.text);
             CHECK(tokens->length == 1);
-            SyntaxToken *token = tokens->data[0];
+            SyntaxToken* token = tokens->data[0];
             CHECK(std::string{SYNTAX_KINDS[token->kind]} == std::string{SYNTAX_KINDS[test.kind]});
             CHECK(std::string{token->text} == std::string{test.text});
         }
@@ -229,10 +229,10 @@ TEST_SUITE("Lexer")
 
     TEST_CASE("lexes token pairs")
     {
-        for (auto &test : get_token_pairs())
+        for (auto& test : get_token_pairs())
         {
             sds text = sdscatfmt(sdsempty(), "%S%S", test.first.text, test.second.text);
-            auto *tokens = syntax_tree_parse_tokens(text);
+            auto* tokens = syntax_tree_parse_tokens(text);
 
             REQUIRE(tokens->length == 2);
 
@@ -248,9 +248,9 @@ TEST_SUITE("Lexer")
     {
         for (long i = 0; i < TOKEN_PAIRS_WITH_SEPARATOR->length; ++i)
         {
-            auto &test = TOKEN_PAIRS_WITH_SEPARATOR->data[i];
+            auto& test = TOKEN_PAIRS_WITH_SEPARATOR->data[i];
             sds text = sdscatfmt(sdsempty(), "%S%S%S", test.t1.text, test.separator.text, test.t2.text);
-            auto *tokens = syntax_tree_parse_tokens(text);
+            auto* tokens = syntax_tree_parse_tokens(text);
 
             REQUIRE(tokens->length > 0);
 

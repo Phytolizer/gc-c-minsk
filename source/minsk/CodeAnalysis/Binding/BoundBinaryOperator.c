@@ -4,10 +4,10 @@
 
 DECLARE_NAMED_LIST(BoundBinaryOperatorList, struct BoundBinaryOperator);
 
-extern struct BoundBinaryOperator *bind_binary_operator(enum SyntaxKind syntax_kind, enum ObjectKind left_type,
+extern struct BoundBinaryOperator* bind_binary_operator(enum SyntaxKind syntax_kind, enum ObjectKind left_type,
                                                         enum ObjectKind right_type)
 {
-    static struct BoundBinaryOperatorList *list = NULL;
+    static struct BoundBinaryOperatorList* list = NULL;
     if (!list)
     {
         list = mc_malloc(sizeof(struct BoundBinaryOperatorList));

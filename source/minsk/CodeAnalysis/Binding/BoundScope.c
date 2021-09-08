@@ -5,21 +5,21 @@
 
 #define INITIAL_SCOPE_SIZE 8
 
-static struct BoundScopeVariables *bound_scope_variables_new(void);
-static struct BoundScopeVariableEntry *bound_scope_variables_find_entry(struct BoundScopeVariableEntry *entries,
+static struct BoundScopeVariables* bound_scope_variables_new(void);
+static struct BoundScopeVariableEntry* bound_scope_variables_find_entry(struct BoundScopeVariableEntry* entries,
                                                                         long num_entries, sds name);
 
-struct BoundScope *bound_scope_new(struct BoundScope *parent)
+struct BoundScope* bound_scope_new(struct BoundScope* parent)
 {
-    struct BoundScope *scope = mc_malloc(sizeof(struct BoundScope));
+    struct BoundScope* scope = mc_malloc(sizeof(struct BoundScope));
     scope->variables = bound_scope_variables_new();
     scope->parent = parent;
     return scope;
 }
 
-struct VariableSymbol **bound_scope_try_lookup(struct BoundScope *scope, sds name)
+struct VariableSymbol** bound_scope_try_lookup(struct BoundScope* scope, sds name)
 {
-    struct BoundScopeVariableEntry *entry =
+    struct BoundScopeVariableEntry* entry =
         bound_scope_variables_find_entry(scope->variables->entries, scope->variables->num_entries, name);
     if (!entry || entry->name == NULL)
     {
@@ -35,9 +35,9 @@ struct VariableSymbol **bound_scope_try_lookup(struct BoundScope *scope, sds nam
     return &entry->value;
 }
 
-bool bound_scope_try_declare(struct BoundScope *scope, struct VariableSymbol *variable)
+bool bound_scope_try_declare(struct BoundScope* scope, struct VariableSymbol* variable)
 {
-    struct BoundScopeVariableEntry *entry =
+    struct BoundScopeVariableEntry* entry =
         bound_scope_variables_find_entry(scope->variables->entries, scope->variables->num_entries, variable->name);
     if (entry != NULL && entry->name != NULL)
     {
@@ -48,11 +48,11 @@ bool bound_scope_try_declare(struct BoundScope *scope, struct VariableSymbol *va
     {
         long old_num_entries = scope->variables->num_entries;
         scope->variables->num_entries = (scope->variables->num_entries == 0) ? 8 : scope->variables->num_entries * 2;
-        struct BoundScopeVariableEntry *new_entries =
+        struct BoundScopeVariableEntry* new_entries =
             mc_malloc(scope->variables->num_entries * sizeof(struct BoundScopeVariableEntry));
         for (long i = 0; i < old_num_entries; ++i)
         {
-            struct BoundScopeVariableEntry *entry = bound_scope_variables_find_entry(
+            struct BoundScopeVariableEntry* entry = bound_scope_variables_find_entry(
                 new_entries, scope->variables->num_entries, scope->variables->entries[i].name);
             entry->name = scope->variables->entries[i].name;
             entry->value = scope->variables->entries[i].value;
@@ -66,9 +66,9 @@ bool bound_scope_try_declare(struct BoundScope *scope, struct VariableSymbol *va
     return true;
 }
 
-struct VariableSymbolList *bound_scope_get_declared_variables(struct BoundScope *scope)
+struct VariableSymbolList* bound_scope_get_declared_variables(struct BoundScope* scope)
 {
-    struct VariableSymbolList *variables = mc_malloc(sizeof(struct VariableSymbolList));
+    struct VariableSymbolList* variables = mc_malloc(sizeof(struct VariableSymbolList));
     LIST_INIT(variables);
     for (long i = 0; i < scope->variables->num_entries; ++i)
     {
@@ -80,16 +80,16 @@ struct VariableSymbolList *bound_scope_get_declared_variables(struct BoundScope 
     return variables;
 }
 
-static struct BoundScopeVariables *bound_scope_variables_new(void)
+static struct BoundScopeVariables* bound_scope_variables_new(void)
 {
-    struct BoundScopeVariables *variables = mc_malloc(sizeof(struct BoundScopeVariables));
+    struct BoundScopeVariables* variables = mc_malloc(sizeof(struct BoundScopeVariables));
     variables->num_entries = INITIAL_SCOPE_SIZE;
     variables->entries = mc_malloc(variables->num_entries * sizeof(struct BoundScopeVariableEntry));
     variables->count = 0;
     return variables;
 }
 
-static struct BoundScopeVariableEntry *bound_scope_variables_find_entry(struct BoundScopeVariableEntry *entries,
+static struct BoundScopeVariableEntry* bound_scope_variables_find_entry(struct BoundScopeVariableEntry* entries,
                                                                         long num_entries, sds name)
 {
     if (num_entries == 0)

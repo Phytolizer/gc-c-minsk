@@ -9,16 +9,16 @@
 
 struct UnpackedList
 {
-    char **p_data;
+    char** p_data;
     size_t sizeof_t;
-    long *p_length;
-    long *p_capacity;
+    long* p_length;
+    long* p_capacity;
 };
 
 #define DECLARE_NAMED_LIST(Name, T)                                                                                    \
     struct Name                                                                                                        \
     {                                                                                                                  \
-        T *data;                                                                                                       \
+        T* data;                                                                                                       \
         long length;                                                                                                   \
         long capacity;                                                                                                 \
     }
@@ -26,14 +26,14 @@ struct UnpackedList
 #define LIST(T)                                                                                                        \
     struct                                                                                                             \
     {                                                                                                                  \
-        T *data;                                                                                                       \
+        T* data;                                                                                                       \
         long length;                                                                                                   \
         long capacity;                                                                                                 \
     }
 
 #define LIST_UNPACK_(L)                                                                                                \
     ((struct UnpackedList){                                                                                            \
-        .p_data = (char **)&(L)->data,                                                                                 \
+        .p_data = (char**)&(L)->data,                                                                                  \
         .sizeof_t = sizeof(*(L)->data),                                                                                \
         .p_length = &(L)->length,                                                                                      \
         .p_capacity = &(L)->capacity,                                                                                  \

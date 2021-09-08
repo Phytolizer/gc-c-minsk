@@ -24,8 +24,8 @@ struct StatementSyntax
     enum StatementSyntaxKind kind;
 };
 
-DECLARE_NAMED_LIST(StatementSyntaxList, struct StatementSyntax *);
+DECLARE_NAMED_LIST(StatementSyntaxList, struct StatementSyntax*);
 
-void statement_syntax_init(struct StatementSyntax *syntax, enum StatementSyntaxKind kind);
-enum SyntaxKind statement_syntax_get_kind(struct StatementSyntax *syntax);
-struct SyntaxNodeList *statement_syntax_get_children(struct StatementSyntax *syntax);
+void statement_syntax_init(struct StatementSyntax* syntax, enum StatementSyntaxKind kind);
+enum SyntaxKind statement_syntax_get_kind(struct StatementSyntax* syntax);
+struct SyntaxNodeList* statement_syntax_get_children(struct StatementSyntax* syntax);

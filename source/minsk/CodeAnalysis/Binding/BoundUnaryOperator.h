@@ -13,4 +13,4 @@ struct BoundUnaryOperator
     enum ObjectKind result_type;
 };
 
-struct BoundUnaryOperator *bind_unary_operator(enum SyntaxKind syntax_kind, enum ObjectKind operand_type);
+struct BoundUnaryOperator* bind_unary_operator(enum SyntaxKind syntax_kind, enum ObjectKind operand_type);

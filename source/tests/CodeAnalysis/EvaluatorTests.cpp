@@ -13,13 +13,13 @@ extern "C"
 #include <minsk/CodeAnalysis/VariableStore.h>
 }
 
-static void assert_value(const std::string &text, Object *expected_value);
-static void assert_diagnostics(const std::string &text, const std::string &diagnostic_text);
+static void assert_value(const std::string& text, Object* expected_value);
+static void assert_diagnostics(const std::string& text, const std::string& diagnostic_text);
 
 struct EvaluatorTest
 {
     std::string text;
-    Object *expected_value;
+    Object* expected_value;
 };
 
 const std::array EVALUATOR_TESTS = {
@@ -73,7 +73,7 @@ TEST_SUITE("Evaluator")
 {
     TEST_CASE("computes correct values")
     {
-        for (auto &test : EVALUATOR_TESTS)
+        for (auto& test : EVALUATOR_TESTS)
         {
             assert_value(test.text, test.expected_value);
         }
@@ -177,13 +177,13 @@ TEST_SUITE("Evaluator")
     }
 }
 
-static void assert_value(const std::string &text_in, Object *expected_value)
+static void assert_value(const std::string& text_in, Object* expected_value)
 {
     sds text = sdsnew(text_in.c_str());
-    auto *tree = syntax_tree_parse(text);
-    auto *compilation = compilation_new(tree);
-    auto *variables = variable_store_new();
-    auto *result = compilation_evaluate(compilation, variables);
+    auto* tree = syntax_tree_parse(text);
+    auto* compilation = compilation_new(tree);
+    auto* variables = variable_store_new();
+    auto* result = compilation_evaluate(compilation, variables);
 
     CHECK(result->diagnostics->length == 0);
     if (!objects_equal(expected_value, result->value))
@@ -203,7 +203,7 @@ static void assert_value(const std::string &text_in, Object *expected_value)
     }
 }
 
-static void assert_diagnostics(const std::string &text, const std::string &diagnostic_text)
+static void assert_diagnostics(const std::string& text, const std::string& diagnostic_text)
 {
     auto annotated_text = AnnotatedText::parse(text);
     auto syntax_tree = syntax_tree_parse(sdsnew(annotated_text.text.c_str()));
