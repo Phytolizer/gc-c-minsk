@@ -19,6 +19,7 @@
 #include <sds.h>
 
 #include "Lexer.h"
+#include "minsk/CodeAnalysis/Syntax/VariableDeclarationSyntax.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset)
     __attribute__((const));
@@ -32,6 +33,8 @@ static struct SyntaxToken* match_token(
 static struct StatementSyntax* parse_statement(struct Parser* parser);
 static struct StatementSyntax* parse_block_statement(struct Parser* parser);
 static struct StatementSyntax* parse_expression_statement(
+    struct Parser* parser);
+static struct StatementSyntax* parse_variable_declaration(
     struct Parser* parser);
 
 static struct ExpressionSyntax* parse_expression(struct Parser* parser);
@@ -134,11 +137,16 @@ static struct SyntaxToken* match_token(
 
 static struct StatementSyntax* parse_statement(struct Parser* parser)
 {
-  if (current(parser)->kind == SYNTAX_KIND_OPEN_BRACE_TOKEN)
+  switch (current(parser)->kind)
   {
-    return parse_block_statement(parser);
+    case SYNTAX_KIND_OPEN_BRACE_TOKEN:
+      return parse_block_statement(parser);
+    case SYNTAX_KIND_LET_KEYWORD:
+    case SYNTAX_KIND_VAR_KEYWORD:
+      return parse_variable_declaration(parser);
+    default:
+      return parse_expression_statement(parser);
   }
-  return parse_expression_statement(parser);
 }
 
 static struct StatementSyntax* parse_block_statement(struct Parser* parser)
@@ -165,6 +173,24 @@ static struct StatementSyntax* parse_expression_statement(struct Parser* parser)
 {
   struct ExpressionSyntax* expression = parse_expression(parser);
   return (struct StatementSyntax*)expression_statement_syntax_new(expression);
+}
+
+static struct StatementSyntax* parse_variable_declaration(struct Parser* parser)
+{
+  enum SyntaxKind expected = current(parser)->kind == SYNTAX_KIND_LET_KEYWORD
+      ? SYNTAX_KIND_LET_KEYWORD
+      : SYNTAX_KIND_VAR_KEYWORD;
+  struct SyntaxToken* keyword_token = match_token(parser, expected);
+  struct SyntaxToken* identifier_token
+      = match_token(parser, SYNTAX_KIND_IDENTIFIER_TOKEN);
+  struct SyntaxToken* equals_token
+      = match_token(parser, SYNTAX_KIND_EQUALS_TOKEN);
+  struct ExpressionSyntax* initializer = parse_expression(parser);
+  return (struct StatementSyntax*)variable_declaration_syntax_new(
+      keyword_token,
+      identifier_token,
+      equals_token,
+      initializer);
 }
 
 static struct ExpressionSyntax* parse_expression(struct Parser* parser)

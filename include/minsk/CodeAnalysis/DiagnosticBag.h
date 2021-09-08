@@ -45,6 +45,14 @@ void diagnostic_bag_report_cannot_convert(
     struct TextSpan* span,
     enum ObjectKind from_type,
     enum ObjectKind to_type);
+void diagnostic_bag_report_variable_already_declared(
+    struct DiagnosticBag* bag,
+    struct TextSpan* span,
+    sds name);
+void diagnostic_bag_report_cannot_assign(
+    struct DiagnosticBag* bag,
+    struct TextSpan* span,
+    sds name);
 
 void diagnostic_bag_add_range(
     struct DiagnosticBag* bag,

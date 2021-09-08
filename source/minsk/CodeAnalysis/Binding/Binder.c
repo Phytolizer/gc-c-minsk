@@ -15,6 +15,7 @@
 #include <minsk/CodeAnalysis/Syntax/StatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/SyntaxKind.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/VariableDeclarationSyntax.h>
 #include <minsk/CodeAnalysis/VariableStore.h>
 
 #include "BoundAssignmentExpression.h"
@@ -29,6 +30,7 @@
 #include "BoundStatement.h"
 #include "BoundUnaryExpression.h"
 #include "BoundUnaryOperator.h"
+#include "BoundVariableDeclaration.h"
 #include "BoundVariableExpression.h"
 
 static struct BoundStatement* bind_statement(
@@ -40,6 +42,9 @@ static struct BoundStatement* bind_block_statement(
 static struct BoundStatement* bind_expression_statement(
     struct Binder* binder,
     struct ExpressionStatementSyntax* syntax);
+static struct BoundStatement* bind_variable_declaration(
+    struct Binder* binder,
+    struct VariableDeclarationSyntax* syntax);
 
 static struct BoundExpression* bind_expression(
     struct Binder* binder,
@@ -110,6 +115,10 @@ static struct BoundStatement* bind_statement(
       return bind_expression_statement(
           binder,
           (struct ExpressionStatementSyntax*)syntax);
+    case STATEMENT_SYNTAX_KIND_VARIABLE_DECLARATION_SYNTAX:
+      return bind_variable_declaration(
+          binder,
+          (struct VariableDeclarationSyntax*)syntax);
   }
 }
 
@@ -120,11 +129,13 @@ static struct BoundStatement* bind_block_statement(
   struct BoundStatementList* statements
       = mc_malloc(sizeof(struct BoundStatementList));
   LIST_INIT(statements);
+  binder->scope = bound_scope_new(binder->scope);
   for (long i = 0; i < syntax->statements->length; ++i)
   {
     struct StatementSyntax* statement = syntax->statements->data[i];
     LIST_PUSH(statements, bind_statement(binder, statement));
   }
+  binder->scope = binder->scope->parent;
   return (struct BoundStatement*)bound_block_statement_new(statements);
 }
 
@@ -135,6 +146,31 @@ static struct BoundStatement* bind_expression_statement(
   struct BoundExpression* expression
       = bind_expression(binder, syntax->expression);
   return (struct BoundStatement*)bound_expression_statement_new(expression);
+}
+
+static struct BoundStatement* bind_variable_declaration(
+    struct Binder* binder,
+    struct VariableDeclarationSyntax* syntax)
+{
+  sds name = syntax->identifier_token->text;
+  bool is_read_only = syntax->keyword_token->kind == SYNTAX_KIND_LET_KEYWORD;
+  struct BoundExpression* initializer
+      = bind_expression(binder, syntax->initializer);
+  struct VariableSymbol* variable = variable_symbol_new(
+      name,
+      is_read_only,
+      bound_expression_get_type(initializer));
+  if (!bound_scope_try_declare(binder->scope, variable))
+  {
+    diagnostic_bag_report_variable_already_declared(
+        binder->diagnostics,
+        syntax_token_get_span(syntax->identifier_token),
+        name);
+  }
+
+  return (struct BoundStatement*)bound_variable_declaration_new(
+      variable,
+      initializer);
 }
 
 static struct BoundExpression* bind_expression(
@@ -273,14 +309,23 @@ static struct BoundExpression* bind_assignment_expression(
   struct VariableSymbol* variable = NULL;
   if (!pvar)
   {
-    variable = variable_symbol_new(
-        name,
-        bound_expression_get_type(bound_expression));
-    bound_scope_try_declare(binder->scope, variable);
+    diagnostic_bag_report_undefined_name(
+        binder->diagnostics,
+        syntax_token_get_span(syntax->identifier_token),
+        name);
+    return bound_expression;
   }
   else
   {
     variable = *pvar;
+  }
+
+  if (variable->is_read_only)
+  {
+    diagnostic_bag_report_cannot_assign(
+        binder->diagnostics,
+        syntax_token_get_span(syntax->equals_token),
+        name);
   }
 
   if (bound_expression_get_type(bound_expression) != variable->type)

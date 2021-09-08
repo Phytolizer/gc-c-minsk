@@ -21,6 +21,7 @@ add_library(
   CodeAnalysis/Binding/BoundStatement.c
   CodeAnalysis/Binding/BoundUnaryExpression.c
   CodeAnalysis/Binding/BoundUnaryOperator.c
+  CodeAnalysis/Binding/BoundVariableDeclaration.c
   CodeAnalysis/Binding/BoundVariableExpression.c
   CodeAnalysis/Syntax/AssignmentExpressionSyntax.c
   CodeAnalysis/Syntax/BinaryExpressionSyntax.c
@@ -40,6 +41,7 @@ add_library(
   CodeAnalysis/Syntax/SyntaxToken.c
   CodeAnalysis/Syntax/SyntaxTree.c
   CodeAnalysis/Syntax/UnaryExpressionSyntax.c
+  CodeAnalysis/Syntax/VariableDeclarationSyntax.c
   CodeAnalysis/Text/SourceText.c
   CodeAnalysis/Text/TextLine.c
   CodeAnalysis/Text/TextSpan.c

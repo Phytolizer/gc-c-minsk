@@ -104,6 +104,28 @@ void diagnostic_bag_report_cannot_convert(
   report(bag, span, message);
 }
 
+void diagnostic_bag_report_variable_already_declared(
+    struct DiagnosticBag* bag,
+    struct TextSpan* span,
+    sds name)
+{
+  sds message
+      = sdscatfmt(sdsempty(), "Variable '%S' is already declared.", name);
+  report(bag, span, message);
+}
+
+void diagnostic_bag_report_cannot_assign(
+    struct DiagnosticBag* bag,
+    struct TextSpan* span,
+    sds name)
+{
+  sds message = sdscatfmt(
+      sdsempty(),
+      "Variable '%S' is read-only and cannot be assigned to.",
+      name);
+  report(bag, span, message);
+}
+
 void diagnostic_bag_add_range(
     struct DiagnosticBag* bag,
     const struct DiagnosticBag* other)

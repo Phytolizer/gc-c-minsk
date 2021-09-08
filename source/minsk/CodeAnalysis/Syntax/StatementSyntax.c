@@ -2,6 +2,7 @@
 
 #include <minsk/CodeAnalysis/Syntax/BlockStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionStatementSyntax.h>
+#include <minsk/CodeAnalysis/Syntax/VariableDeclarationSyntax.h>
 
 void statement_syntax_init(
     struct StatementSyntax* syntax,
@@ -21,6 +22,9 @@ enum SyntaxKind statement_syntax_get_kind(struct StatementSyntax* syntax)
     case STATEMENT_SYNTAX_KIND_EXPRESSION_STATEMENT_SYNTAX:
       return expression_statement_syntax_get_kind(
           (struct ExpressionStatementSyntax*)syntax);
+    case STATEMENT_SYNTAX_KIND_VARIABLE_DECLARATION_SYNTAX:
+      return variable_declaration_syntax_get_kind(
+          (struct VariableDeclarationSyntax*)syntax);
   }
 }
 
@@ -35,5 +39,8 @@ struct SyntaxNodeList* statement_syntax_get_children(
     case STATEMENT_SYNTAX_KIND_EXPRESSION_STATEMENT_SYNTAX:
       return expression_statement_syntax_get_children(
           (struct ExpressionStatementSyntax*)syntax);
+    case STATEMENT_SYNTAX_KIND_VARIABLE_DECLARATION_SYNTAX:
+      return variable_declaration_syntax_get_children(
+          (struct VariableDeclarationSyntax*)syntax);
   }
 }

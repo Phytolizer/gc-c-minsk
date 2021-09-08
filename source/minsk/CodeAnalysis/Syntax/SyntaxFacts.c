@@ -39,13 +39,21 @@ int binary_operator_precedence(enum SyntaxKind kind)
 
 enum SyntaxKind keyword_kind(sds text)
 {
+  if (strcmp(text, "false") == 0)
+  {
+    return SYNTAX_KIND_FALSE_KEYWORD;
+  }
+  if (strcmp(text, "let") == 0)
+  {
+    return SYNTAX_KIND_LET_KEYWORD;
+  }
   if (strcmp(text, "true") == 0)
   {
     return SYNTAX_KIND_TRUE_KEYWORD;
   }
-  if (strcmp(text, "false") == 0)
+  if (strcmp(text, "var") == 0)
   {
-    return SYNTAX_KIND_FALSE_KEYWORD;
+    return SYNTAX_KIND_VAR_KEYWORD;
   }
   return SYNTAX_KIND_IDENTIFIER_TOKEN;
 }
@@ -84,8 +92,12 @@ sds syntax_facts_get_text(enum SyntaxKind kind)
       return sdsnew("}");
     case SYNTAX_KIND_FALSE_KEYWORD:
       return sdsnew("false");
+    case SYNTAX_KIND_LET_KEYWORD:
+      return sdsnew("let");
     case SYNTAX_KIND_TRUE_KEYWORD:
       return sdsnew("true");
+    case SYNTAX_KIND_VAR_KEYWORD:
+      return sdsnew("var");
     default:
       return NULL;
   }

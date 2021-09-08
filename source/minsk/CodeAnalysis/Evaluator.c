@@ -7,6 +7,7 @@
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
+#include <minsk/CodeAnalysis/VariableStore.h>
 
 #include "Binding/BoundAssignmentExpression.h"
 #include "Binding/BoundBinaryExpression.h"
@@ -18,6 +19,7 @@
 #include "Binding/BoundStatement.h"
 #include "Binding/BoundUnaryExpression.h"
 #include "Binding/BoundUnaryOperatorKind.h"
+#include "Binding/BoundVariableDeclaration.h"
 #include "Binding/BoundVariableExpression.h"
 
 static void evaluate_statement(
@@ -30,6 +32,9 @@ static void evaluate_block_statement(
 static void evaluate_expression_statement(
     struct Evaluator* evaluator,
     struct BoundExpressionStatement* stmt);
+static void evaluate_variable_declaration(
+    struct Evaluator* evaluator,
+    struct BoundVariableDeclaration* stmt);
 
 static struct Object* evaluate_expression(
     struct Evaluator* evaluator,
@@ -82,6 +87,11 @@ static void evaluate_statement(
           evaluator,
           (struct BoundExpressionStatement*)stmt);
       break;
+    case BOUND_NODE_KIND_VARIABLE_DECLARATION:
+      evaluate_variable_declaration(
+          evaluator,
+          (struct BoundVariableDeclaration*)stmt);
+      break;
     default:
       fprintf(
           stderr,
@@ -106,6 +116,15 @@ static void evaluate_expression_statement(
     struct BoundExpressionStatement* stmt)
 {
   evaluator->last_value = evaluate_expression(evaluator, stmt->expression);
+}
+
+static void evaluate_variable_declaration(
+    struct Evaluator* evaluator,
+    struct BoundVariableDeclaration* stmt)
+{
+  struct Object* value = evaluate_expression(evaluator, stmt->initializer);
+  variable_store_insert_or_assign(evaluator->variables, stmt->variable, value);
+  evaluator->last_value = value;
 }
 
 static struct Object* evaluate_expression(
