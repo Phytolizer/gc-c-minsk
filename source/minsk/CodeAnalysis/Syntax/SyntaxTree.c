@@ -1,7 +1,7 @@
 #include "minsk/CodeAnalysis/Syntax/SyntaxTree.h"
 
-#include "Lexer.h"
-#include "Parser.h"
+#include <minsk-private/CodeAnalysis/Syntax/Lexer.h>
+#include <minsk-private/CodeAnalysis/Syntax/Parser.h>
 
 static struct SyntaxTree* syntax_tree_new(struct SourceText* source_text)
 {

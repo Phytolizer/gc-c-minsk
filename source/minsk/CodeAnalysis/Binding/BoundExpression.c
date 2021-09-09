@@ -1,10 +1,10 @@
-#include "BoundExpression.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundExpression.h"
 
-#include "BoundAssignmentExpression.h"
-#include "BoundBinaryExpression.h"
-#include "BoundLiteralExpression.h"
-#include "BoundUnaryExpression.h"
-#include "BoundVariableExpression.h"
+#include <minsk-private/CodeAnalysis/Binding/BoundAssignmentExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundBinaryExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundLiteralExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundUnaryExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundVariableExpression.h>
 
 void bound_expression_init(struct BoundExpression* expr, enum BoundExpressionKind kind)
 {

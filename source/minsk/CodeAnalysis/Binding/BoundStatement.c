@@ -1,11 +1,11 @@
-#include "BoundStatement.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundStatement.h"
 
-#include "BoundBlockStatement.h"
-#include "BoundExpressionStatement.h"
-#include "BoundForStatement.h"
-#include "BoundIfStatement.h"
-#include "BoundVariableDeclaration.h"
-#include "BoundWhileStatement.h"
+#include <minsk-private/CodeAnalysis/Binding/BoundBlockStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundExpressionStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundForStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundIfStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundVariableDeclaration.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundWhileStatement.h>
 
 void bound_statement_init(struct BoundStatement* stmt, enum BoundStatementKind kind)
 {

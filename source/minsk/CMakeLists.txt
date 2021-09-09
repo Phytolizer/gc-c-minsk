@@ -22,12 +22,14 @@ add_library(
   CodeAnalysis/Binding/BoundNode.c
   CodeAnalysis/Binding/BoundScope.c
   CodeAnalysis/Binding/BoundStatement.c
+  CodeAnalysis/Binding/BoundTreeRewriter.c
   CodeAnalysis/Binding/BoundUnaryExpression.c
   CodeAnalysis/Binding/BoundUnaryOperator.c
   CodeAnalysis/Binding/BoundUnaryOperatorKind.c
   CodeAnalysis/Binding/BoundVariableDeclaration.c
   CodeAnalysis/Binding/BoundVariableExpression.c
   CodeAnalysis/Binding/BoundWhileStatement.c
+  CodeAnalysis/Lowering/Lowerer.c
   CodeAnalysis/Syntax/AssignmentExpressionSyntax.c
   CodeAnalysis/Syntax/BinaryExpressionSyntax.c
   CodeAnalysis/Syntax/BlockStatementSyntax.c
@@ -56,3 +58,4 @@ add_library(
   CodeAnalysis/Text/TextSpan.c
 )
 target_link_libraries(minsk PUBLIC ${BDWGC} sds common)
+target_include_directories(minsk PRIVATE include)

@@ -1,12 +1,13 @@
-#include "Compilation.h"
+#include "minsk-private/CodeAnalysis/Compilation.h"
 
+#include <minsk-private/CodeAnalysis/Binding/Binder.h>
+#include <minsk-private/CodeAnalysis/Evaluator.h>
+#include <minsk-private/CodeAnalysis/Lowering/Lowerer.h>
 #include <minsk/CodeAnalysis/EvaluationResult.h>
 #include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
 
-#include "Binding/Binder.h"
-#include "Evaluator.h"
-
 static struct Compilation* compilation_new_continued(struct Compilation* previous, struct SyntaxTree* syntax_tree);
+static struct BoundStatement* get_statement(struct Compilation* compilation);
 
 struct Compilation* compilation_new(struct SyntaxTree* syntax)
 {
@@ -47,7 +48,8 @@ struct EvaluationResult* compilation_evaluate(struct Compilation* compilation, s
 
 void compilation_emit_tree(struct Compilation* compilation, FILE* stream)
 {
-    bound_node_pretty_print(stream, (struct BoundNode*)compilation_get_global_scope(compilation)->statement);
+    struct BoundStatement* statement = get_statement(compilation);
+    bound_node_pretty_print(stream, (struct BoundNode*)statement);
 }
 
 struct BoundGlobalScope* compilation_get_global_scope(struct Compilation* compilation)
@@ -71,4 +73,10 @@ static struct Compilation* compilation_new_continued(struct Compilation* previou
     compilation->syntax = syntax_tree;
     compilation->global_scope = NULL;
     return compilation;
+}
+
+inline struct BoundStatement* get_statement(struct Compilation* compilation)
+{
+    struct BoundStatement* result = compilation_get_global_scope(compilation)->statement;
+    return lowerer_lower(result);
 }

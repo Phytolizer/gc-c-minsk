@@ -1,4 +1,4 @@
-#include "BoundBinaryOperatorKind.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundBinaryOperatorKind.h"
 
 const char* const BOUND_BINARY_OPERATOR_KINDS[] = {
 #define X(x) #x,

@@ -1,9 +1,10 @@
-#include "Parser.h"
+#include "minsk-private/CodeAnalysis/Syntax/Parser.h"
 
 #include <stdbool.h>
 
 #include <IncludeMe.h>
 #include <common/List.h>
+#include <minsk-private/CodeAnalysis/Syntax/Lexer.h>
 #include <minsk/CodeAnalysis/Syntax/AssignmentExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BlockStatementSyntax.h>
@@ -22,8 +23,6 @@
 #include <minsk/CodeAnalysis/Syntax/VariableDeclarationSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/WhileStatementSyntax.h>
 #include <sds.h>
-
-#include "Lexer.h"
 
 static struct SyntaxToken* peek(struct Parser* parser, int offset) __attribute__((const));
 static struct SyntaxToken* current(struct Parser* parser) __attribute__((const));

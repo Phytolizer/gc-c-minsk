@@ -1,10 +1,27 @@
-#include "Binder.h"
+#include "minsk-private/CodeAnalysis/Binding/Binder.h"
 
 #include <assert.h>
 #include <stdio.h>
 
 #include <IncludeMe.h>
 #include <common/Object.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundAssignmentExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundBinaryExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundBinaryOperator.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundBlockStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundExpressionStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundForStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundGlobalScope.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundIfStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundLiteralExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundScope.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundUnaryExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundUnaryOperator.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundVariableDeclaration.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundVariableExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundWhileStatement.h>
 #include <minsk/CodeAnalysis/DiagnosticBag.h>
 #include <minsk/CodeAnalysis/Syntax/AssignmentExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
@@ -21,24 +38,6 @@
 #include <minsk/CodeAnalysis/Syntax/VariableDeclarationSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/WhileStatementSyntax.h>
 #include <minsk/CodeAnalysis/VariableStore.h>
-
-#include "BoundAssignmentExpression.h"
-#include "BoundBinaryExpression.h"
-#include "BoundBinaryOperator.h"
-#include "BoundBlockStatement.h"
-#include "BoundExpression.h"
-#include "BoundExpressionStatement.h"
-#include "BoundForStatement.h"
-#include "BoundGlobalScope.h"
-#include "BoundIfStatement.h"
-#include "BoundLiteralExpression.h"
-#include "BoundScope.h"
-#include "BoundStatement.h"
-#include "BoundUnaryExpression.h"
-#include "BoundUnaryOperator.h"
-#include "BoundVariableDeclaration.h"
-#include "BoundVariableExpression.h"
-#include "BoundWhileStatement.h"
 
 static struct BoundStatement* bind_statement(struct Binder* binder, struct StatementSyntax* syntax);
 static struct BoundStatement* bind_block_statement(struct Binder* binder, struct BlockStatementSyntax* syntax);

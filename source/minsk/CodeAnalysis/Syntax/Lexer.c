@@ -1,4 +1,4 @@
-#include "Lexer.h"
+#include "minsk-private/CodeAnalysis/Syntax/Lexer.h"
 
 #include <ctype.h>
 #include <errno.h>

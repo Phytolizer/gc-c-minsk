@@ -1,6 +1,4 @@
-#include "BoundVariableDeclaration.h"
-
-#include "BoundStatement.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundVariableDeclaration.h"
 
 struct BoundVariableDeclaration* bound_variable_declaration_new(
     struct VariableSymbol* variable, struct BoundExpression* initializer)

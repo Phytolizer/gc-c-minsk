@@ -1,4 +1,4 @@
-#include "BoundUnaryOperator.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundUnaryOperator.h"
 
 #include <common/List.h>
 

@@ -1,8 +1,7 @@
 #pragma once
 
+#include <minsk-private/CodeAnalysis/Binding/BoundStatement.h>
 #include <minsk/CodeAnalysis/VariableStore.h>
-
-#include "Binding/BoundStatement.h"
 
 struct Evaluator
 {

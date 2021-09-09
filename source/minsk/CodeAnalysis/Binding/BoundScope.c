@@ -1,4 +1,4 @@
-#include "BoundScope.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundScope.h"
 
 #include <IncludeMe.h>
 #include <common/Hashing.h>

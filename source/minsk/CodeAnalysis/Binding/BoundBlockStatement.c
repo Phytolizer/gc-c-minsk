@@ -1,4 +1,4 @@
-#include "BoundBlockStatement.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundBlockStatement.h"
 
 struct BoundBlockStatement* bound_block_statement_new(struct BoundStatementList* statements)
 {

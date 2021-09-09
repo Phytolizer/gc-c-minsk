@@ -1,4 +1,4 @@
-#include "BoundLiteralExpression.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundLiteralExpression.h"
 
 #include <IncludeMe.h>
 

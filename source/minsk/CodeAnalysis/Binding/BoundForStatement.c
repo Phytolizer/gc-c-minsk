@@ -1,4 +1,4 @@
-#include "BoundForStatement.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundForStatement.h"
 
 struct BoundForStatement* bound_for_statement_new(
     struct VariableSymbol* variable,

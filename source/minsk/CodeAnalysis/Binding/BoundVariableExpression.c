@@ -1,4 +1,4 @@
-#include "BoundVariableExpression.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundVariableExpression.h"
 
 #include <IncludeMe.h>
 

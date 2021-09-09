@@ -1,4 +1,4 @@
-#include "BoundUnaryExpression.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundUnaryExpression.h"
 
 #include <IncludeMe.h>
 

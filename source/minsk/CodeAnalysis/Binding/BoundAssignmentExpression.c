@@ -1,4 +1,4 @@
-#include "BoundAssignmentExpression.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundAssignmentExpression.h"
 
 #include <IncludeMe.h>
 

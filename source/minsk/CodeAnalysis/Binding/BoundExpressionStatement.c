@@ -1,6 +1,4 @@
-#include "BoundExpressionStatement.h"
-
-#include "BoundStatement.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundExpressionStatement.h"
 
 struct BoundExpressionStatement* bound_expression_statement_new(struct BoundExpression* expression)
 {

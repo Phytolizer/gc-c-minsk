@@ -1,4 +1,4 @@
-#include "BoundUnaryOperatorKind.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundUnaryOperatorKind.h"
 
 const char* const BOUND_UNARY_OPERATOR_KINDS[] = {
 #define X(x) #x,

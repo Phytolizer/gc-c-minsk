@@ -1,4 +1,4 @@
-#include "BoundWhileStatement.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundWhileStatement.h"
 
 struct BoundWhileStatement* bound_while_statement_new(struct BoundExpression* condition, struct BoundStatement* body)
 {

@@ -1,10 +1,10 @@
-#include "BoundNode.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundNode.h"
 
-#include "BoundBinaryExpression.h"
-#include "BoundExpression.h"
-#include "BoundLiteralExpression.h"
-#include "BoundStatement.h"
-#include "BoundUnaryExpression.h"
+#include <minsk-private/CodeAnalysis/Binding/BoundBinaryExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundLiteralExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundUnaryExpression.h>
 
 struct Property
 {

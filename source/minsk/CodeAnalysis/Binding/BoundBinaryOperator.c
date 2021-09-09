@@ -1,7 +1,7 @@
-#include "BoundBinaryOperator.h"
-#include "minsk/CodeAnalysis/Syntax/SyntaxKind.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundBinaryOperator.h"
 
 #include <common/List.h>
+#include <minsk/CodeAnalysis/Syntax/SyntaxKind.h>
 
 DECLARE_NAMED_LIST(BoundBinaryOperatorList, struct BoundBinaryOperator);
 

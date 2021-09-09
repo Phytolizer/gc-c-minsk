@@ -1,29 +1,28 @@
-#include "Evaluator.h"
+#include "minsk-private/CodeAnalysis/Evaluator.h"
 
 #include <assert.h>
 #include <stdio.h>
 
+#include <minsk-private/CodeAnalysis/Binding/BoundAssignmentExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundBinaryExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundBinaryOperatorKind.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundBlockStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundExpressionStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundForStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundIfStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundLiteralExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundStatement.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundUnaryExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundUnaryOperatorKind.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundVariableDeclaration.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundVariableExpression.h>
+#include <minsk-private/CodeAnalysis/Binding/BoundWhileStatement.h>
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ParenthesizedExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/UnaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/VariableStore.h>
-
-#include "Binding/BoundAssignmentExpression.h"
-#include "Binding/BoundBinaryExpression.h"
-#include "Binding/BoundBinaryOperatorKind.h"
-#include "Binding/BoundBlockStatement.h"
-#include "Binding/BoundExpression.h"
-#include "Binding/BoundExpressionStatement.h"
-#include "Binding/BoundForStatement.h"
-#include "Binding/BoundIfStatement.h"
-#include "Binding/BoundLiteralExpression.h"
-#include "Binding/BoundStatement.h"
-#include "Binding/BoundUnaryExpression.h"
-#include "Binding/BoundUnaryOperatorKind.h"
-#include "Binding/BoundVariableDeclaration.h"
-#include "Binding/BoundVariableExpression.h"
-#include "Binding/BoundWhileStatement.h"
 
 static void evaluate_statement(struct Evaluator* evaluator, struct BoundStatement* statement);
 

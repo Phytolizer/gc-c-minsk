@@ -1,4 +1,4 @@
-#include "BoundGlobalScope.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundGlobalScope.h"
 
 struct BoundGlobalScope* bound_global_scope_new(
     struct BoundGlobalScope* previous,

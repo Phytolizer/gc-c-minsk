@@ -1,4 +1,4 @@
-#include "BoundBinaryExpression.h"
+#include "minsk-private/CodeAnalysis/Binding/BoundBinaryExpression.h"
 
 #include <IncludeMe.h>
 
