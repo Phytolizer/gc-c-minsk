@@ -16,3 +16,4 @@ struct BoundAssignmentExpression* bound_assignment_expression_new(
     struct VariableSymbol* name, struct BoundExpression* expression);
 enum BoundNodeKind bound_assignment_expression_get_kind(struct BoundAssignmentExpression* expression);
 enum ObjectKind bound_assignment_expression_get_type(struct BoundAssignmentExpression* expression);
+struct BoundNodeList* bound_assignment_expression_get_children(struct BoundAssignmentExpression* expression);

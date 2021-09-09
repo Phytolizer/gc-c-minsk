@@ -23,3 +23,12 @@ enum BoundNodeKind bound_binary_expression_get_kind(struct BoundBinaryExpression
     (void)expr;
     return BOUND_NODE_KIND_BINARY_EXPRESSION;
 }
+
+struct BoundNodeList* bound_binary_expression_get_children(struct BoundBinaryExpression* expr)
+{
+    struct BoundNodeList* children = mc_malloc(sizeof(struct BoundNodeList));
+    LIST_INIT(children);
+    LIST_PUSH(children, (struct BoundNode*)expr->left);
+    LIST_PUSH(children, (struct BoundNode*)expr->right);
+    return children;
+}

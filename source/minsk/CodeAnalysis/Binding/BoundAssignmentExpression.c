@@ -22,3 +22,11 @@ enum ObjectKind bound_assignment_expression_get_type(struct BoundAssignmentExpre
 {
     return bound_expression_get_type(expression->expression);
 }
+
+struct BoundNodeList* bound_assignment_expression_get_children(struct BoundAssignmentExpression* expression)
+{
+    struct BoundNodeList* children = mc_malloc(sizeof(struct BoundNodeList));
+    LIST_INIT(children);
+    LIST_PUSH(children, (struct BoundNode*)expression->expression);
+    return children;
+}

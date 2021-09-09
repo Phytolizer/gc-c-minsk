@@ -21,3 +21,11 @@ enum BoundNodeKind bound_unary_expression_get_kind(struct BoundUnaryExpression* 
     (void)expr;
     return BOUND_NODE_KIND_UNARY_EXPRESSION;
 }
+
+struct BoundNodeList* bound_unary_expression_get_children(struct BoundUnaryExpression* expr)
+{
+    struct BoundNodeList* children = mc_malloc(sizeof(struct BoundNodeList));
+    LIST_INIT(children);
+    LIST_PUSH(children, (struct BoundNode*)expr->operand);
+    return children;
+}

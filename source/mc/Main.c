@@ -33,6 +33,7 @@ sds input_line(const char* prompt)
 int main(void)
 {
     bool show_tree = false;
+    bool show_program = false;
     struct VariableStore* variables = variable_store_new();
     sds text = sdsempty();
     struct Compilation* previous = NULL;
@@ -62,6 +63,12 @@ int main(void)
             {
                 show_tree = !show_tree;
                 printf("%s\n", show_tree ? "Showing parse trees." : "Not showing parse trees.");
+                continue;
+            }
+            if (strcmp(input, "#showProgram") == 0)
+            {
+                show_program = !show_program;
+                printf("%s\n", show_program ? "Showing bound tree." : "Not showing bound tree.");
                 continue;
             }
             if (strcmp(input, "#cls") == 0)
@@ -97,6 +104,10 @@ int main(void)
             printf("\x1b[2;37m");
             syntax_node_pretty_print(stdout, (struct SyntaxNode*)tree->root);
             printf("\x1b[0m");
+        }
+        if (show_program)
+        {
+            compilation_emit_tree(compilation, stdout);
         }
         if (diagnostics->length > 0)
         {

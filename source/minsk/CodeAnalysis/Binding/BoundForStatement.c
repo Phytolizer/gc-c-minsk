@@ -20,3 +20,13 @@ enum BoundNodeKind bound_for_statement_get_kind(struct BoundForStatement* stmt)
     (void)stmt;
     return BOUND_NODE_KIND_FOR_STATEMENT;
 }
+
+struct BoundNodeList* bound_for_statement_get_children(struct BoundForStatement* stmt)
+{
+    struct BoundNodeList* children = mc_malloc(sizeof(struct BoundNodeList));
+    LIST_INIT(children);
+    LIST_PUSH(children, (struct BoundNode*)stmt->lower_bound);
+    LIST_PUSH(children, (struct BoundNode*)stmt->upper_bound);
+    LIST_PUSH(children, (struct BoundNode*)stmt->body);
+    return children;
+}

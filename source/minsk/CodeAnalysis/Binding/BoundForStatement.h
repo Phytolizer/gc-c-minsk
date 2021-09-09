@@ -17,3 +17,4 @@ struct BoundForStatement* bound_for_statement_new(
     struct BoundExpression* upper_bound,
     struct BoundStatement* body);
 enum BoundNodeKind bound_for_statement_get_kind(struct BoundForStatement* stmt);
+struct BoundNodeList* bound_for_statement_get_children(struct BoundForStatement* stmt);

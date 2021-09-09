@@ -11,3 +11,4 @@ struct BoundExpressionStatement
 
 struct BoundExpressionStatement* bound_expression_statement_new(struct BoundExpression* expression);
 enum BoundNodeKind bound_expression_statement_get_kind(struct BoundExpressionStatement* stmt);
+struct BoundNodeList* bound_expression_statement_get_children(struct BoundExpressionStatement* stmt);

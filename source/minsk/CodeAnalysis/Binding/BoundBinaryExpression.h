@@ -17,3 +17,4 @@ struct BoundBinaryExpression* bound_binary_expression_new(
     struct BoundExpression* left, struct BoundBinaryOperator* op, struct BoundExpression* right);
 enum ObjectKind bound_binary_expression_get_type(struct BoundBinaryExpression* expr);
 enum BoundNodeKind bound_binary_expression_get_kind(struct BoundBinaryExpression* expr);
+struct BoundNodeList* bound_binary_expression_get_children(struct BoundBinaryExpression* expr);

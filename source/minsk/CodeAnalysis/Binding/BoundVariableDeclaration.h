@@ -14,3 +14,4 @@ struct BoundVariableDeclaration
 struct BoundVariableDeclaration* bound_variable_declaration_new(
     struct VariableSymbol* variable, struct BoundExpression* initializer);
 enum BoundNodeKind bound_variable_declaration_get_kind(struct BoundVariableDeclaration* decl);
+struct BoundNodeList* bound_variable_declaration_get_children(struct BoundVariableDeclaration* decl);

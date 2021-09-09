@@ -15,3 +15,11 @@ enum BoundNodeKind bound_expression_statement_get_kind(struct BoundExpressionSta
     (void)stmt;
     return BOUND_NODE_KIND_EXPRESSION_STATEMENT;
 }
+
+struct BoundNodeList* bound_expression_statement_get_children(struct BoundExpressionStatement* stmt)
+{
+    struct BoundNodeList* children = mc_malloc(sizeof(struct BoundNodeList));
+    LIST_INIT(children);
+    LIST_PUSH(children, (struct BoundNode*)stmt->expression);
+    return children;
+}

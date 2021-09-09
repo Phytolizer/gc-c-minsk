@@ -12,3 +12,5 @@ enum BoundUnaryOperatorKind
     BOUND_UNARY_OPERATOR_KINDS_
 #undef X
 };
+
+extern const char* const BOUND_UNARY_OPERATOR_KINDS[];

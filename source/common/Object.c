@@ -3,6 +3,7 @@
 #include <IncludeMe.h>
 #include <assert.h>
 #include <sds.h>
+#include <string.h>
 
 const char* const OBJECT_KINDS[] = {
 #define X(x) #x,
@@ -31,6 +32,14 @@ struct ObjectBoolean* object_new_boolean(bool value)
     b->base.kind = OBJECT_KIND_BOOLEAN;
     b->value = value;
     return b;
+}
+
+struct ObjectString* object_new_string(sds value)
+{
+    struct ObjectString* s = mc_malloc(sizeof(struct ObjectString));
+    s->base.kind = OBJECT_KIND_STRING;
+    s->value = value;
+    return s;
 }
 
 void object_free(struct Object* obj)
@@ -63,10 +72,12 @@ bool objects_equal(struct Object* left, struct Object* right)
         return OBJECT_IS_INTEGER(right) && OBJECT_AS_INTEGER(left)->value == OBJECT_AS_INTEGER(right)->value;
     case OBJECT_KIND_BOOLEAN:
         return OBJECT_IS_BOOLEAN(right) && OBJECT_AS_BOOLEAN(left)->value == OBJECT_AS_BOOLEAN(right)->value;
+    case OBJECT_KIND_STRING:
+        return OBJECT_IS_STRING(right) && strcmp(OBJECT_AS_STRING(left)->value, OBJECT_AS_STRING(right)->value) == 0;
     }
 }
 
-char* object_to_string(const struct Object* obj)
+sds object_to_string(const struct Object* obj)
 {
     switch (obj->kind)
     {
@@ -76,5 +87,7 @@ char* object_to_string(const struct Object* obj)
         return sdsnew(OBJECT_AS_BOOLEAN(obj)->value ? "true" : "false");
     case OBJECT_KIND_NULL:
         return sdsnew("NULL");
+    case OBJECT_KIND_STRING:
+        return OBJECT_AS_STRING(obj)->value;
     }
 }

@@ -23,3 +23,5 @@ enum BoundBinaryOperatorKind
     BOUND_BINARY_OPERATOR_KINDS_
 #undef X
 };
+
+extern const char* const BOUND_BINARY_OPERATOR_KINDS[];

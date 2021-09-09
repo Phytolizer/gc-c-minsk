@@ -45,6 +45,11 @@ struct EvaluationResult* compilation_evaluate(struct Compilation* compilation, s
     return evaluation_result_new(diagnostics, value);
 }
 
+void compilation_emit_tree(struct Compilation* compilation, FILE* stream)
+{
+    bound_node_pretty_print(stream, (struct BoundNode*)compilation_get_global_scope(compilation)->statement);
+}
+
 struct BoundGlobalScope* compilation_get_global_scope(struct Compilation* compilation)
 {
     if (compilation->global_scope == NULL)

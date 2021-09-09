@@ -29,3 +29,4 @@ DECLARE_NAMED_LIST(BoundStatementList, struct BoundStatement*);
 
 void bound_statement_init(struct BoundStatement* stmt, enum BoundStatementKind kind);
 enum BoundNodeKind bound_statement_get_kind(struct BoundStatement* stmt);
+struct BoundNodeList* bound_statement_get_children(struct BoundStatement* stmt);

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <common/List.h>
+#include <stdio.h>
+
 #define BOUND_NODE_TYPES_ \
     X(EXPRESSION) \
     X(STATEMENT)
@@ -38,4 +41,8 @@ struct BoundNode
     enum BoundNodeType type;
 };
 
+DECLARE_NAMED_LIST(BoundNodeList, struct BoundNode*);
+
 enum BoundNodeKind bound_node_get_kind(struct BoundNode* node);
+struct BoundNodeList* bound_node_get_children(struct BoundNode* node);
+void bound_node_pretty_print(FILE* stream, struct BoundNode* node);

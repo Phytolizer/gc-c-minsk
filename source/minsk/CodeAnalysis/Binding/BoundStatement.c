@@ -31,3 +31,22 @@ enum BoundNodeKind bound_statement_get_kind(struct BoundStatement* stmt)
         return bound_while_statement_get_kind((struct BoundWhileStatement*)stmt);
     }
 }
+
+struct BoundNodeList* bound_statement_get_children(struct BoundStatement* stmt)
+{
+    switch (stmt->kind)
+    {
+    case BOUND_STATEMENT_KIND_BLOCK:
+        return bound_block_statement_get_children((struct BoundBlockStatement*)stmt);
+    case BOUND_STATEMENT_KIND_EXPRESSION:
+        return bound_expression_statement_get_children((struct BoundExpressionStatement*)stmt);
+    case BOUND_STATEMENT_KIND_FOR:
+        return bound_for_statement_get_children((struct BoundForStatement*)stmt);
+    case BOUND_STATEMENT_KIND_IF:
+        return bound_if_statement_get_children((struct BoundIfStatement*)stmt);
+    case BOUND_STATEMENT_KIND_VARIABLE_DECLARATION:
+        return bound_variable_declaration_get_children((struct BoundVariableDeclaration*)stmt);
+    case BOUND_STATEMENT_KIND_WHILE:
+        return bound_while_statement_get_children((struct BoundWhileStatement*)stmt);
+    }
+}

@@ -16,3 +16,16 @@ enum BoundNodeKind bound_if_statement_get_kind(struct BoundIfStatement* stmt)
     (void)stmt;
     return BOUND_NODE_KIND_IF_STATEMENT;
 }
+
+struct BoundNodeList* bound_if_statement_get_children(struct BoundIfStatement* stmt)
+{
+    struct BoundNodeList* children = mc_malloc(sizeof(struct BoundNodeList));
+    LIST_INIT(children);
+    LIST_PUSH(children, (struct BoundNode*)stmt->condition);
+    LIST_PUSH(children, (struct BoundNode*)stmt->then_statement);
+    if (stmt->else_statement != NULL)
+    {
+        LIST_PUSH(children, (struct BoundNode*)stmt->else_statement);
+    }
+    return children;
+}

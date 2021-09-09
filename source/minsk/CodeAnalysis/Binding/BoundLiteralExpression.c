@@ -20,3 +20,11 @@ enum BoundNodeKind bound_literal_expression_get_kind(struct BoundLiteralExpressi
     (void)expr;
     return BOUND_NODE_KIND_LITERAL_EXPRESSION;
 }
+
+struct BoundNodeList* bound_literal_expression_get_children(struct BoundLiteralExpression* expr)
+{
+    (void)expr;
+    struct BoundNodeList* children = mc_malloc(sizeof(struct BoundNodeList));
+    LIST_INIT(children);
+    return children;
+}

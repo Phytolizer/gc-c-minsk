@@ -17,3 +17,4 @@ struct Compilation
 struct Compilation* compilation_new(struct SyntaxTree* syntax);
 struct Compilation* compilation_continue_with(struct Compilation* compilation, struct SyntaxTree* syntax);
 struct EvaluationResult* compilation_evaluate(struct Compilation* compilation, struct VariableStore* variables);
+void compilation_emit_tree(struct Compilation* compilation, FILE* stream);

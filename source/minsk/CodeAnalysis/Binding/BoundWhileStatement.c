@@ -14,3 +14,12 @@ enum BoundNodeKind bound_while_statement_get_kind(struct BoundWhileStatement* st
     (void)stmt;
     return BOUND_NODE_KIND_WHILE_STATEMENT;
 }
+
+struct BoundNodeList* bound_while_statement_get_children(struct BoundWhileStatement* stmt)
+{
+    struct BoundNodeList* children = mc_malloc(sizeof(struct BoundNodeList));
+    LIST_INIT(children);
+    LIST_PUSH(children, (struct BoundNode*)stmt->condition);
+    LIST_PUSH(children, (struct BoundNode*)stmt->body);
+    return children;
+}

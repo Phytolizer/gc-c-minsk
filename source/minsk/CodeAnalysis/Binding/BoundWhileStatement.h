@@ -12,3 +12,4 @@ struct BoundWhileStatement
 
 struct BoundWhileStatement* bound_while_statement_new(struct BoundExpression* condition, struct BoundStatement* body);
 enum BoundNodeKind bound_while_statement_get_kind(struct BoundWhileStatement* stmt);
+struct BoundNodeList* bound_while_statement_get_children(struct BoundWhileStatement* stmt);

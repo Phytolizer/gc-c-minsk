@@ -20,3 +20,11 @@ enum ObjectKind bound_variable_expression_get_type(struct BoundVariableExpressio
 {
     return expression->variable->type;
 }
+
+struct BoundNodeList* bound_variable_expression_get_children(struct BoundVariableExpression* expression)
+{
+    (void)expression;
+    struct BoundNodeList* children = mc_malloc(sizeof(struct BoundNodeList));
+    LIST_INIT(children);
+    return children;
+}

@@ -13,3 +13,14 @@ enum BoundNodeKind bound_block_statement_get_kind(struct BoundBlockStatement* st
     (void)stmt;
     return BOUND_NODE_KIND_BLOCK_STATEMENT;
 }
+
+struct BoundNodeList* bound_block_statement_get_children(struct BoundBlockStatement* stmt)
+{
+    struct BoundNodeList* children = mc_malloc(sizeof(struct BoundNodeList));
+    LIST_INIT(children);
+    for (long i = 0; i < stmt->statements->length; ++i)
+    {
+        LIST_PUSH(children, (struct BoundNode*)stmt->statements->data[i]);
+    }
+    return children;
+}
