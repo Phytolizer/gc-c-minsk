@@ -9,7 +9,6 @@
 #include <minsk-private/CodeAnalysis/Binding/BoundBlockStatement.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundExpression.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundExpressionStatement.h>
-#include <minsk-private/CodeAnalysis/Binding/BoundForStatement.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundIfStatement.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundLiteralExpression.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundStatement.h>
@@ -28,7 +27,6 @@ static void evaluate_statement(struct Evaluator* evaluator, struct BoundStatemen
 
 static void evaluate_block_statement(struct Evaluator* evaluator, struct BoundBlockStatement* stmt);
 static void evaluate_expression_statement(struct Evaluator* evaluator, struct BoundExpressionStatement* stmt);
-static void evaluate_for_statement(struct Evaluator* evaluator, struct BoundForStatement* stmt);
 static void evaluate_if_statement(struct Evaluator* evaluator, struct BoundIfStatement* stmt);
 static void evaluate_variable_declaration(struct Evaluator* evaluator, struct BoundVariableDeclaration* stmt);
 static void evaluate_while_statement(struct Evaluator* evaluator, struct BoundWhileStatement* stmt);
@@ -67,9 +65,6 @@ static void evaluate_statement(struct Evaluator* evaluator, struct BoundStatemen
     case BOUND_NODE_KIND_EXPRESSION_STATEMENT:
         evaluate_expression_statement(evaluator, (struct BoundExpressionStatement*)stmt);
         break;
-    case BOUND_NODE_KIND_FOR_STATEMENT:
-        evaluate_for_statement(evaluator, (struct BoundForStatement*)stmt);
-        break;
     case BOUND_NODE_KIND_IF_STATEMENT:
         evaluate_if_statement(evaluator, (struct BoundIfStatement*)stmt);
         break;
@@ -96,18 +91,6 @@ static void evaluate_block_statement(struct Evaluator* evaluator, struct BoundBl
 static void evaluate_expression_statement(struct Evaluator* evaluator, struct BoundExpressionStatement* stmt)
 {
     evaluator->last_value = evaluate_expression(evaluator, stmt->expression);
-}
-
-static void evaluate_for_statement(struct Evaluator* evaluator, struct BoundForStatement* stmt)
-{
-    int lower_bound = OBJECT_AS_INTEGER(evaluate_expression(evaluator, stmt->lower_bound))->value;
-    int upper_bound = OBJECT_AS_INTEGER(evaluate_expression(evaluator, stmt->upper_bound))->value;
-
-    for (int i = lower_bound; i <= upper_bound; ++i)
-    {
-        variable_store_insert_or_assign(evaluator->variables, stmt->variable, OBJECT_INTEGER(i));
-        evaluate_statement(evaluator, stmt->body);
-    }
 }
 
 static void evaluate_if_statement(struct Evaluator* evaluator, struct BoundIfStatement* stmt)

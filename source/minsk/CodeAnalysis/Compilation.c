@@ -25,8 +25,9 @@ struct Compilation* compilation_continue_with(struct Compilation* compilation, s
 
 struct EvaluationResult* compilation_evaluate(struct Compilation* compilation, struct VariableStore* variables)
 {
+    struct BoundStatement* statement = get_statement(compilation);
     struct BoundGlobalScope* global_scope = compilation_get_global_scope(compilation);
-    struct BoundStatement* bound_statement = global_scope->statement;
+    struct BoundStatement* bound_statement = statement;
     struct DiagnosticList* diagnostics = mc_malloc(sizeof(struct DiagnosticList));
     LIST_INIT(diagnostics);
     for (long i = 0; i < compilation->syntax->diagnostics->diagnostics->length; ++i)
