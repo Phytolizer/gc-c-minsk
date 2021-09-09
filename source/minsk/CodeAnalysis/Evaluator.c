@@ -176,6 +176,8 @@ static struct Object* evaluate_unary_expression(struct Evaluator* evaluator, str
         return OBJECT_INTEGER(-OBJECT_AS_INTEGER(operand)->value);
     case BOUND_UNARY_OPERATOR_KIND_LOGICAL_NEGATION:
         return OBJECT_BOOLEAN(!OBJECT_AS_BOOLEAN(operand)->value);
+    case BOUND_UNARY_OPERATOR_KIND_ONES_COMPLEMENT:
+        return OBJECT_INTEGER(~OBJECT_AS_INTEGER(operand)->value);
     }
 }
 
@@ -210,6 +212,33 @@ static struct Object* evaluate_binary_expression(struct Evaluator* evaluator, st
         return OBJECT_BOOLEAN(OBJECT_AS_INTEGER(left)->value > OBJECT_AS_INTEGER(right)->value);
     case BOUND_BINARY_OPERATOR_KIND_GREATER_OR_EQUALS:
         return OBJECT_BOOLEAN(OBJECT_AS_INTEGER(left)->value >= OBJECT_AS_INTEGER(right)->value);
+    case BOUND_BINARY_OPERATOR_KIND_BITWISE_AND:
+        if (right->kind == OBJECT_KIND_INTEGER)
+        {
+            return OBJECT_INTEGER(OBJECT_AS_INTEGER(left)->value & OBJECT_AS_INTEGER(right)->value);
+        }
+        else
+        {
+            return OBJECT_BOOLEAN(OBJECT_AS_BOOLEAN(left)->value && OBJECT_AS_BOOLEAN(right)->value);
+        }
+    case BOUND_BINARY_OPERATOR_KIND_BITWISE_OR:
+        if (right->kind == OBJECT_KIND_INTEGER)
+        {
+            return OBJECT_INTEGER(OBJECT_AS_INTEGER(left)->value | OBJECT_AS_INTEGER(right)->value);
+        }
+        else
+        {
+            return OBJECT_BOOLEAN(OBJECT_AS_BOOLEAN(left)->value || OBJECT_AS_BOOLEAN(right)->value);
+        }
+    case BOUND_BINARY_OPERATOR_KIND_BITWISE_XOR:
+        if (right->kind == OBJECT_KIND_INTEGER)
+        {
+            return OBJECT_INTEGER(OBJECT_AS_INTEGER(left)->value ^ OBJECT_AS_INTEGER(right)->value);
+        }
+        else
+        {
+            return OBJECT_BOOLEAN(OBJECT_AS_BOOLEAN(left)->value ^ OBJECT_AS_BOOLEAN(right)->value);
+        }
     }
 }
 

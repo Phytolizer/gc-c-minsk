@@ -3,7 +3,8 @@
 #define BOUND_UNARY_OPERATOR_KINDS_ \
     X(IDENTITY) \
     X(NEGATION) \
-    X(LOGICAL_NEGATION)
+    X(LOGICAL_NEGATION) \
+    X(ONES_COMPLEMENT)
 
 enum BoundUnaryOperatorKind
 {

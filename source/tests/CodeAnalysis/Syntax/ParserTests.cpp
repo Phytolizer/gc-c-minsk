@@ -96,7 +96,9 @@ TEST_SUITE("Parser")
             int op1_precedence = binary_operator_precedence(test.first);
             int op2_precedence = binary_operator_precedence(test.second);
             sds op1_text = syntax_facts_get_text(test.first);
+            REQUIRE(op1_text != nullptr);
             sds op2_text = syntax_facts_get_text(test.second);
+            REQUIRE(op2_text != nullptr);
             sds text = sdscatfmt(sdsempty(), "a %S b %S c", op1_text, op2_text);
             SyntaxNode* expression = reinterpret_cast<SyntaxNode*>(parse_expression(text));
 
@@ -138,7 +140,9 @@ TEST_SUITE("Parser")
             int unary_precedence = unary_operator_precedence(test.first);
             int binary_precedence = binary_operator_precedence(test.second);
             sds unary_text = syntax_facts_get_text(test.first);
+            REQUIRE(unary_text != nullptr);
             sds binary_text = syntax_facts_get_text(test.second);
+            REQUIRE(binary_text != nullptr);
             sds text = sdscatfmt(sdsempty(), "%S a %S b", unary_text, binary_text);
             SyntaxNode* expression = reinterpret_cast<SyntaxNode*>(parse_expression(text));
 

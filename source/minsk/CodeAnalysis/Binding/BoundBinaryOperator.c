@@ -1,4 +1,5 @@
 #include "BoundBinaryOperator.h"
+#include "minsk/CodeAnalysis/Syntax/SyntaxKind.h"
 
 #include <common/List.h>
 
@@ -136,6 +137,60 @@ extern struct BoundBinaryOperator* bind_binary_operator(
                 .kind = BOUND_BINARY_OPERATOR_KIND_GREATER_OR_EQUALS,
                 .left_type = OBJECT_KIND_INTEGER,
                 .right_type = OBJECT_KIND_INTEGER,
+                .result_type = OBJECT_KIND_BOOLEAN,
+            }));
+        LIST_PUSH(
+            list,
+            ((struct BoundBinaryOperator){
+                .syntax_kind = SYNTAX_KIND_HAT_TOKEN,
+                .kind = BOUND_BINARY_OPERATOR_KIND_BITWISE_XOR,
+                .left_type = OBJECT_KIND_INTEGER,
+                .right_type = OBJECT_KIND_INTEGER,
+                .result_type = OBJECT_KIND_INTEGER,
+            }));
+        LIST_PUSH(
+            list,
+            ((struct BoundBinaryOperator){
+                .syntax_kind = SYNTAX_KIND_AMPERSAND_TOKEN,
+                .kind = BOUND_BINARY_OPERATOR_KIND_BITWISE_AND,
+                .left_type = OBJECT_KIND_INTEGER,
+                .right_type = OBJECT_KIND_INTEGER,
+                .result_type = OBJECT_KIND_INTEGER,
+            }));
+        LIST_PUSH(
+            list,
+            ((struct BoundBinaryOperator){
+                .syntax_kind = SYNTAX_KIND_PIPE_TOKEN,
+                .kind = BOUND_BINARY_OPERATOR_KIND_BITWISE_OR,
+                .left_type = OBJECT_KIND_INTEGER,
+                .right_type = OBJECT_KIND_INTEGER,
+                .result_type = OBJECT_KIND_INTEGER,
+            }));
+        LIST_PUSH(
+            list,
+            ((struct BoundBinaryOperator){
+                .syntax_kind = SYNTAX_KIND_HAT_TOKEN,
+                .kind = BOUND_BINARY_OPERATOR_KIND_BITWISE_XOR,
+                .left_type = OBJECT_KIND_BOOLEAN,
+                .right_type = OBJECT_KIND_BOOLEAN,
+                .result_type = OBJECT_KIND_BOOLEAN,
+            }));
+        LIST_PUSH(
+            list,
+            ((struct BoundBinaryOperator){
+                .syntax_kind = SYNTAX_KIND_AMPERSAND_TOKEN,
+                .kind = BOUND_BINARY_OPERATOR_KIND_BITWISE_AND,
+                .left_type = OBJECT_KIND_BOOLEAN,
+                .right_type = OBJECT_KIND_BOOLEAN,
+                .result_type = OBJECT_KIND_BOOLEAN,
+            }));
+        LIST_PUSH(
+            list,
+            ((struct BoundBinaryOperator){
+                .syntax_kind = SYNTAX_KIND_PIPE_TOKEN,
+                .kind = BOUND_BINARY_OPERATOR_KIND_BITWISE_OR,
+                .left_type = OBJECT_KIND_BOOLEAN,
+                .right_type = OBJECT_KIND_BOOLEAN,
                 .result_type = OBJECT_KIND_BOOLEAN,
             }));
     }

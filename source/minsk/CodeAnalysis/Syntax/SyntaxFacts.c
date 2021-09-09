@@ -1,4 +1,5 @@
 #include "minsk/CodeAnalysis/Syntax/SyntaxFacts.h"
+#include "minsk/CodeAnalysis/Syntax/SyntaxKind.h"
 
 #include <string.h>
 
@@ -9,6 +10,7 @@ int unary_operator_precedence(enum SyntaxKind kind)
     case SYNTAX_KIND_PLUS_TOKEN:
     case SYNTAX_KIND_MINUS_TOKEN:
     case SYNTAX_KIND_BANG_TOKEN:
+    case SYNTAX_KIND_TILDE_TOKEN:
         return 6;
     default:
         return 0;
@@ -33,8 +35,11 @@ int binary_operator_precedence(enum SyntaxKind kind)
     case SYNTAX_KIND_GREATER_OR_EQUALS_TOKEN:
         return 3;
     case SYNTAX_KIND_AMPERSAND_AMPERSAND_TOKEN:
+    case SYNTAX_KIND_AMPERSAND_TOKEN:
         return 2;
     case SYNTAX_KIND_PIPE_PIPE_TOKEN:
+    case SYNTAX_KIND_PIPE_TOKEN:
+    case SYNTAX_KIND_HAT_TOKEN:
         return 1;
     default:
         return 0;
@@ -114,6 +119,14 @@ sds syntax_facts_get_text(enum SyntaxKind kind)
         return sdsnew(">");
     case SYNTAX_KIND_GREATER_OR_EQUALS_TOKEN:
         return sdsnew(">=");
+    case SYNTAX_KIND_AMPERSAND_TOKEN:
+        return sdsnew("&");
+    case SYNTAX_KIND_PIPE_TOKEN:
+        return sdsnew("|");
+    case SYNTAX_KIND_HAT_TOKEN:
+        return sdsnew("^");
+    case SYNTAX_KIND_TILDE_TOKEN:
+        return sdsnew("~");
     case SYNTAX_KIND_OPEN_PARENTHESIS_TOKEN:
         return sdsnew("(");
     case SYNTAX_KIND_CLOSE_PARENTHESIS_TOKEN:

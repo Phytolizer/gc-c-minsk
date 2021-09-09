@@ -111,6 +111,15 @@ static inline bool requires_separator(SyntaxKind t1kind, SyntaxKind t2kind)
     {
         return true;
     }
+    if (t1kind == SYNTAX_KIND_PIPE_TOKEN && (t2kind == SYNTAX_KIND_PIPE_TOKEN || t2kind == SYNTAX_KIND_PIPE_PIPE_TOKEN))
+    {
+        return true;
+    }
+    if (t1kind == SYNTAX_KIND_AMPERSAND_TOKEN &&
+        (t2kind == SYNTAX_KIND_AMPERSAND_TOKEN || t2kind == SYNTAX_KIND_AMPERSAND_AMPERSAND_TOKEN))
+    {
+        return true;
+    }
     return false;
 }
 

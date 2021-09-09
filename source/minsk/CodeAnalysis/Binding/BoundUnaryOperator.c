@@ -35,6 +35,14 @@ struct BoundUnaryOperator* bind_unary_operator(enum SyntaxKind syntax_kind, enum
                 .operand_type = OBJECT_KIND_INTEGER,
                 .result_type = OBJECT_KIND_INTEGER,
             }));
+        LIST_PUSH(
+            list,
+            ((struct BoundUnaryOperator){
+                .syntax_kind = SYNTAX_KIND_TILDE_TOKEN,
+                .kind = BOUND_UNARY_OPERATOR_KIND_ONES_COMPLEMENT,
+                .operand_type = OBJECT_KIND_INTEGER,
+                .result_type = OBJECT_KIND_INTEGER,
+            }));
     }
 
     for (long i = 0; i < list->length; ++i)

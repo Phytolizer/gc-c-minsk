@@ -124,6 +124,14 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
         lexer->position++;
         lexer->kind = SYNTAX_KIND_CLOSE_BRACE_TOKEN;
         break;
+    case '~':
+        lexer->position++;
+        lexer->kind = SYNTAX_KIND_TILDE_TOKEN;
+        break;
+    case '^':
+        lexer->position++;
+        lexer->kind = SYNTAX_KIND_HAT_TOKEN;
+        break;
     case '!':
         if (lookahead(lexer) == '=')
         {
@@ -142,12 +150,22 @@ struct SyntaxToken* lexer_next_token(struct Lexer* lexer)
             lexer->position += 2;
             lexer->kind = SYNTAX_KIND_AMPERSAND_AMPERSAND_TOKEN;
         }
+        else
+        {
+            lexer->position++;
+            lexer->kind = SYNTAX_KIND_AMPERSAND_TOKEN;
+        }
         break;
     case '|':
         if (lookahead(lexer) == '|')
         {
             lexer->position += 2;
             lexer->kind = SYNTAX_KIND_PIPE_PIPE_TOKEN;
+        }
+        else
+        {
+            lexer->position++;
+            lexer->kind = SYNTAX_KIND_PIPE_TOKEN;
         }
         break;
     case '=':

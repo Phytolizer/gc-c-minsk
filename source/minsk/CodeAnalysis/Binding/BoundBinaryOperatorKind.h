@@ -12,7 +12,10 @@
     X(LESS) \
     X(LESS_OR_EQUALS) \
     X(GREATER) \
-    X(GREATER_OR_EQUALS)
+    X(GREATER_OR_EQUALS) \
+    X(BITWISE_AND) \
+    X(BITWISE_OR) \
+    X(BITWISE_XOR)
 
 enum BoundBinaryOperatorKind
 {
