@@ -105,12 +105,13 @@ struct BoundStatement* lowerer_rewrite_for_statement(struct Lowerer* lowerer, st
         (struct BoundExpression*)variable_expression,
         bind_binary_operator(SYNTAX_KIND_LESS_OR_EQUALS_TOKEN, OBJECT_KIND_INTEGER, OBJECT_KIND_INTEGER),
         node->upper_bound);
-    struct BoundAssignmentExpression* increment = bound_assignment_expression_new(
-        node->variable,
-        (struct BoundExpression*)bound_binary_expression_new(
-            (struct BoundExpression*)variable_expression,
-            bind_binary_operator(SYNTAX_KIND_PLUS_TOKEN, OBJECT_KIND_INTEGER, OBJECT_KIND_INTEGER),
-            (struct BoundExpression*)bound_literal_expression_new(OBJECT_INTEGER(1))));
+    struct BoundStatement* increment =
+        (struct BoundStatement*)bound_expression_statement_new((struct BoundExpression*)bound_assignment_expression_new(
+            node->variable,
+            (struct BoundExpression*)bound_binary_expression_new(
+                (struct BoundExpression*)variable_expression,
+                bind_binary_operator(SYNTAX_KIND_PLUS_TOKEN, OBJECT_KIND_INTEGER, OBJECT_KIND_INTEGER),
+                (struct BoundExpression*)bound_literal_expression_new(OBJECT_INTEGER(1)))));
     struct BoundStatementList* while_block_body = mc_malloc(sizeof(struct BoundStatementList));
     LIST_INIT(while_block_body);
     LIST_PUSH(while_block_body, node->body);
