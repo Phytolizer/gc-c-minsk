@@ -19,7 +19,7 @@ void diagnostic_bag_report_invalid_number(
 
 void diagnostic_bag_report_bad_character(struct DiagnosticBag* bag, int position, char character)
 {
-    sds message = sdscatprintf(sdsempty(), "bad character input: '%c'.", character);
+    sds message = sdscatprintf(sdsempty(), "Bad character in input: '%c'.", character);
     report(bag, text_span_new(position, 1), message);
 }
 
