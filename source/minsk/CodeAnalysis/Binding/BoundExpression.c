@@ -1,5 +1,6 @@
 #include "minsk-private/CodeAnalysis/Binding/BoundExpression.h"
 
+#include <assert.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundAssignmentExpression.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundBinaryExpression.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundLiteralExpression.h>
@@ -27,6 +28,7 @@ enum ObjectKind bound_expression_get_type(struct BoundExpression* expr)
     case BOUND_EXPRESSION_KIND_BOUND_ASSIGNMENT_EXPRESSION:
         return bound_assignment_expression_get_type((struct BoundAssignmentExpression*)expr);
     }
+    assert(false && "Corrupt expression type");
 }
 
 enum BoundNodeKind bound_expression_get_kind(struct BoundExpression* expr)
@@ -44,6 +46,7 @@ enum BoundNodeKind bound_expression_get_kind(struct BoundExpression* expr)
     case BOUND_EXPRESSION_KIND_BOUND_ASSIGNMENT_EXPRESSION:
         return bound_assignment_expression_get_kind((struct BoundAssignmentExpression*)expr);
     }
+    assert(false && "Corrupt expression kind");
 }
 
 struct BoundNodeList* bound_expression_get_children(struct BoundExpression* expr)
@@ -61,4 +64,5 @@ struct BoundNodeList* bound_expression_get_children(struct BoundExpression* expr
     case BOUND_EXPRESSION_KIND_BOUND_ASSIGNMENT_EXPRESSION:
         return bound_assignment_expression_get_children((struct BoundAssignmentExpression*)expr);
     }
+    assert(false && "Corrupt expression kind");
 }

@@ -161,6 +161,7 @@ static struct Object* evaluate_unary_expression(struct Evaluator* evaluator, str
     case BOUND_UNARY_OPERATOR_KIND_ONES_COMPLEMENT:
         return OBJECT_INTEGER(~OBJECT_AS_INTEGER(operand)->value);
     }
+    assert(false && "Corrupt unary operator");
 }
 
 static struct Object* evaluate_binary_expression(struct Evaluator* evaluator, struct BoundBinaryExpression* expr)
@@ -222,6 +223,7 @@ static struct Object* evaluate_binary_expression(struct Evaluator* evaluator, st
             return OBJECT_BOOLEAN(OBJECT_AS_BOOLEAN(left)->value ^ OBJECT_AS_BOOLEAN(right)->value);
         }
     }
+    assert(false && "Corrupt binary operator");
 }
 
 static struct Object* evaluate_variable_expression(struct Evaluator* evaluator, struct BoundVariableExpression* expr)

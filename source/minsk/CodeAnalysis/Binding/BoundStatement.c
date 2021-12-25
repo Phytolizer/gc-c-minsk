@@ -1,5 +1,6 @@
 #include "minsk-private/CodeAnalysis/Binding/BoundStatement.h"
 
+#include <assert.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundBlockStatement.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundExpressionStatement.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundForStatement.h>
@@ -30,6 +31,7 @@ enum BoundNodeKind bound_statement_get_kind(struct BoundStatement* stmt)
     case BOUND_STATEMENT_KIND_WHILE:
         return bound_while_statement_get_kind((struct BoundWhileStatement*)stmt);
     }
+    assert(false && "Corrupt statement kind");
 }
 
 struct BoundNodeList* bound_statement_get_children(struct BoundStatement* stmt)
@@ -49,4 +51,5 @@ struct BoundNodeList* bound_statement_get_children(struct BoundStatement* stmt)
     case BOUND_STATEMENT_KIND_WHILE:
         return bound_while_statement_get_children((struct BoundWhileStatement*)stmt);
     }
+    assert(false && "Corrupt statement kind");
 }

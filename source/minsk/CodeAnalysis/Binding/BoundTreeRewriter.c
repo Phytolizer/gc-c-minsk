@@ -1,5 +1,6 @@
 #include "minsk-private/CodeAnalysis/Binding/BoundTreeRewriter.h"
 
+#include <assert.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundAssignmentExpression.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundBinaryExpression.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundBlockStatement.h>
@@ -21,6 +22,7 @@
         case BOUND_TREE_REWRITER_KIND_LOWERER: \
             return lowerer_##FunctionName((struct Lowerer*)rewriter, node); \
         } \
+        assert(false && "Corrupt bound tree rewriter kind"); \
     }
 
 DEFINE_DISPATCH(BoundExpression, BoundAssignmentExpression, rewrite_assignment_expression)
@@ -53,6 +55,7 @@ struct BoundStatement* bound_tree_rewriter_rewrite_statement(
     case BOUND_STATEMENT_KIND_WHILE:
         return rewrite_while_statement(rewriter, (struct BoundWhileStatement*)node);
     }
+    assert(false && "Corrupt node kind");
 }
 
 struct BoundExpression* bound_tree_rewriter_rewrite_expression(
@@ -71,4 +74,5 @@ struct BoundExpression* bound_tree_rewriter_rewrite_expression(
     case BOUND_EXPRESSION_KIND_BOUND_ASSIGNMENT_EXPRESSION:
         return rewrite_assignment_expression(rewriter, (struct BoundAssignmentExpression*)node);
     }
+    assert(false && "Corrupt node kind");
 }

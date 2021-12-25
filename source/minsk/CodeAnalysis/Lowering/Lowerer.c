@@ -97,6 +97,7 @@ struct BoundStatement* lowerer_rewrite_for_statement(struct Lowerer* lowerer, st
     //     <var> = <var> + 1
     //   }
     // }
+    (void)lowerer;
     struct BoundVariableDeclaration* variable_declaration =
         bound_variable_declaration_new(node->variable, node->lower_bound);
     struct BoundVariableExpression* variable_expression = bound_variable_expression_new(node->variable);

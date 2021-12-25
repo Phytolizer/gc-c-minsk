@@ -1,5 +1,6 @@
 #include "minsk-private/CodeAnalysis/Binding/BoundNode.h"
 
+#include <assert.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundBinaryExpression.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundExpression.h>
 #include <minsk-private/CodeAnalysis/Binding/BoundLiteralExpression.h>
@@ -34,6 +35,7 @@ enum BoundNodeKind bound_node_get_kind(struct BoundNode* node)
     case BOUND_NODE_TYPE_STATEMENT:
         return bound_statement_get_kind((struct BoundStatement*)node);
     }
+    assert(false && "Corrupt bound node kind");
 }
 
 struct BoundNodeList* bound_node_get_children(struct BoundNode* node)
@@ -45,6 +47,7 @@ struct BoundNodeList* bound_node_get_children(struct BoundNode* node)
     case BOUND_NODE_TYPE_STATEMENT:
         return bound_statement_get_children((struct BoundStatement*)node);
     }
+    assert(false && "Corrupt bound node type");
 }
 
 void bound_node_pretty_print(FILE* stream, struct BoundNode* node)
@@ -124,6 +127,7 @@ static const char* get_ansi_color_escape(struct BoundNode* node)
     case BOUND_NODE_TYPE_STATEMENT:
         return "\x1b[0;36m";
     }
+    assert(false && "Corrupt bound node type");
 }
 
 static sds get_text(struct BoundNode* node)

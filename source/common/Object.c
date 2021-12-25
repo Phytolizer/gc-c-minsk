@@ -75,6 +75,7 @@ bool objects_equal(struct Object* left, struct Object* right)
     case OBJECT_KIND_STRING:
         return OBJECT_IS_STRING(right) && strcmp(OBJECT_AS_STRING(left)->value, OBJECT_AS_STRING(right)->value) == 0;
     }
+    assert(false && "Corrupt object kind");
 }
 
 sds object_to_string(const struct Object* obj)
@@ -90,4 +91,5 @@ sds object_to_string(const struct Object* obj)
     case OBJECT_KIND_STRING:
         return OBJECT_AS_STRING(obj)->value;
     }
+    assert(false && "Corrupt object kind");
 }

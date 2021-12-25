@@ -1,5 +1,6 @@
 #include "minsk/CodeAnalysis/Syntax/SyntaxNode.h"
 
+#include <assert.h>
 #include <minsk/CodeAnalysis/Syntax/CompilationUnitSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ElseClauseSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionSyntax.h>
@@ -29,6 +30,7 @@ enum SyntaxKind syntax_node_get_kind(struct SyntaxNode* node)
     case SYNTAX_NODE_KIND_ELSE_CLAUSE:
         return else_clause_syntax_get_kind((struct ElseClauseSyntax*)node);
     }
+    assert(false && "Corrupt syntax kind");
 }
 
 struct SyntaxNodeList* syntax_node_get_children(struct SyntaxNode* node)
@@ -46,6 +48,7 @@ struct SyntaxNodeList* syntax_node_get_children(struct SyntaxNode* node)
     case SYNTAX_NODE_KIND_ELSE_CLAUSE:
         return else_clause_syntax_get_children((struct ElseClauseSyntax*)node);
     }
+    assert(false && "Corrupt syntax kind");
 }
 
 struct TextSpan* syntax_node_get_span(struct SyntaxNode* node)

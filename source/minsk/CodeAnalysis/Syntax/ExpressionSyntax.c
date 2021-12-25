@@ -1,5 +1,6 @@
 #include "minsk/CodeAnalysis/Syntax/ExpressionSyntax.h"
 
+#include <assert.h>
 #include <minsk/CodeAnalysis/Syntax/AssignmentExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/BinaryExpressionSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/LiteralExpressionSyntax.h>
@@ -30,6 +31,7 @@ enum SyntaxKind expression_syntax_get_kind(struct ExpressionSyntax* syntax)
     case EXPRESSION_SYNTAX_KIND_ASSIGNMENT_EXPRESSION_SYNTAX:
         return assignment_expression_syntax_get_kind((struct AssignmentExpressionSyntax*)syntax);
     }
+    assert(false && "Corrupt syntax kind");
 }
 
 struct SyntaxNodeList* expression_syntax_get_children(struct ExpressionSyntax* syntax)
@@ -49,4 +51,5 @@ struct SyntaxNodeList* expression_syntax_get_children(struct ExpressionSyntax* s
     case EXPRESSION_SYNTAX_KIND_ASSIGNMENT_EXPRESSION_SYNTAX:
         return assignment_expression_syntax_get_children((struct AssignmentExpressionSyntax*)syntax);
     }
+    assert(false && "Corrupt syntax kind");
 }

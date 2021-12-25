@@ -1,6 +1,7 @@
 #include "minsk/CodeAnalysis/Syntax/StatementSyntax.h"
 #include "minsk/CodeAnalysis/Syntax/ForStatementSyntax.h"
 
+#include <assert.h>
 #include <minsk/CodeAnalysis/Syntax/BlockStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/ExpressionStatementSyntax.h>
 #include <minsk/CodeAnalysis/Syntax/IfStatementSyntax.h>
@@ -30,6 +31,7 @@ enum SyntaxKind statement_syntax_get_kind(struct StatementSyntax* syntax)
     case STATEMENT_SYNTAX_KIND_WHILE_STATEMENT_SYNTAX:
         return while_statement_syntax_get_kind((struct WhileStatementSyntax*)syntax);
     }
+    assert(false && "Corrupt syntax kind");
 }
 
 struct SyntaxNodeList* statement_syntax_get_children(struct StatementSyntax* syntax)
@@ -49,4 +51,5 @@ struct SyntaxNodeList* statement_syntax_get_children(struct StatementSyntax* syn
     case STATEMENT_SYNTAX_KIND_WHILE_STATEMENT_SYNTAX:
         return while_statement_syntax_get_children((struct WhileStatementSyntax*)syntax);
     }
+    assert(false && "Corrupt syntax kind");
 }

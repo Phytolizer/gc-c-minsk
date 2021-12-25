@@ -109,6 +109,7 @@ static struct BoundStatement* bind_statement(struct Binder* binder, struct State
     case STATEMENT_SYNTAX_KIND_WHILE_STATEMENT_SYNTAX:
         return bind_while_statement(binder, (struct WhileStatementSyntax*)syntax);
     }
+    assert(false && "Unexpected statement syntax");
 }
 
 static struct BoundStatement* bind_block_statement(struct Binder* binder, struct BlockStatementSyntax* syntax)
@@ -200,6 +201,7 @@ static struct BoundExpression* bind_expression(struct Binder* binder, struct Exp
     case EXPRESSION_SYNTAX_KIND_ASSIGNMENT_EXPRESSION_SYNTAX:
         return bind_assignment_expression(binder, (struct AssignmentExpressionSyntax*)syntax);
     }
+    assert(false && "Unexpected expression syntax");
 }
 
 static struct BoundExpression* bind_expression_with_type(
